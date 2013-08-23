@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.startup">
+      <startup
+            class="TmpStartup">
+      </startup>
+   </extension>
+   <extension
+         id="ovap.project.nature"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run
+               class="ovap.project.OVAPNature">
+         </run>
+      </runtime>
+   </extension>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            id="ovap.project.ovap_category"
+            name="OVAP">
+      </category>
+      <wizard
+            category="ovap.project.ovap_category"
+            class="ovap.project.NewOVAPProjectWizard"
+            hasPages="true"
+            id="ovap.project.new.project"
+            name="New OVAP Project"
+            project="true">
+      </wizard>
+   </extension>
+   <extension
+         point="org.eclipse.ui.propertyPages">
+      <page
+            class="ovap.project.OVAPPropertyPage1"
+            id="ovap.project.page1"
+            name="OVAP">
+         <enabledWhen>
+            <instanceof
+                  value="org.eclipse.core.resources.IProject">
+            </instanceof>
+         </enabledWhen>
+      </page>
+   </extension>
+
+</plugin>
