@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uml:Model xmi:version="2.1" xmlns:xmi="http://schema.omg.org/spec/XMI/2.1" xmlns:uml="http://www.eclipse.org/uml2/3.0.0/UML" xmi:id="_A-aBgOsIEeKcOetAYLoAcw">
+  <ownedComment xmi:id="_LzqUwevBEeKTsdBcGyrdlg" annotatedElement="_A-aBgOsIEeKcOetAYLoAcw _UoqTsOsKEeKcOetAYLoAcw">
+    <body>-- FrameData data&#xD;
+-- boolean paused&#xD;
+-- SourceStatus status&#xD;
+getType()&#xD;
+getName()&#xD;
+getStatus()&#xD;
+initialize(FrameIntArray, ConfigsType)&#xD;
+startStream()&#xD;
+stopStream()&#xD;
+pauseStream()&#xD;
+resumeStream()&#xD;
+getStreamPosition()&#xD;
+getStreamLength()&#xD;
+getFrameSize()</body>
+  </ownedComment>
+  <packagedElement xmi:type="uml:Component" xmi:id="_J6OtAOsIEeKcOetAYLoAcw" name="ProjectManager" clientDependency="_IaIWwOsJEeKcOetAYLoAcw _M2yIQOsJEeKcOetAYLoAcw _A_-AYOsLEeKcOetAYLoAcw _KjN4QOsLEeKcOetAYLoAcw _K6vAYOsLEeKcOetAYLoAcw _LVYVAOsLEeKcOetAYLoAcw _PlY1gPYrEeKTIZiwfti9BA _9nDRkPYzEeKTIZiwfti9BA">
+    <interfaceRealization xmi:id="_A_-AYOsLEeKcOetAYLoAcw" supplier="_-Qe7UOsKEeKcOetAYLoAcw" client="_J6OtAOsIEeKcOetAYLoAcw" contract="_-Qe7UOsKEeKcOetAYLoAcw"/>
+    <interfaceRealization xmi:id="_KjN4QOsLEeKcOetAYLoAcw" supplier="_DjAk4OsLEeKcOetAYLoAcw" client="_J6OtAOsIEeKcOetAYLoAcw" contract="_DjAk4OsLEeKcOetAYLoAcw"/>
+    <interfaceRealization xmi:id="_K6vAYOsLEeKcOetAYLoAcw" supplier="_IR4u0OsLEeKcOetAYLoAcw" client="_J6OtAOsIEeKcOetAYLoAcw" contract="_IR4u0OsLEeKcOetAYLoAcw"/>
+    <interfaceRealization xmi:id="_LVYVAOsLEeKcOetAYLoAcw" supplier="_JotX0OsLEeKcOetAYLoAcw" client="_J6OtAOsIEeKcOetAYLoAcw" contract="_JotX0OsLEeKcOetAYLoAcw"/>
+    <interfaceRealization xmi:id="_PlY1gPYrEeKTIZiwfti9BA" supplier="_BrvHcPYSEeKTIZiwfti9BA" client="_J6OtAOsIEeKcOetAYLoAcw" contract="_BrvHcPYSEeKTIZiwfti9BA"/>
+    <interfaceRealization xmi:id="_9nDRkPYzEeKTIZiwfti9BA" supplier="_0y0b0PYzEeKTIZiwfti9BA" client="_J6OtAOsIEeKcOetAYLoAcw" contract="_0y0b0PYzEeKTIZiwfti9BA"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_IaIWwOsJEeKcOetAYLoAcw" supplier="_RMmucOsIEeKcOetAYLoAcw" client="_J6OtAOsIEeKcOetAYLoAcw"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_M2yIQOsJEeKcOetAYLoAcw" supplier="_NouYAOsIEeKcOetAYLoAcw" client="_J6OtAOsIEeKcOetAYLoAcw"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Component" xmi:id="_NouYAOsIEeKcOetAYLoAcw" name="VideoManager" clientDependency="_Us6GwPOrEeKjAfhTVo2Gxg _fy1SUPOrEeKjAfhTVo2Gxg _iWjzUPOrEeKjAfhTVo2Gxg _qGpaQPxYEeKue6KhlpX2Ww _qtc7kPxYEeKue6KhlpX2Ww _ro1lwPxYEeKue6KhlpX2Ww _sebxAPxYEeKue6KhlpX2Ww">
+    <interfaceRealization xmi:id="_qGpaQPxYEeKue6KhlpX2Ww" supplier="_mTBXoPxYEeKue6KhlpX2Ww" client="_NouYAOsIEeKcOetAYLoAcw" contract="_mTBXoPxYEeKue6KhlpX2Ww"/>
+    <interfaceRealization xmi:id="_qtc7kPxYEeKue6KhlpX2Ww" supplier="_fqm5MPxYEeKue6KhlpX2Ww" client="_NouYAOsIEeKcOetAYLoAcw" contract="_fqm5MPxYEeKue6KhlpX2Ww"/>
+    <interfaceRealization xmi:id="_ro1lwPxYEeKue6KhlpX2Ww" supplier="_c6T70PxYEeKue6KhlpX2Ww" client="_NouYAOsIEeKcOetAYLoAcw" contract="_c6T70PxYEeKue6KhlpX2Ww"/>
+    <interfaceRealization xmi:id="_sebxAPxYEeKue6KhlpX2Ww" supplier="_Zi8XYfxYEeKue6KhlpX2Ww" client="_NouYAOsIEeKcOetAYLoAcw" contract="_Zi8XYfxYEeKue6KhlpX2Ww"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_Us6GwPOrEeKjAfhTVo2Gxg" supplier="_QkKvwPOrEeKjAfhTVo2Gxg" client="_NouYAOsIEeKcOetAYLoAcw"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_fy1SUPOrEeKjAfhTVo2Gxg" supplier="_csNfoPOrEeKjAfhTVo2Gxg" client="_NouYAOsIEeKcOetAYLoAcw"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_iWjzUPOrEeKjAfhTVo2Gxg" supplier="_gXYw4POrEeKjAfhTVo2Gxg" client="_NouYAOsIEeKcOetAYLoAcw"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Component" xmi:id="_RMmucOsIEeKcOetAYLoAcw" name="DataExportManager" clientDependency="_cXu4MOsKEeKcOetAYLoAcw">
+    <packagedElement xmi:type="uml:Usage" xmi:id="_cXu4MOsKEeKcOetAYLoAcw" supplier="_bNw_cOsKEeKcOetAYLoAcw" client="_RMmucOsIEeKcOetAYLoAcw"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Component" xmi:id="_hb9cgOsJEeKcOetAYLoAcw" name="FilterX" clientDependency="_p4jOUOsJEeKcOetAYLoAcw">
+    <interfaceRealization xmi:id="_p4jOUOsJEeKcOetAYLoAcw" supplier="_iyzToOsJEeKcOetAYLoAcw" client="_hb9cgOsJEeKcOetAYLoAcw" contract="_iyzToOsJEeKcOetAYLoAcw"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_iyzToOsJEeKcOetAYLoAcw" name="VideoFilter">
+    <ownedComment xmi:id="_AdE1AOvXEeKTsdBcGyrdlg" annotatedElement="_iyzToOsJEeKcOetAYLoAcw">
+      <body>-- FilterData data&#xD;
+-- Link in,out&#xD;
+-- String name&#xD;
+enable(boolean)&#xD;
+getFilterData()&#xD;
+getID()&#xD;
+getInPortCount()&#xD;
+getLinkIn()&#xD;
+getLinkOut()&#xD;
+getName()&#xD;
+getOutPortCount()&#xD;
+process()&#xD;
+registerDependentData(FilterData)&#xD;
+setLinkIn(Link)&#xD;
+setLinkOut(Link)&#xD;
+setName(String)</body>
+    </ownedComment>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Component" xmi:id="_2HlXAOsJEeKcOetAYLoAcw" name="ModuleX" clientDependency="_5YtJgOsJEeKcOetAYLoAcw">
+    <interfaceRealization xmi:id="_5YtJgOsJEeKcOetAYLoAcw" supplier="_3OetoOsJEeKcOetAYLoAcw" client="_2HlXAOsJEeKcOetAYLoAcw" contract="_3OetoOsJEeKcOetAYLoAcw"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_3OetoOsJEeKcOetAYLoAcw" name="Module"/>
+  <packagedElement xmi:type="uml:Component" xmi:id="_Oyr-0OsKEeKcOetAYLoAcw" name="SourceX" clientDependency="_WP5XQOsKEeKcOetAYLoAcw">
+    <interfaceRealization xmi:id="_WP5XQOsKEeKcOetAYLoAcw" supplier="_UoqTsOsKEeKcOetAYLoAcw" client="_Oyr-0OsKEeKcOetAYLoAcw" contract="_UoqTsOsKEeKcOetAYLoAcw"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_UoqTsOsKEeKcOetAYLoAcw" name="VideoSource"/>
+  <packagedElement xmi:type="uml:Component" xmi:id="_ZT4FoOsKEeKcOetAYLoAcw" name="ExportX" clientDependency="_eBr4kOsKEeKcOetAYLoAcw">
+    <interfaceRealization xmi:id="_eBr4kOsKEeKcOetAYLoAcw" supplier="_bNw_cOsKEeKcOetAYLoAcw" client="_ZT4FoOsKEeKcOetAYLoAcw" contract="_bNw_cOsKEeKcOetAYLoAcw"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_bNw_cOsKEeKcOetAYLoAcw" name="DataExported"/>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_-Qe7UOsKEeKcOetAYLoAcw" name="org.eclipse.core.resources.natures"/>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_DjAk4OsLEeKcOetAYLoAcw" name="org.eclipse.core.runtime.preferences"/>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_IR4u0OsLEeKcOetAYLoAcw" name="org.eclipse.ui.preferenceTransfer"/>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_JotX0OsLEeKcOetAYLoAcw" name="org.eclipse.ui.preferencePages"/>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_MEQXwOsMEeKcOetAYLoAcw" name="org.eclipse.ui.views.properties.tabbed.PropertyContributor "/>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_TsdfQOsMEeKcOetAYLoAcw" name="org.eclipse.ui.views.properties.tabbed.PropertyTabs"/>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_WiEacOsMEeKcOetAYLoAcw" name="org.eclipse.ui.views.properties.tabbed.PropertySections"/>
+  <packagedElement xmi:type="uml:Component" xmi:id="_F3h3IOsJEeKcOetAYLoAcw" name="SourceManager" clientDependency="_XPd94OsKEeKcOetAYLoAcw _Tae1kPOrEeKjAfhTVo2Gxg _lNO1wPO8EeKjAfhTVo2Gxg">
+    <interfaceRealization xmi:id="_Tae1kPOrEeKjAfhTVo2Gxg" supplier="_QkKvwPOrEeKjAfhTVo2Gxg" client="_F3h3IOsJEeKcOetAYLoAcw" contract="_QkKvwPOrEeKjAfhTVo2Gxg"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_XPd94OsKEeKcOetAYLoAcw" supplier="_UoqTsOsKEeKcOetAYLoAcw" client="_F3h3IOsJEeKcOetAYLoAcw"/>
+    <packagedElement xmi:type="uml:Dependency" xmi:id="_lNO1wPO8EeKjAfhTVo2Gxg" supplier="_NouYAOsIEeKcOetAYLoAcw" client="_F3h3IOsJEeKcOetAYLoAcw"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Component" xmi:id="_aP6iAOsIEeKcOetAYLoAcw" name="ModuleManager" clientDependency="_5_jHEOsJEeKcOetAYLoAcw _fDoC8POrEeKjAfhTVo2Gxg _may1EPO8EeKjAfhTVo2Gxg">
+    <interfaceRealization xmi:id="_fDoC8POrEeKjAfhTVo2Gxg" supplier="_csNfoPOrEeKjAfhTVo2Gxg" client="_aP6iAOsIEeKcOetAYLoAcw" contract="_csNfoPOrEeKjAfhTVo2Gxg"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_5_jHEOsJEeKcOetAYLoAcw" supplier="_3OetoOsJEeKcOetAYLoAcw" client="_aP6iAOsIEeKcOetAYLoAcw"/>
+    <packagedElement xmi:type="uml:Component" xmi:id="_tQvKwOsMEeKcOetAYLoAcw" name="ConfigurationManager" clientDependency="_ylUCwOsMEeKcOetAYLoAcw _zJOoIOsMEeKcOetAYLoAcw _zqFScOsMEeKcOetAYLoAcw">
+      <interfaceRealization xmi:id="_ylUCwOsMEeKcOetAYLoAcw" supplier="_WiEacOsMEeKcOetAYLoAcw" client="_tQvKwOsMEeKcOetAYLoAcw" contract="_WiEacOsMEeKcOetAYLoAcw"/>
+      <interfaceRealization xmi:id="_zJOoIOsMEeKcOetAYLoAcw" supplier="_TsdfQOsMEeKcOetAYLoAcw" client="_tQvKwOsMEeKcOetAYLoAcw" contract="_TsdfQOsMEeKcOetAYLoAcw"/>
+      <interfaceRealization xmi:id="_zqFScOsMEeKcOetAYLoAcw" supplier="_MEQXwOsMEeKcOetAYLoAcw" client="_tQvKwOsMEeKcOetAYLoAcw" contract="_MEQXwOsMEeKcOetAYLoAcw"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Dependency" xmi:id="_may1EPO8EeKjAfhTVo2Gxg" supplier="_NouYAOsIEeKcOetAYLoAcw" client="_aP6iAOsIEeKcOetAYLoAcw"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Component" xmi:id="_X-FpUOsIEeKcOetAYLoAcw" name="FilterManager" clientDependency="_8Kq60OsJEeKcOetAYLoAcw _h5rqEPOrEeKjAfhTVo2Gxg _nm2_kPO8EeKjAfhTVo2Gxg">
+    <interfaceRealization xmi:id="_h5rqEPOrEeKjAfhTVo2Gxg" supplier="_gXYw4POrEeKjAfhTVo2Gxg" client="_X-FpUOsIEeKcOetAYLoAcw" contract="_gXYw4POrEeKjAfhTVo2Gxg"/>
+    <packagedElement xmi:type="uml:Usage" xmi:id="_8Kq60OsJEeKcOetAYLoAcw" supplier="_iyzToOsJEeKcOetAYLoAcw" client="_X-FpUOsIEeKcOetAYLoAcw"/>
+    <packagedElement xmi:type="uml:Component" xmi:id="_n--WMOsMEeKcOetAYLoAcw" name="ConfigurationManager" clientDependency="_4_ZxUOsMEeKcOetAYLoAcw _5kI2EOsMEeKcOetAYLoAcw _6DOl0OsMEeKcOetAYLoAcw">
+      <interfaceRealization xmi:id="_4_ZxUOsMEeKcOetAYLoAcw" supplier="_WiEacOsMEeKcOetAYLoAcw" client="_n--WMOsMEeKcOetAYLoAcw" contract="_WiEacOsMEeKcOetAYLoAcw"/>
+      <interfaceRealization xmi:id="_5kI2EOsMEeKcOetAYLoAcw" supplier="_TsdfQOsMEeKcOetAYLoAcw" client="_n--WMOsMEeKcOetAYLoAcw" contract="_TsdfQOsMEeKcOetAYLoAcw"/>
+      <interfaceRealization xmi:id="_6DOl0OsMEeKcOetAYLoAcw" supplier="_MEQXwOsMEeKcOetAYLoAcw" client="_n--WMOsMEeKcOetAYLoAcw" contract="_MEQXwOsMEeKcOetAYLoAcw"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Dependency" xmi:id="_nm2_kPO8EeKjAfhTVo2Gxg" supplier="_NouYAOsIEeKcOetAYLoAcw" client="_X-FpUOsIEeKcOetAYLoAcw"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_QkKvwPOrEeKjAfhTVo2Gxg" name="ISourceManager"/>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_csNfoPOrEeKjAfhTVo2Gxg" name="IModuleManager"/>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_gXYw4POrEeKjAfhTVo2Gxg" name="IFilterManager"/>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_BrvHcPYSEeKTIZiwfti9BA" name="org.eclipse.ui.newWizards"/>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_0y0b0PYzEeKTIZiwfti9BA" name="org.eclipse.ui.propertyPages"/>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_Zi8XYfxYEeKue6KhlpX2Ww" name="org.eclipse.ui.handlers"/>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_c6T70PxYEeKue6KhlpX2Ww" name="org.eclipse.ui.menus"/>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_fqm5MPxYEeKue6KhlpX2Ww" name="org.eclipse.ui.commands"/>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_mTBXoPxYEeKue6KhlpX2Ww" name="org.eclipse.ui.services"/>
+</uml:Model>
