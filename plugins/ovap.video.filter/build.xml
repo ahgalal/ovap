@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ====================================================================== 
+     Aug 24, 2013 2:57:11 PM                                                        
+
+     ovap.video.filter    
+     description
+                   
+     Creative                                                                
+     ====================================================================== -->
+<project name="ovap.video.filter" default="build">
+    <description>
+            description
+    </description>
+
+    <!-- ================================= 
+          target: default              
+         ================================= -->
+    <target name="build">
+        <antcall target="build_all"/>
+    </target>
+
+    <!-- - - - - - - - - - - - - - - - - - 
+          target: build_model                      
+         - - - - - - - - - - - - - - - - - -->
+    <target name="build_all">
+    	<emf.Ecore2Java genmodel="emf/FilterSetup.genmodel" 
+    		model="emf/FilterSetup.ecore"
+    		generatemodelproject="true"
+    		generateeditproject="true"
+    		generateeditorproject="true"
+    		reconcilegenmodel="keep"/>
+    </target>
+</project>
