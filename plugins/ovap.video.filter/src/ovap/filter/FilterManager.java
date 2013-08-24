@@ -125,7 +125,7 @@ private Link sourceLink;
 		// load filters
 		EditingDomain editingDomain = TransactionalEditingDomain.Factory.INSTANCE.createEditingDomain();
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProjects()[0];
-		IFile file = project.getFile("default.ovap"); // FIXME
+		IFile file = project.getFile("simple_filters_setup.ovap"); // FIXME
 		ResourceSet resourceSet = editingDomain.getResourceSet();
 		EObject modelRoot;
 		FiltersSetup filtersSetup = null;
@@ -146,7 +146,7 @@ private Link sourceLink;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+		activeFilters.clear();
 		for(FilterInstance filterInstance: filtersSetup.getFilterInstances()){
 			// get filter type
 			String filterTypeID = filterInstance.getType().getName();
