@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Module
+Bundle-SymbolicName: ovap.video.module;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: ovap.module.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ ovap.video;bundle-version="1.0.0",
+ ovap.pde.utils;bundle-version="1.0.0"
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Export-Package: ovap.module

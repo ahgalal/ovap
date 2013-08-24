@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/ovap.video.filter/src"
+    modelPluginID="ovap.video.filter" modelName="FilterSetup" importerID="org.eclipse.emf.importer.ecore"
+    complianceLevel="6.0" copyrightFields="false">
+  <foreignModel>FilterSetup.ecore</foreignModel>
+  <genPackages prefix="Ovap" disposableProviderFactory="true" ecorePackage="FilterSetup.ecore#/">
+    <nestedGenPackages prefix="Video" basePackage="ovap" disposableProviderFactory="true"
+        ecorePackage="FilterSetup.ecore#//video">
+      <nestedGenPackages prefix="Filter" basePackage="ovap.video" disposableProviderFactory="true"
+          ecorePackage="FilterSetup.ecore#//video/filter">
+        <nestedGenPackages prefix="Setup" basePackage="ovap.video.filter" disposableProviderFactory="true"
+            ecorePackage="FilterSetup.ecore#//video/filter/setup">
+          <nestedGenPackages prefix="Model" basePackage="ovap.video.filter.setup"
+              disposableProviderFactory="true" ecorePackage="FilterSetup.ecore#//video/filter/setup/model">
+            <genClasses ecoreClass="FilterSetup.ecore#//video/filter/setup/model/FilterInstance">
+              <genFeatures notify="false" createChild="false" propertySortChoices="true"
+                  ecoreFeature="ecore:EReference FilterSetup.ecore#//video/filter/setup/model/FilterInstance/type"/>
+              <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference FilterSetup.ecore#//video/filter/setup/model/FilterInstance/portInInstance"/>
+              <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference FilterSetup.ecore#//video/filter/setup/model/FilterInstance/portOutInstance"/>
+            </genClasses>
+            <genClasses ecoreClass="FilterSetup.ecore#//video/filter/setup/model/FilterType">
+              <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference FilterSetup.ecore#//video/filter/setup/model/FilterType/portOut"/>
+              <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference FilterSetup.ecore#//video/filter/setup/model/FilterType/portIn"/>
+              <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference FilterSetup.ecore#//video/filter/setup/model/FilterType/filtersSetup"/>
+            </genClasses>
+            <genClasses ecoreClass="FilterSetup.ecore#//video/filter/setup/model/FiltersSetup">
+              <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference FilterSetup.ecore#//video/filter/setup/model/FiltersSetup/filterInstances"/>
+              <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference FilterSetup.ecore#//video/filter/setup/model/FiltersSetup/connections"/>
+              <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference FilterSetup.ecore#//video/filter/setup/model/FiltersSetup/filterTypes"/>
+            </genClasses>
+            <genClasses ecoreClass="FilterSetup.ecore#//video/filter/setup/model/FilterConnection">
+              <genFeatures notify="false" createChild="false" propertySortChoices="true"
+                  ecoreFeature="ecore:EReference FilterSetup.ecore#//video/filter/setup/model/FilterConnection/portInInstance"/>
+              <genFeatures notify="false" createChild="false" propertySortChoices="true"
+                  ecoreFeature="ecore:EReference FilterSetup.ecore#//video/filter/setup/model/FilterConnection/portOutInstance"/>
+              <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference FilterSetup.ecore#//video/filter/setup/model/FilterConnection/filtersSetup"/>
+            </genClasses>
+            <genClasses ecoreClass="FilterSetup.ecore#//video/filter/setup/model/PortIn">
+              <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference FilterSetup.ecore#//video/filter/setup/model/PortIn/filterType"/>
+            </genClasses>
+            <genClasses ecoreClass="FilterSetup.ecore#//video/filter/setup/model/PortOut">
+              <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference FilterSetup.ecore#//video/filter/setup/model/PortOut/filterType"/>
+            </genClasses>
+            <genClasses ecoreClass="FilterSetup.ecore#//video/filter/setup/model/Port"/>
+            <genClasses ecoreClass="FilterSetup.ecore#//video/filter/setup/model/PortInstance"/>
+            <genClasses ecoreClass="FilterSetup.ecore#//video/filter/setup/model/PortInInstance">
+              <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference FilterSetup.ecore#//video/filter/setup/model/PortInInstance/filterInstance"/>
+              <genFeatures notify="false" createChild="false" propertySortChoices="true"
+                  ecoreFeature="ecore:EReference FilterSetup.ecore#//video/filter/setup/model/PortInInstance/filterConnection"/>
+              <genFeatures notify="false" createChild="false" propertySortChoices="true"
+                  ecoreFeature="ecore:EReference FilterSetup.ecore#//video/filter/setup/model/PortInInstance/type"/>
+            </genClasses>
+            <genClasses ecoreClass="FilterSetup.ecore#//video/filter/setup/model/PortOutInstance">
+              <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference FilterSetup.ecore#//video/filter/setup/model/PortOutInstance/filterInstance"/>
+              <genFeatures notify="false" createChild="false" propertySortChoices="true"
+                  ecoreFeature="ecore:EReference FilterSetup.ecore#//video/filter/setup/model/PortOutInstance/filterConnection"/>
+              <genFeatures notify="false" createChild="false" propertySortChoices="true"
+                  ecoreFeature="ecore:EReference FilterSetup.ecore#//video/filter/setup/model/PortOutInstance/type"/>
+            </genClasses>
+            <genClasses ecoreClass="FilterSetup.ecore#//video/filter/setup/model/Identifiable">
+              <genFeatures createChild="false" ecoreFeature="ecore:EAttribute FilterSetup.ecore#//video/filter/setup/model/Identifiable/name"/>
+              <genOperations ecoreOperation="FilterSetup.ecore#//video/filter/setup/model/Identifiable/eURIFragmentSegment">
+                <genParameters ecoreParameter="FilterSetup.ecore#//video/filter/setup/model/Identifiable/eURIFragmentSegment/eStructuralFeature"/>
+                <genParameters ecoreParameter="FilterSetup.ecore#//video/filter/setup/model/Identifiable/eURIFragmentSegment/eObject"/>
+              </genOperations>
+            </genClasses>
+          </nestedGenPackages>
+        </nestedGenPackages>
+      </nestedGenPackages>
+    </nestedGenPackages>
+  </genPackages>
+</genmodel:GenModel>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension-point id="ovap.device.input" name="ovap.device.input" schema="schema/ovap.device.input.exsd"/>
+   <extension
+         id="SrcMgr"
+         name="SrcMgr"
+         point="ovap.video.source.manager">
+      <source_manager
+            class="ovap.device.DeviceManager">
+      </source_manager>
+   </extension>
+
+
+</plugin>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            allowMultiple="true"
+            class="ovap.video.filter.display.FrameView"
+            id="ovap.video.filter.display.frame.view"
+            name="Frame Data"
+            restorable="true">
+      </view>
+   </extension>
+   <extension
+         point="ovap.filter.videofilter">
+      <filter
+            class="ovap.video.filter.display.FrameDisplayFilter">
+      </filter>
+   </extension>
+
+</plugin>

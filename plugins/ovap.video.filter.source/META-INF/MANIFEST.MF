@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Source Filter
+Bundle-SymbolicName: ovap.video.filter.source;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: ovap.video.filter.source.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ ovap.video.filter;bundle-version="1.0.0",
+ ovap.video;bundle-version="1.0.0"
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

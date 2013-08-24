@@ -1,0 +1,8 @@
+#Fri Aug 09 14:44:52 GMT+02:00 2013
+eclipse.preferences.version=1
+gmf_dashboard/domainGenerationModel=platform\:/resource/ovap.video.filter/emf/FilterSetup.genmodel
+gmf_dashboard/domainModel=platform\:/resource/ovap.video.filter/emf/FilterSetup.ecore
+gmf_dashboard/generationModel=platform\:/resource/ovap.video.filter.filtergraph/FilterSetup.gmfgen
+gmf_dashboard/graphicalDefinitionModel=platform\:/resource/ovap.video.filter.filtergraph/FilterSetup.gmfgraph
+gmf_dashboard/mappingModel=platform\:/resource/ovap.video.filter.filtergraph/FilterSetup.gmfmap
+gmf_dashboard/toolingDefinitionModel=platform\:/resource/ovap.video.filter.filtergraph/FilterSetup.gmftool
