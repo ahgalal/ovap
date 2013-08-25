@@ -179,7 +179,6 @@ private Link sourceLink;
 			link.setData(new int[640 * 480]);
 			dstFilter.setLinkIn(link);
 			srcFilter.setLinkOut(link);
-			
 		}
 		
 		return true;
