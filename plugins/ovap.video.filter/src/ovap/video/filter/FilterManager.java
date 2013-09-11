@@ -122,7 +122,7 @@ private Link sourceLink;
 	public boolean initialize(FrameData frameData) {
 		this.frameData=frameData;
 		sourceLink = new Link();
-		
+		 
 		// load filters
 /*		Resource.Factory.Registry reg = Resource.Factory.Registry.INSTANCE;
 	    Map<String, Object> m = reg.getExtensionToFactoryMap();
