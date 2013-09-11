@@ -1,7 +1,7 @@
 /**
  * 
  */
-package ovap.filter;
+package ovap.video.filter;
 
 /**
  * @author Creative

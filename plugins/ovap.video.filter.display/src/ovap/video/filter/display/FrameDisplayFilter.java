@@ -7,9 +7,9 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 
-import ovap.filter.FilterData;
-import ovap.filter.VideoFilter;
 import ovap.project.OVAP;
+import ovap.video.filter.FilterData;
+import ovap.video.filter.VideoFilter;
 
 /**
  * @author Creative

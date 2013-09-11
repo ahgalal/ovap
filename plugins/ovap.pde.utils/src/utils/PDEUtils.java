@@ -39,12 +39,33 @@ public class PDEUtils {
 		}
 		return null;
 	}
-	
 	public static void setProjectSetting(IProject project,String node,String setting,String value){
 		IScopeContext projectScope = new ProjectScope(project);
 		IEclipsePreferences projectNode = projectScope.getNode(node);
 		if (projectNode != null) {
 			projectNode.put(setting, value);
+			try {
+				projectNode.flush();
+			} catch (BackingStoreException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	public static String getProjectSetting(IProject project,String node,String setting,String defaultValue){
+		IScopeContext projectScope = new ProjectScope(project);
+		IEclipsePreferences projectNode = projectScope.getNode(node);
+		String value =null;
+		if (projectNode != null) {
+			value = projectNode.get(setting, defaultValue);
+		}
+		return value;
+	}
+	
+	public static void persistSettings(IProject project,String node){
+		IScopeContext projectScope = new ProjectScope(project);
+		IEclipsePreferences projectNode = projectScope.getNode(node);
+		if (projectNode != null) {
 			try {
 				projectNode.flush();
 			} catch (BackingStoreException e) {

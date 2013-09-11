@@ -3,9 +3,9 @@
  */
 package ovap.video.filter.source;
 
-import ovap.filter.FilterData;
-import ovap.filter.VideoFilter;
 import ovap.video.FrameData;
+import ovap.video.filter.FilterData;
+import ovap.video.filter.VideoFilter;
 
 /**
  * @author Creative

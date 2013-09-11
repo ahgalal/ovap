@@ -3,12 +3,14 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Filter
 Bundle-SymbolicName: ovap.video.filter;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Bundle-Activator: ovap.filter.Activator
+Bundle-Activator: ovap.video.filter.Activator
 Require-Bundle: ovap.video;bundle-version="1.0.0",
  ovap.pde.utils;bundle-version="1.0.0",
  org.eclipse.emf.transaction.ui;bundle-version="1.4.0",
- org.eclipse.sphinx.emf;bundle-version="0.7.0",
- ovap.video.filter.filtermodel;bundle-version="1.0.0"
+ ovap.video.filter.filtermodel;bundle-version="1.0.0",
+ org.eclipse.ui.ide;bundle-version="3.6.2",
+ ovap.project;bundle-version="1.0.0",
+ org.eclipse.emf.ecore.xmi;bundle-version="2.7.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Export-Package: ovap.filter
+Export-Package: ovap.video.filter

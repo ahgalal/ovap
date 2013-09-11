@@ -5,7 +5,16 @@
    <extension
          point="ovap.video.filter.manager">
       <filter_manager
-            class="ovap.filter.FilterManager">
+            class="ovap.video.filter.FilterManager">
       </filter_manager>
+   </extension>
+   <extension
+         point="org.eclipse.ui.propertyPages">
+      <page
+            category="ovap.project.propertypage.info"
+            class="ovap.video.filter.ui.FilterManagerPage"
+            id="ovap.video.filter.proprtypage.main"
+            name="Filters">
+      </page>
    </extension>
 </plugin>

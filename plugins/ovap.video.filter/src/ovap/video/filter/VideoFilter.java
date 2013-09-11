@@ -1,4 +1,4 @@
-package ovap.filter;
+package ovap.video.filter;
 
 public abstract class VideoFilter {
 	protected Link			linkIn, linkOut;

@@ -1,11 +1,10 @@
 /**
  * 
  */
-package ovap.filter;
+package ovap.video.filter;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -13,11 +12,13 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExecutableExtensionFactory;
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.eclipse.emf.edit.domain.EditingDomain;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
-import org.eclipse.sphinx.emf.util.EcoreResourceUtil;
 
 import ovap.video.FrameData;
 import ovap.video.IFilterManager;
@@ -123,29 +124,35 @@ private Link sourceLink;
 		sourceLink = new Link();
 		
 		// load filters
+/*		Resource.Factory.Registry reg = Resource.Factory.Registry.INSTANCE;
+	    Map<String, Object> m = reg.getExtensionToFactoryMap();
+	    m.put("ovap", new XMIResourceFactoryImpl());
+		*/
+		
 		EditingDomain editingDomain = TransactionalEditingDomain.Factory.INSTANCE.createEditingDomain();
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProjects()[0];
-		IFile file = project.getFile("simple_filters_setup.ovap"); // FIXME
+		String activeGraphFile = FilterSettingsUtil.getFilterSetting(project, FilterSettings.ACTIVE_GRAPH);
+		IFile file = project.getFile(activeGraphFile );
 		ResourceSet resourceSet = editingDomain.getResourceSet();
 		EObject modelRoot;
 		FiltersSetup filtersSetup = null;
-		try {
-			modelRoot = EcoreResourceUtil.loadModelRoot(resourceSet , new File(file.getFullPath().toOSString()), null);
-			filtersSetup =(FiltersSetup) modelRoot;
+		Resource resource = resourceSet.getResource(URI
+		        .createURI(file.getFullPath().toString()),true);
+		
+		
+		
+		modelRoot = resource.getContents().get(0);//EcoreResourceUtil.loadModelRoot(resourceSet , new File(file.getFullPath().toOSString()), null);
+		filtersSetup =(FiltersSetup) modelRoot;
 /*			editingDomain.getCommandStack().execute(new RecordingCommand((TransactionalEditingDomain) editingDomain) {
-				
-				@Override
-				protected void doExecute() {
-					FilterType typeB = ModelFactory.eINSTANCE.createFilterType();
-					typeB.setId("TypeB");
-					filtersSetup.getFilterTypes().add(typeB );
-				}
-			});
-			filtersSetup.eResource().save(null);*/
 			
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+			@Override
+			protected void doExecute() {
+				FilterType typeB = ModelFactory.eINSTANCE.createFilterType();
+				typeB.setId("TypeB");
+				filtersSetup.getFilterTypes().add(typeB );
+			}
+		});
+		filtersSetup.eResource().save(null);*/
 		activeFilters.clear();
 		for(FilterInstance filterInstance: filtersSetup.getFilterInstances()){
 			// get filter type

@@ -34,9 +34,20 @@
    <extension
          point="org.eclipse.ui.propertyPages">
       <page
-            class="ovap.project.OVAPPropertyPage1"
-            id="ovap.project.page1"
+            class="ovap.project.ui.ProjectInfoPage"
+            id="ovap.project.propertypage.info"
             name="OVAP">
+         <enabledWhen>
+            <instanceof
+                  value="org.eclipse.core.resources.IProject">
+            </instanceof>
+         </enabledWhen>
+      </page>
+      <page
+            category="ovap.project.propertypage.info"
+            class="ovap.project.SessionPage"
+            id="ovap.project.propertypage.session"
+            name="Session">
          <enabledWhen>
             <instanceof
                   value="org.eclipse.core.resources.IProject">
