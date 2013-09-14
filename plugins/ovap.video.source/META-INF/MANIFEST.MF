@@ -3,11 +3,12 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Device
 Bundle-SymbolicName: ovap.video.source;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Bundle-Activator: ovap.device.Activator
+Bundle-Activator: ovap.video.source.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  ovap.video;bundle-version="1.0.0",
- ovap.pde.utils;bundle-version="1.0.0"
+ ovap.pde.utils;bundle-version="1.0.0",
+ org.eclipse.debug.ui
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Export-Package: ovap.device
+Export-Package: ovap.video.source

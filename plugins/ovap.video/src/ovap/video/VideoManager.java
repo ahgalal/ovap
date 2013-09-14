@@ -3,12 +3,8 @@ package ovap.video;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExecutableExtensionFactory;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.ui.IStartup;
-import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.commands.ICommandService;
-import org.eclipse.ui.services.IServiceLocator;
 import org.eclipse.ui.services.ISourceProviderService;
 
 import utils.PDEUtils;
@@ -54,10 +50,11 @@ public class VideoManager implements IStartup, IExecutableExtensionFactory{
 	}
 
 
-	public boolean startStream() {
+	public boolean startStream(FiltersConfiguration configuration) {
 		sourceManager.initialize();
 		FrameData frameData=sourceManager.getFrameData();
-		filterManager.initialize(frameData);
+		configuration.setFrameData(frameData);
+		filterManager.initialize(configuration);
 		
 		sourceManager.startStream();
 		filterManager.startStream();

@@ -4,11 +4,9 @@
 package ovap.video.filter;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExecutableExtensionFactory;
@@ -16,10 +14,10 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.eclipse.emf.edit.domain.EditingDomain;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 
+import ovap.video.FiltersConfiguration;
 import ovap.video.FrameData;
 import ovap.video.IFilterManager;
 import ovap.video.filter.setup.model.FilterConnection;
@@ -119,8 +117,8 @@ private Link sourceLink;
 	}
 
 	@Override
-	public boolean initialize(FrameData frameData) {
-		this.frameData=frameData;
+	public boolean initialize(FiltersConfiguration configs) {
+		this.frameData=configs.getFrameData();
 		sourceLink = new Link();
 		 
 		// load filters
@@ -128,11 +126,10 @@ private Link sourceLink;
 	    Map<String, Object> m = reg.getExtensionToFactoryMap();
 	    m.put("ovap", new XMIResourceFactoryImpl());
 		*/
-		
 		EditingDomain editingDomain = TransactionalEditingDomain.Factory.INSTANCE.createEditingDomain();
-		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProjects()[0];
-		String activeGraphFile = FilterSettingsUtil.getFilterSetting(project, FilterSettings.ACTIVE_GRAPH);
-		IFile file = project.getFile(activeGraphFile );
+		IProject project = configs.getProject();//ResourcesPlugin.getWorkspace().getRoot().getProjects()[0];
+		String activeGraphFile = configs.getFilterGraphResourcePath();//FilterSettingsUtil.getFilterSetting(project, FilterSettings.ACTIVE_GRAPH);
+		IFile file = project.getFile(activeGraphFile);
 		ResourceSet resourceSet = editingDomain.getResourceSet();
 		EObject modelRoot;
 		FiltersSetup filtersSetup = null;

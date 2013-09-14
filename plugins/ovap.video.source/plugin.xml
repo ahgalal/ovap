@@ -7,8 +7,17 @@
          name="SrcMgr"
          point="ovap.video.source.manager">
       <source_manager
-            class="ovap.device.DeviceManager">
+            class="ovap.video.source.SourceManager">
       </source_manager>
+   </extension>
+   <extension
+         point="org.eclipse.debug.ui.launchConfigurationTabs">
+      <tab
+            class="ovap.video.source.ui.SourceLaunchConfigurationTab"
+            group="ovap.video.launch.stream.tabgroup"
+            id="ovap.video.source.maintab"
+            name="Source">
+      </tab>
    </extension>
 
 

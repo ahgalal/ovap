@@ -1,7 +1,7 @@
 /**
  * 
  */
-package ovap.device;
+package ovap.video.source;
 
 import java.awt.Point;
 

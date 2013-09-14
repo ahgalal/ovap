@@ -1,7 +1,7 @@
 /**
  * 
  */
-package ovap.device;
+package ovap.video.source;
 
 import java.util.ArrayList;
 
@@ -17,20 +17,20 @@ import utils.PDEUtils;
  * @author Creative
  * 
  */
-public class DeviceManager implements ISourceManager,
+public class SourceManager implements ISourceManager,
 		IExecutableExtensionFactory {
 
-	private static DeviceManager self;
+	private static SourceManager self;
 
-	public static DeviceManager getDefault() {
+	public static SourceManager getDefault() {
 		if (self == null)
-			self = new DeviceManager();
+			self = new SourceManager();
 		return self;
 	}
 
 	private ArrayList<VideoSource> videoSources;
 
-	public DeviceManager() {
+	public SourceManager() {
 		if (self != null)
 			return;
 		else

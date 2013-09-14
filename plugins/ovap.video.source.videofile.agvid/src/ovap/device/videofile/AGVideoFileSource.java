@@ -5,11 +5,11 @@ import jagvidlib.JAGVidLib.StreamState;
 
 import java.awt.Point;
 
-import ovap.device.SourceConfiguration;
-import ovap.device.SourceStatus;
-import ovap.device.SourceType;
-import ovap.device.VideoSource;
 import ovap.video.FrameData;
+import ovap.video.source.SourceConfiguration;
+import ovap.video.source.SourceStatus;
+import ovap.video.source.SourceType;
+import ovap.video.source.VideoSource;
 import sys.utils.Utils;
 
 public class AGVideoFileSource extends VideoSource {

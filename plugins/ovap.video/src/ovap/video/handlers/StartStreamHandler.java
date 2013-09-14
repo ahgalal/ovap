@@ -11,7 +11,7 @@ public class StartStreamHandler extends AbstractHandler implements IHandler {
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		VideoManager.getDefault().startStream();
+		//VideoManager.getDefault().startStream();
 		return null;
 	}
 

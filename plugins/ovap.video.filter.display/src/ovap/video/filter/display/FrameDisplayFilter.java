@@ -3,7 +3,6 @@
  */
 package ovap.video.filter.display;
 
-import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 

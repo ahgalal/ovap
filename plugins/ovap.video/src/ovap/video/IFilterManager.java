@@ -8,7 +8,7 @@ package ovap.video;
  *
  */
 public interface IFilterManager {
-	boolean initialize(FrameData frameData);
+	boolean initialize(FiltersConfiguration configs);
 	boolean startStream();
 	boolean stopStream();
 }

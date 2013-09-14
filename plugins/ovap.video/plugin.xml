@@ -117,4 +117,22 @@
          </variable>
       </sourceProvider>
    </extension>
+   <extension
+         point="org.eclipse.debug.core.launchConfigurationTypes">
+      <launchConfigurationType
+            delegate="ovap.video.launch.OVAPLaunchDelegate"
+            id="ovap.video.launch.stream"
+            modes="run,debug"
+            name="OVAP Stream"
+            public="true">
+      </launchConfigurationType>
+   </extension>
+   <extension
+         point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+      <launchConfigurationTabGroup
+            class="ovap.video.launch.ui.LaunchStreamTabGroup"
+            id="ovap.video.launch.stream.tabgroup"
+            type="ovap.video.launch.stream">
+      </launchConfigurationTabGroup>
+   </extension>
 </plugin>
