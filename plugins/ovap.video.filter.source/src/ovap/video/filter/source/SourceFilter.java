@@ -56,8 +56,10 @@ public class SourceFilter extends VideoFilter {
 	}
 
 	@Override
-	public VideoFilter newInstance() {
-		return new SourceFilter();
+	public VideoFilter newInstance(String name,String contextId) {
+		SourceFilter sourceFilter = new SourceFilter();
+		sourceFilter.setName(name);
+		return sourceFilter;
 	}
 
 }

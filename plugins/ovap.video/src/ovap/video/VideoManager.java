@@ -1,85 +1,62 @@
 package ovap.video;
 
+import java.util.ArrayList;
+
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExecutableExtensionFactory;
-import org.eclipse.ui.IStartup;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.services.ISourceProviderService;
 
-import utils.PDEUtils;
+public class VideoManager implements IExecutableExtensionFactory{
 
-public class VideoManager implements IStartup, IExecutableExtensionFactory{
-
+	public static final String	EP_OVAP_VIDEO_SOURCE_MANAGER	= "ovap.video.source.manager";
+	public static final String	EP_OVAP_VIDEO_MODULE_MANAGER	= "ovap.video.module.manager";
+	public static final String	EP_OVAP_VIDEO_FILTER_MANAGER	= "ovap.video.filter.manager";
+	private ArrayList<Session> sessions;
 	private static VideoManager self;
 	public static VideoManager getDefault(){
 		if(self ==null)
 			self=new VideoManager();
 		return self;
 	}
-	private StreamState streamState = StreamState.STOPPED;
-	
-	private IFilterManager filterManager;
-	private IModuleManager moduleManager;
-	private ISourceManager sourceManager;
-	
+
 	public VideoManager() {
 		if (self != null)
 			return;
 		else
 			self = this;
+		sessions=new ArrayList<Session>();
 	}
 
-
-	@Override
-	public void earlyStartup() {
-		
-		// Filter Manager
-		IConfigurationElement[] filterManagerExtensions = PDEUtils.getExtensions("ovap.video.filter.manager");
-		filterManager = PDEUtils.instantiateExtension(IFilterManager.class, filterManagerExtensions[0]);
-		
-		// Module Manager
-		IConfigurationElement[] moduleManagerExtensions = PDEUtils.getExtensions("ovap.video.module.manager");
-		moduleManager = PDEUtils.instantiateExtension(IModuleManager.class, moduleManagerExtensions[0]);
-		
-		// Source Manager
-		IConfigurationElement[] sourceManagerExtensions = PDEUtils.getExtensions("ovap.video.source.manager");
-		sourceManager = PDEUtils.instantiateExtension(ISourceManager.class, sourceManagerExtensions[0]);
-		
-		setState(StreamState.STOPPED);
-	}
-
-
-	public boolean startStream(FiltersConfiguration configuration) {
-		sourceManager.initialize();
-		FrameData frameData=sourceManager.getFrameData();
-		configuration.setFrameData(frameData);
-		filterManager.initialize(configuration);
-		
-		sourceManager.startStream();
-		filterManager.startStream();
-		setState(StreamState.STREAMING);
+	public boolean initializeSession(String sessionId){
+		if(getSession(sessionId)==null){
+			sessions.add(new Session(sessionId));
+		}
 		return true;
 	}
 
 
-	public void stopStream() {
-		filterManager.stopStream();
-		sourceManager.stopStream();
-		setState(StreamState.STOPPED);
-	}
-	
-	private void setState(StreamState state){
-		streamState=state;
-		
-		// notify State provider
-		ISourceProviderService service = (ISourceProviderService) PlatformUI.getWorkbench().getWorkbenchWindows()[0].getService(ISourceProviderService.class);
-		StreamingStateProvider streamStateProvider = (StreamingStateProvider) service.getSourceProvider(StreamingStateProvider.OVAP_VIDEO_STREAMING_ENABLE_RESUME);
-		streamStateProvider.notifyStateUpdate();
+	public boolean startStream(String sessionId,FiltersConfiguration configuration) {
+		Session session = getSession(sessionId);
+		session.initialize(configuration);
+		session.startStream();
+		return true;
 	}
 
-	public StreamState getState() {
-		return streamState;
+
+	public void stopStream(String sessionId) {
+		getSession(sessionId).stopStream();
+	}
+
+	public StreamState getState(String sessionId) {
+		return getSession(sessionId).getState();
+	}
+
+
+	private Session getSession(String sessionId) {
+		for(Session session:sessions){
+			if(session.getName().equals(sessionId))
+				return session;
+		}
+		return null;
 	}
 
 

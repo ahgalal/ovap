@@ -1,6 +1,5 @@
 package ovap.video;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.ui.AbstractSourceProvider;
@@ -24,7 +23,7 @@ public class StreamingStateProvider extends AbstractSourceProvider {
 	}
 
 	@Override
-	public Map getCurrentState() {
+	public Map getCurrentState() {/*
 		Map<String, String> stateMap=new HashMap<String, String>();
 		String value=null;
 		StreamState state = VideoManager.getDefault().getState();
@@ -43,6 +42,8 @@ public class StreamingStateProvider extends AbstractSourceProvider {
 		// current state name
 		stateMap.put(OVAP_VIDEO_STREAMING_STATE, state.name());
 		return stateMap;
+	*/
+	return null;	
 	}
 	
 	public void notifyStateUpdate(){

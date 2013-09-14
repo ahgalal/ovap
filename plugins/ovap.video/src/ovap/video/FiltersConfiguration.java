@@ -13,7 +13,16 @@ public class FiltersConfiguration {
 	protected String filterGraphResourcePath;
 	protected FrameData frameData;
 	protected IProject project;
+	protected String configName;
 	
+	public String getConfigName() {
+		return configName;
+	}
+
+	public void setConfigName(String configName) {
+		this.configName = configName;
+	}
+
 	public IProject getProject() {
 		return project;
 	}

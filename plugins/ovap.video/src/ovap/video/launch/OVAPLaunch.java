@@ -16,11 +16,6 @@ public class OVAPLaunch extends Launch {
 	public OVAPLaunch(ILaunchConfiguration launchConfiguration, String mode,
 			ISourceLocator locator) {
 		super(launchConfiguration, mode, locator);
-		
-		StreamTarget streamTarget = new StreamTarget(this);
-		
-		addDebugTarget(streamTarget);
-		
 	}
 	
 	

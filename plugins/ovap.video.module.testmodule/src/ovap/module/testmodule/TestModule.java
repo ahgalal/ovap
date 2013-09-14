@@ -4,9 +4,7 @@
 package ovap.module.testmodule;
 
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.osgi.service.prefs.BackingStoreException;
 

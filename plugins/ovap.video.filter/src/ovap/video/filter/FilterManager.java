@@ -7,9 +7,7 @@ import java.util.ArrayList;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IExecutableExtensionFactory;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -30,15 +28,15 @@ import utils.PDEUtils;
  * @author Creative
  * 
  */
-public class FilterManager implements IFilterManager,
-		IExecutableExtensionFactory {
-	private static FilterManager self;
+public class FilterManager implements IFilterManager/*,
+		IExecutableExtensionFactory*/ {
+/*	private static FilterManager self;
 
 	public static FilterManager getDefault() {
 		if (self == null)
 			self = new FilterManager();
 		return self;
-	}
+	}*/
 
 	private ArrayList<VideoFilter> installedFilters;
 	private ArrayList<VideoFilter> activeFilters;
@@ -60,10 +58,10 @@ public class FilterManager implements IFilterManager,
 	}
 	
 	public FilterManager() {
-		if (self != null)
+/*		if (self != null)
 			return;
 		else
-			self = this;
+			self = this;*/
 
 		installedFilters = new ArrayList<VideoFilter>();
 		activeFilters = new ArrayList<VideoFilter>();
@@ -76,10 +74,10 @@ public class FilterManager implements IFilterManager,
 		}
 	}
 
-	@Override
+/*	@Override
 	public Object create() throws CoreException {
 		return getDefault();
-	}
+	}*/
 private Link sourceLink;
 	@Override
 	public boolean startStream() {
@@ -163,8 +161,7 @@ private Link sourceLink;
 			}
 			
 			// instantiate filter, add it to active filters
-			VideoFilter instance = filter.newInstance();
-			instance.setName(filterInstance.getName());
+			VideoFilter instance = filter.newInstance(filterInstance.getName(),configs.getConfigName());
 			if(instance.getName().equals("source")) // FIXME
 				instance.setLinkIn(sourceLink);
 			activeFilters.add(instance);

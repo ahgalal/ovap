@@ -5,9 +5,7 @@ package ovap.video.source;
 
 import java.util.ArrayList;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IExecutableExtensionFactory;
 
 import ovap.video.FrameData;
 import ovap.video.ISourceManager;
@@ -17,24 +15,24 @@ import utils.PDEUtils;
  * @author Creative
  * 
  */
-public class SourceManager implements ISourceManager,
-		IExecutableExtensionFactory {
+public class SourceManager implements ISourceManager/*,
+		IExecutableExtensionFactory */{
 
-	private static SourceManager self;
+/*	private static SourceManager self;
 
 	public static SourceManager getDefault() {
 		if (self == null)
 			self = new SourceManager();
 		return self;
-	}
+	}*/
 
 	private ArrayList<VideoSource> videoSources;
 
 	public SourceManager() {
-		if (self != null)
+/*		if (self != null)
 			return;
 		else
-			self = this;
+			self = this;*/
 
 		videoSources = new ArrayList<VideoSource>();
 		final IConfigurationElement[] config = PDEUtils
@@ -47,10 +45,10 @@ public class SourceManager implements ISourceManager,
 		// TODO Auto-generated constructor stub
 	}
 
-	@Override
+/*	@Override
 	public Object create() throws CoreException {
 		return getDefault();
-	}
+	}*/
 
 	@Override
 	public FrameData getFrameData() {

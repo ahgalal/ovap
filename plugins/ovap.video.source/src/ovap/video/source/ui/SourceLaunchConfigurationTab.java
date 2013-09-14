@@ -96,7 +96,7 @@ public class SourceLaunchConfigurationTab implements ILaunchConfigurationTab {
 	@Override
 	public boolean isValid(ILaunchConfiguration launchConfig) {
 		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	/* (non-Javadoc)
@@ -105,7 +105,7 @@ public class SourceLaunchConfigurationTab implements ILaunchConfigurationTab {
 	@Override
 	public boolean canSave() {
 		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	/* (non-Javadoc)

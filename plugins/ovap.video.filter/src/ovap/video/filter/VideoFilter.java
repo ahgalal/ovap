@@ -29,5 +29,5 @@ public abstract class VideoFilter {
 		this.name=name;
 	}
 	
-	public abstract VideoFilter newInstance();
+	public abstract VideoFilter newInstance(String name,String contextId);
 }

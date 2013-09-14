@@ -1,18 +1,13 @@
 package ovap.video.filter.display;
 
+import java.awt.Frame;
+import java.awt.Graphics;
+
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.awt.SWT_AWT;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.ViewPart;
-import org.eclipse.swt.SWT;
-import java.awt.Frame;
-import org.eclipse.swt.awt.SWT_AWT;
-import java.awt.Panel;
-import java.awt.BorderLayout;
-import javax.swing.JRootPane;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.FillLayout;
-
-import ovap.project.OVAP;
 
 public class FrameView extends ViewPart {
 	private Composite compositeAWT;
@@ -34,11 +29,15 @@ public class FrameView extends ViewPart {
 				frame = SWT_AWT.new_Frame(compositeAWT);
 				
 				// FIXME: configuration
-				OVAP.frameGfx=frame.getGraphics();
+				//OVAP.frameGfx=frame.getGraphics();
 			}
 		}
 		// TODO Auto-generated method stub
 
+	}
+	
+	public Graphics getGraphics(){
+		return frame.getGraphics();
 	}
 
 	@Override

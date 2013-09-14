@@ -20,9 +20,12 @@ import ovap.video.VideoManager;
  */
 public class StreamTarget implements IDebugTarget {
 	private final OVAPLaunch	launch;
+	private String	name;
+	private boolean	terminated=false;
 
-	public StreamTarget(final OVAPLaunch streamLaunch) {
+	public StreamTarget(final OVAPLaunch streamLaunch,String name) {
 		this.launch = streamLaunch;
+		this.name=name;
 	}
 
 	@Override
@@ -53,7 +56,7 @@ public class StreamTarget implements IDebugTarget {
 
 	@Override
 	public boolean canResume() {
-		final StreamState state = VideoManager.getDefault().getState();
+		final StreamState state = VideoManager.getDefault().getState(getLaunch().getLaunchConfiguration().getName());
 		if (state == StreamState.PAUSED)
 			return true;
 		else
@@ -68,7 +71,7 @@ public class StreamTarget implements IDebugTarget {
 
 	@Override
 	public boolean canTerminate() {
-		final StreamState state = VideoManager.getDefault().getState();
+		final StreamState state = VideoManager.getDefault().getState(getLaunch().getLaunchConfiguration().getName());
 		if ((state == StreamState.STREAMING) || (state == StreamState.PAUSED))
 			return true;
 		else
@@ -114,8 +117,7 @@ public class StreamTarget implements IDebugTarget {
 
 	@Override
 	public String getName() throws DebugException {
-		// TODO Auto-generated method stub
-		return "Stream1";
+		return name;
 	}
 
 	@Override
@@ -150,8 +152,7 @@ public class StreamTarget implements IDebugTarget {
 
 	@Override
 	public boolean isTerminated() {
-		// TODO Auto-generated method stub
-		return false;
+		return terminated;
 	}
 
 	@Override
@@ -180,6 +181,7 @@ public class StreamTarget implements IDebugTarget {
 
 	@Override
 	public void terminate() throws DebugException {
-		VideoManager.getDefault().stopStream();
+		VideoManager.getDefault().stopStream(getLaunch().getLaunchConfiguration().getName());
+		terminated=true;
 	}
 }

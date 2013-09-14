@@ -3,10 +3,13 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.model.ILaunchConfigurationDelegate2;
 
+import ovap.video.Activator;
 import ovap.video.FiltersConfiguration;
 import ovap.video.VideoManager;
 
@@ -27,9 +30,25 @@ public class OVAPLaunchDelegate implements ILaunchConfigurationDelegate2 {
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
 		filtersConfiguration.setProject(project);
 		
-		VideoManager.getDefault().startStream(filtersConfiguration);
+		String configName = configuration.getName();
 		
+		ILaunch[] launches = DebugPlugin.getDefault().getLaunchManager().getLaunches();
+		int instancesCount=0;
+		for(ILaunch launch2:launches){
+			if(launch2.getLaunchConfiguration().getName().equals(configName)){
+				if(launch2.isTerminated()==false)
+					instancesCount++;
+			}
+		}
+		if(instancesCount>1)
+			throw new CoreException(new Status(Status.ERROR, Activator.PLUGIN_ID, "Cannot run two sessions of the same type simultaneously"));
 		
+		filtersConfiguration.setConfigName(configName);
+		VideoManager.getDefault().initializeSession(configName);
+		VideoManager.getDefault().startStream(configName,filtersConfiguration);
+		
+		StreamTarget streamTarget = new StreamTarget((OVAPLaunch) launch,"Stream");
+		launch.addDebugTarget(streamTarget);
 	}
 
 	@Override
