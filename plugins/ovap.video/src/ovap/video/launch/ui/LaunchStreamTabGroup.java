@@ -10,7 +10,6 @@ import org.eclipse.debug.ui.ILaunchConfigurationTab;
 
 /**
  * @author Creative
- *
  */
 public class LaunchStreamTabGroup extends AbstractLaunchConfigurationTabGroup {
 
@@ -18,20 +17,20 @@ public class LaunchStreamTabGroup extends AbstractLaunchConfigurationTabGroup {
 	 * 
 	 */
 	public LaunchStreamTabGroup() {
-		// TODO Auto-generated constructor stub
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.debug.ui.ILaunchConfigurationTabGroup#createTabs(org.eclipse.debug.ui.ILaunchConfigurationDialog, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * @see
+	 * org.eclipse.debug.ui.ILaunchConfigurationTabGroup#createTabs(org.eclipse
+	 * .debug.ui.ILaunchConfigurationDialog, java.lang.String)
 	 */
 	@Override
-	public void createTabs(ILaunchConfigurationDialog dialog, String mode) {
-		if(getTabs()==null){
-			setTabs(new ILaunchConfigurationTab[]{
-					new LaunchStreamMainTab(),
-					new CommonTab()
-			});
+	public void createTabs(final ILaunchConfigurationDialog dialog,
+			final String mode) {
+		if (getTabs() == null) {
+			setTabs(new ILaunchConfigurationTab[] { new LaunchStreamMainTab(),
+					new CommonTab() });
 		}
 	}
-
 }

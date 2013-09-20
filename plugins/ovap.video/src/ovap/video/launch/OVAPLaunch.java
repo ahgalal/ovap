@@ -17,7 +17,4 @@ public class OVAPLaunch extends Launch {
 			ISourceLocator locator) {
 		super(launchConfiguration, mode, locator);
 	}
-	
-	
-
 }

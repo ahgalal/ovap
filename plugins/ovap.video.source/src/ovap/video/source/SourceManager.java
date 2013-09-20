@@ -15,85 +15,98 @@ import utils.PDEUtils;
 
 /**
  * @author Creative
- * 
  */
-public class SourceManager implements ISourceManager,IStreamEndListener{
+public class SourceManager implements ISourceManager, IStreamEndListener {
 
-
-	private ArrayList<VideoSource> videoSources;
-	private SourceConfiguration configuration;
-	private ArrayList<IStreamEndListener> streamEndListeners;
-	public SourceManager() {
-		
-		videoSources = new ArrayList<VideoSource>();
+	public static ArrayList<VideoSource> getSources() {
+		final ArrayList<VideoSource> sources = new ArrayList<VideoSource>();
 		final IConfigurationElement[] config = PDEUtils
 				.getExtensions("ovap.device.input");
 		for (final IConfigurationElement e : config) {
 			final VideoSource videoSource = PDEUtils.instantiateExtension(
 					VideoSource.class, e);
-			videoSources.add(videoSource);
+			sources.add(videoSource);
 		}
+		return sources;
+	}
+
+	private VideoSource						activeSource	= null;
+	private SourceConfiguration				configuration;
+	private FrameData						frameData;
+	private ArrayList<IStreamEndListener>	streamEndListeners;
+	private final ArrayList<VideoSource>	videoSources;
+
+	public SourceManager() {
+		videoSources = getSources();
+	}
+
+	@Override
+	public void addStreamEndListener(final IStreamEndListener streamEndListener) {
+		streamEndListeners.add(streamEndListener);
 	}
 
 	@Override
 	public FrameData getFrameData() {
 		return frameData;
 	}
-	private FrameData frameData;
+
 	@Override
-	public boolean initialize(Map<String, Object> configurations) {
+	public boolean initialize(final Map<String, Object> configurations) {
 		streamEndListeners = new ArrayList<IStreamEndListener>();
-		configurations.put(SourceLaunchConfigs.TYPE.toString(), "file");// FIXME: move this statement to the Source tab of launch config
-		configurations.put(SourceLaunchConfigs.FILE_NAME.toString(), "E:\\Documents\\Desktop\\BMT\\Videos\\FST_1_wmv2.avi");// FIXME: move this statement to the Source tab of launch config
-		
-		String sourceType = (String) configurations.get(SourceLaunchConfigs.TYPE.toString());
-		if(sourceType.equals("file"))
-			configuration=new SourceFileConfiguration(configurations);
+
+		final String sourceName = (String) configurations
+				.get(SourceLaunchConfigs.SOURCE_NAME.toString());
+
+		for (final VideoSource tmpSource : videoSources)
+			if (tmpSource.getName().equals(sourceName)) {
+				activeSource = tmpSource;
+				break;
+			}
+
+		if (activeSource.getType() == SourceType.FILE)
+			configuration = new SourceFileConfiguration(configurations);
 		else
-			configuration=new SourceCamConfiguration(configurations);
-		
-		frameData=new FrameData();
-		videoSources.get(0).initialize(frameData, configuration);
-		videoSources.get(0).addStreamEndListener(this);
+			configuration = new SourceCamConfiguration(configurations);
+
+		frameData = new FrameData();
+		activeSource.initialize(frameData, configuration);
+		activeSource.addStreamEndListener(this);
+		return true;
+	}
+
+	@Override
+	public boolean pauseStream() {
+		activeSource.pauseStream();
+		return true;
+	}
+
+	@Override
+	public void removeStreamEndListener(
+			final IStreamEndListener streamEndListener) {
+		streamEndListeners.remove(streamEndListener);
+	}
+
+	@Override
+	public boolean resumeStream() {
+		activeSource.resumeStream();
 		return true;
 	}
 
 	@Override
 	public boolean startStream() {
-		videoSources.get(0).startStream();
+		activeSource.startStream();
 		return true;
 	}
 
 	@Override
 	public boolean stopStream() {
-		videoSources.get(0).stopStream();
+		activeSource.stopStream();
 		return false;
 	}
 
 	@Override
-	public boolean pauseStream() {
-		videoSources.get(0).pauseStream();
-		return true;
-	}
-
-	@Override
-	public boolean resumeStream() {
-		videoSources.get(0).resumeStream();
-		return true;
-	}
-
-	@Override
 	public void streamEnded() {
-		for(IStreamEndListener streamEndListener:streamEndListeners)
+		for (final IStreamEndListener streamEndListener : streamEndListeners)
 			streamEndListener.streamEnded();
-	}
-
-	@Override
-	public void addStreamEndListener(IStreamEndListener streamEndListener) {
-		streamEndListeners.add(streamEndListener);
-	}
-	@Override
-	public void removeStreamEndListener(IStreamEndListener streamEndListener) {
-		streamEndListeners.remove(streamEndListener);
 	}
 }

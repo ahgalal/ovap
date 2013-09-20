@@ -58,7 +58,6 @@ public class AGVideoFileSource extends VideoSource {
 				try {
 					Thread.sleep(30);
 				} catch (final InterruptedException e) {
-					e.printStackTrace();
 				}
 				// System.out.println(l2-l1 + "\n");
 			}

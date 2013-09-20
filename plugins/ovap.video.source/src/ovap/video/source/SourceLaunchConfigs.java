@@ -8,6 +8,6 @@ package ovap.video.source;
  *
  */
 public enum SourceLaunchConfigs {
-	TYPE,
-	FILE_NAME;
+	SOURCE_NAME,
+	FILE_PATH;
 }

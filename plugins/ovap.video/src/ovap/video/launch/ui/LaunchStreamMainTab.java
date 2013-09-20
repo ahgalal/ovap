@@ -81,7 +81,7 @@ public class LaunchStreamMainTab implements ILaunchConfigurationTab {
 		{
 			grpProject = new Group(topLevel, SWT.NONE);
 			grpProject.setLayout(new GridLayout(14, false));
-			grpProject.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false,
+			grpProject.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
 					false, 1, 1));
 			grpProject.setText("Project:");
 			{
@@ -206,7 +206,7 @@ public class LaunchStreamMainTab implements ILaunchConfigurationTab {
 	 */
 	@Override
 	public String getName() {
-		return "Stream";
+		return "Main";
 	}
 
 	/*

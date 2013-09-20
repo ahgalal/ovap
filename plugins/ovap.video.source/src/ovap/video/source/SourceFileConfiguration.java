@@ -13,7 +13,7 @@ import java.util.Map;
 public class SourceFileConfiguration extends SourceConfiguration {
 	public SourceFileConfiguration(Map<String, Object> configurations) {
 		super(configurations);
-		String fileName = (String) configurations.get(SourceLaunchConfigs.FILE_NAME.toString());
+		String fileName = (String) configurations.get(SourceLaunchConfigs.FILE_PATH.toString());
 		setFileName(fileName);
 	}
 
