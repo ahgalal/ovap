@@ -4,7 +4,9 @@
 package ovap.video.launch;
 
 import org.eclipse.core.resources.IMarkerDelta;
+import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.debug.core.DebugException;
+import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.core.model.IDebugTarget;
@@ -12,6 +14,7 @@ import org.eclipse.debug.core.model.IMemoryBlock;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IThread;
 
+import ovap.video.Activator;
 import ovap.video.StreamState;
 import ovap.video.VideoManager;
 
@@ -20,32 +23,26 @@ import ovap.video.VideoManager;
  */
 public class StreamTarget implements IDebugTarget {
 	private final OVAPLaunch	launch;
-	private String	name;
-	private boolean	terminated=false;
+	private final String		name;
+	private boolean				terminated	= false;
 
-	public StreamTarget(final OVAPLaunch streamLaunch,String name) {
+	public StreamTarget(final OVAPLaunch streamLaunch, final String name) {
 		this.launch = streamLaunch;
-		this.name=name;
+		this.name = name;
 	}
 
 	@Override
 	public void breakpointAdded(final IBreakpoint breakpoint) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void breakpointChanged(final IBreakpoint breakpoint,
 			final IMarkerDelta delta) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void breakpointRemoved(final IBreakpoint breakpoint,
 			final IMarkerDelta delta) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -56,7 +53,8 @@ public class StreamTarget implements IDebugTarget {
 
 	@Override
 	public boolean canResume() {
-		final StreamState state = VideoManager.getDefault().getState(getLaunch().getLaunchConfiguration().getName());
+		final StreamState state = VideoManager.getDefault().getState(
+				getLaunch().getLaunchConfiguration().getName());
 		if (state == StreamState.PAUSED)
 			return true;
 		else
@@ -65,13 +63,18 @@ public class StreamTarget implements IDebugTarget {
 
 	@Override
 	public boolean canSuspend() {
-		// TODO Auto-generated method stub
-		return false;
+		final StreamState state = VideoManager.getDefault().getState(
+				getLaunch().getLaunchConfiguration().getName());
+		if (state == StreamState.STREAMING)
+			return true;
+		else
+			return false;
 	}
 
 	@Override
 	public boolean canTerminate() {
-		final StreamState state = VideoManager.getDefault().getState(getLaunch().getLaunchConfiguration().getName());
+		final StreamState state = VideoManager.getDefault().getState(
+				getLaunch().getLaunchConfiguration().getName());
 		if ((state == StreamState.STREAMING) || (state == StreamState.PAUSED))
 			return true;
 		else
@@ -84,6 +87,12 @@ public class StreamTarget implements IDebugTarget {
 
 	}
 
+	private void fireEvent(final int eventId) {
+		final DebugEvent debugEvent = new DebugEvent(this, eventId);
+		DebugPlugin.getDefault().fireDebugEventSet(
+				new DebugEvent[] { debugEvent });
+	}
+
 	@Override
 	public Object getAdapter(final Class adapter) {
 		// TODO Auto-generated method stub
@@ -92,27 +101,23 @@ public class StreamTarget implements IDebugTarget {
 
 	@Override
 	public IDebugTarget getDebugTarget() {
-		// TODO Auto-generated method stub
 		return this;
 	}
 
 	@Override
 	public ILaunch getLaunch() {
-		// TODO Auto-generated method stub
 		return launch;
 	}
 
 	@Override
 	public IMemoryBlock getMemoryBlock(final long startAddress,
 			final long length) throws DebugException {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public String getModelIdentifier() {
-		// TODO Auto-generated method stub
-		return null;
+		return Activator.PLUGIN_ID;
 	}
 
 	@Override
@@ -122,7 +127,6 @@ public class StreamTarget implements IDebugTarget {
 
 	@Override
 	public IProcess getProcess() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -134,7 +138,6 @@ public class StreamTarget implements IDebugTarget {
 
 	@Override
 	public boolean hasThreads() throws DebugException {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -146,8 +149,12 @@ public class StreamTarget implements IDebugTarget {
 
 	@Override
 	public boolean isSuspended() {
-		// TODO Auto-generated method stub
-		return false;
+		final StreamState state = VideoManager.getDefault().getState(
+				getLaunch().getLaunchConfiguration().getName());
+		if (state == StreamState.PAUSED)
+			return true;
+		else
+			return false;
 	}
 
 	@Override
@@ -157,31 +164,34 @@ public class StreamTarget implements IDebugTarget {
 
 	@Override
 	public void resume() throws DebugException {
-		// TODO Auto-generated method stub
-
+		VideoManager.getDefault().resumeStream(
+				getLaunch().getLaunchConfiguration().getName());
+		fireEvent(DebugEvent.RESUME);
 	}
 
 	@Override
 	public boolean supportsBreakpoint(final IBreakpoint breakpoint) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean supportsStorageRetrieval() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public void suspend() throws DebugException {
-		// TODO Auto-generated method stub
+		VideoManager.getDefault().pauseStream(
+				getLaunch().getLaunchConfiguration().getName());
 
+		fireEvent(DebugEvent.SUSPEND);
 	}
 
 	@Override
 	public void terminate() throws DebugException {
-		VideoManager.getDefault().stopStream(getLaunch().getLaunchConfiguration().getName());
-		terminated=true;
+		VideoManager.getDefault().stopStream(
+				getLaunch().getLaunchConfiguration().getName());
+		terminated = true;
+		fireEvent(DebugEvent.TERMINATE);
 	}
 }

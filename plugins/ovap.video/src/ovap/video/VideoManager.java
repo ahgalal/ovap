@@ -1,9 +1,12 @@
 package ovap.video;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IExecutableExtensionFactory;
+
+import ovap.video.launch.StreamTarget;
 
 public class VideoManager implements IExecutableExtensionFactory{
 
@@ -26,18 +29,29 @@ public class VideoManager implements IExecutableExtensionFactory{
 		sessions=new ArrayList<Session>();
 	}
 
-	public boolean initializeSession(String sessionId){
-		if(getSession(sessionId)==null){
-			sessions.add(new Session(sessionId));
+	public boolean initializeSession(StreamTarget streamTarget){
+		String launchConfigName = streamTarget.getLaunch().getLaunchConfiguration().getName();
+		Session session =getSession(launchConfigName);
+		if(session==null){
+			session= new Session(streamTarget);
+			sessions.add(session);
 		}
+		session.setStreamTarget(streamTarget);
+		
 		return true;
 	}
 
 
-	public boolean startStream(String sessionId,FiltersConfiguration configuration) {
+	public boolean startStream(String sessionId,Map<String, Object> configurations) {
 		Session session = getSession(sessionId);
-		session.initialize(configuration);
+		session.initialize(configurations);
 		session.startStream();
+		return true;
+	}
+	
+	public boolean pauseStream(String sessionId) {
+		Session session = getSession(sessionId);
+		session.pauseStream();
 		return true;
 	}
 
@@ -47,13 +61,17 @@ public class VideoManager implements IExecutableExtensionFactory{
 	}
 
 	public StreamState getState(String sessionId) {
-		return getSession(sessionId).getState();
+		Session session = getSession(sessionId);
+		if(session==null) // session is not created yet
+			return StreamState.INITAIL;
+		StreamState state = session.getState();
+		return state;
 	}
 
 
 	private Session getSession(String sessionId) {
 		for(Session session:sessions){
-			if(session.getName().equals(sessionId))
+			if(session.getId().equals(sessionId))
 				return session;
 		}
 		return null;
@@ -63,5 +81,11 @@ public class VideoManager implements IExecutableExtensionFactory{
 	@Override
 	public Object create() throws CoreException {
 		return getDefault();
+	}
+
+	public boolean resumeStream(String sessionId) {
+		Session session = getSession(sessionId);
+		session.resumeStream();
+		return true;
 	}
 }

@@ -17,4 +17,13 @@
             name="Filters">
       </page>
    </extension>
+   <extension
+         point="org.eclipse.debug.ui.launchConfigurationTabs">
+      <tab
+            class="ovap.video.filter.FiltersLaunchConfigurationTab"
+            group="ovap.video.launch.stream.tabgroup"
+            id="ovap.video.filter.launch.filterstab"
+            name="Filters Configuration">
+      </tab>
+   </extension>
 </plugin>

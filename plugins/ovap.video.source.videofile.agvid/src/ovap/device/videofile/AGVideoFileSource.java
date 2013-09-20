@@ -7,6 +7,7 @@ import java.awt.Point;
 
 import ovap.video.FrameData;
 import ovap.video.source.SourceConfiguration;
+import ovap.video.source.SourceFileConfiguration;
 import ovap.video.source.SourceStatus;
 import ovap.video.source.SourceType;
 import ovap.video.source.VideoSource;
@@ -14,13 +15,12 @@ import sys.utils.Utils;
 
 public class AGVideoFileSource extends VideoSource {
 
-
 	private class RunnableAGVidLib implements Runnable {
 		@Override
 		public void run() {
 			final Point dims = vidLib.getVideoDimensions();
 			fia.setFrameData(new int[dims.x * dims.y]);
-			
+
 			vidLib.play();
 			Utils.sleep(100);
 			while (!stopStream) {
@@ -28,23 +28,33 @@ public class AGVideoFileSource extends VideoSource {
 					while (paused) {
 						try {
 							this.wait();
-						} catch (InterruptedException e) {
+						} catch (final InterruptedException e) {
 						}
-					}	
+					}
 				}
 
 				// long l1 = System.currentTimeMillis();
 				fia.setFrameData(vidLib.getCurrentFrameInt());
+				
 				// long l2 = System.currentTimeMillis();
-/*				if (fia.getFrameData() != null)
+
+				if (fia.getFrameData() != null)
+					stableStreamSynchronizer.signalStableStream();
+				
+				else{ // check if stream ended
+					if(vidLib.getLength()<=vidLib.getPosition())
+						notifyStreamEndListeners();
+				}
+				
+				/*if (fia.getFrameData() != null)
 					status = SourceStatus.STREAMING;
-				else{
-					if(paused)
+				else {
+					if (paused)
 						status = SourceStatus.PAUSED;
 					else
-						status=SourceStatus.ERROR;
+						status = SourceStatus.ERROR;
 				}*/
-				
+
 				try {
 					Thread.sleep(30);
 				} catch (final InterruptedException e) {
@@ -54,8 +64,55 @@ public class AGVideoFileSource extends VideoSource {
 			}
 		}
 	}
-	
-	private SourceStatus convertStreamStatus(StreamState state){
+
+	private static class StableStreamSynchronizer {
+		private Long			actualWaitTime			= 0L;
+		private final Object	flag					= "";
+		private boolean			stableStreamVerified	= false;
+
+		public void signalStableStream() {
+			if (!stableStreamVerified) {
+				synchronized (flag) {
+					flag.notify();
+					System.out.println("Signaling stable stream ...");
+				}
+				stableStreamVerified = true;
+
+				actualWaitTime = System.currentTimeMillis() - actualWaitTime;
+				System.out.println("Stable stream is established after: "
+						+ actualWaitTime + " ms");
+			}
+		}
+
+		public void waitForStableStream(final long timeOut) {
+			System.out.println("Waiting for stable stream ...");
+			actualWaitTime = System.currentTimeMillis();
+			if (!stableStreamVerified) {
+				try {
+					synchronized (flag) {
+						flag.wait(timeOut);
+					}
+				} catch (final InterruptedException e) {
+					// FIXME: throw a stream start timeout exception
+				}
+			}
+		}
+	}
+
+	private StableStreamSynchronizer	stableStreamSynchronizer;
+	private boolean						stopStream;
+	private Thread						thUpdateImage;
+	private final JAGVidLib				vidLib;
+	private SourceFileConfiguration	configuration;
+
+	/**
+	 * 
+	 */
+	public AGVideoFileSource() {
+		vidLib = new JAGVidLib();
+	}
+
+	private SourceStatus convertStreamStatus(final StreamState state) {
 		switch (state) {
 			case INITIAL_STATE:
 				return SourceStatus.INITIALIZING;
@@ -71,26 +128,9 @@ public class AGVideoFileSource extends VideoSource {
 		return null;
 	}
 
-	private boolean			stopStream;
-
-	private Thread			thUpdateImage;
-
-	private final JAGVidLib	vidLib;
-
 	@Override
-	public long getStreamPosition() {
-		return vidLib.getPosition();
-	}
-	
-	@Override
-	public long getStreamLength() {
-		return vidLib.getLength();
-	}
-	/**
-	 * 
-	 */
-	public AGVideoFileSource() {
-		vidLib = new JAGVidLib();
+	public Point getFrameSize() {
+		return vidLib.getVideoDimensions();
 	}
 
 	/*
@@ -108,18 +148,47 @@ public class AGVideoFileSource extends VideoSource {
 	 */
 	@Override
 	public SourceStatus getStatus() {
-		SourceStatus streamStatus = convertStreamStatus(vidLib.getState());
+		final SourceStatus streamStatus = convertStreamStatus(vidLib.getState());
 		return streamStatus;
-/*		if(paused)
-			status=SourceStatus.PAUSED;
-		return status;*/
+	}
+
+	@Override
+	public long getStreamLength() {
+		return vidLib.getLength();
+	}
+
+	@Override
+	public long getStreamPosition() {
+		return vidLib.getPosition();
+	}
+
+	@Override
+	public SourceType getType() {
+		return SourceType.FILE;
 	}
 
 	@Override
 	public boolean initialize(final FrameData frameData,
 			final SourceConfiguration configs) {
-		//this.configs = configs;
+		this.configuration=(SourceFileConfiguration) configs;
 		fia = frameData;
+		stableStreamSynchronizer = new StableStreamSynchronizer();
+		stopStream=false;
+		return true;
+	}
+
+	@Override
+	public boolean pauseStream() {
+		paused = true;
+		vidLib.pause();
+		return true;
+	}
+
+	@Override
+	public boolean resumeStream() {
+		paused = false;
+		vidLib.play();
+		thUpdateImage.interrupt();
 		return true;
 	}
 
@@ -129,17 +198,15 @@ public class AGVideoFileSource extends VideoSource {
 	 */
 	@Override
 	public boolean startStream() {
-		vidLib.initialize("E:\\Documents\\Desktop\\BMT\\Videos\\FST_1_wmv2.avi"/*configs.getVideoFilePath()*/);
+		vidLib.initialize(configuration.getFileName());
 		Utils.sleep(100);
-		thUpdateImage = new Thread(new RunnableAGVidLib(),"AGVidLib");
+		thUpdateImage = new Thread(new RunnableAGVidLib(), "AGVidLib");
 		thUpdateImage.start();
+		stableStreamSynchronizer.waitForStableStream(1000);
 		stopStream = false;
 		return true;
 	}
-	@Override
-	public SourceType getType() {
-		return SourceType.FILE;
-	}
+
 	/*
 	 * (non-Javadoc)
 	 * @see utils.video.input.VidInputter#stopModule()
@@ -147,27 +214,9 @@ public class AGVideoFileSource extends VideoSource {
 	@Override
 	public boolean stopStream() {
 		stopStream = true;
+		paused=false;
+		thUpdateImage.interrupt();
 		vidLib.stop();
 		return true;
-	}
-	
-	@Override
-	public boolean pauseStream() {
-		paused=true;
-		vidLib.pause();
-		return true;
-	}
-
-	@Override
-	public boolean resumeStream() {
-		paused=false;
-		vidLib.play();
-		thUpdateImage.interrupt();
-		return true;		
-	}
-
-	@Override
-	public Point getFrameSize() {
-		return vidLib.getVideoDimensions();
 	}
 }

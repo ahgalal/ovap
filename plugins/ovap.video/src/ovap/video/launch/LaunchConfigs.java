@@ -8,5 +8,5 @@ package ovap.video.launch;
  *
  */
 public enum LaunchConfigs {
-	FILTER_GRAPH, PROJECT_NAME;
+	LAUNCH_CONFIG_NAME, PROJECT_NAME;
 }

@@ -1,20 +1,16 @@
 /**
  * 
  */
-package ovap.video.launch.ui;
+package ovap.video.filter;
 
-import java.util.ArrayList;
-
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.ILaunchConfigurationDialog;
 import org.eclipse.debug.ui.ILaunchConfigurationTab;
-import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.jface.window.Window;
+import org.eclipse.emf.common.ui.dialogs.WorkspaceResourceDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -25,23 +21,18 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.dialogs.ElementTreeSelectionDialog;
-import org.eclipse.ui.model.WorkbenchContentProvider;
-import org.eclipse.ui.model.WorkbenchLabelProvider;
-import org.eclipse.ui.views.navigator.ResourceComparator;
-
-import ovap.video.launch.LaunchConfigs;
 
 /**
  * @author Creative
  */
-public class LaunchStreamMainTab implements ILaunchConfigurationTab {
-	private Button		btnBrowseProject;
-
-	private Group		grpProject;
-	protected Composite	topLevel;
-	private Text		txtProjectName;
+public class FiltersLaunchConfigurationTab implements ILaunchConfigurationTab {
+	private Button		btnBrowseActiveGraph;
+	protected Composite	container;
+	private Group		grpFilterGraph;
+	private Label		lblActiveGraph;
+	private Text		txtActiveGraph;
 
 	/*
 	 * (non-Javadoc)
@@ -76,66 +67,53 @@ public class LaunchStreamMainTab implements ILaunchConfigurationTab {
 	 */
 	@Override
 	public void createControl(final Composite parent) {
-		topLevel = new Composite(parent, 0);
-		topLevel.setLayout(new GridLayout(1, false));
+		container = new Composite(parent, 0);
+		container.setLayout(new GridLayout(1, false));
+
+		grpFilterGraph = new Group(container, SWT.NONE);
+		grpFilterGraph.setLayout(new GridLayout(3, false));
+		grpFilterGraph.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
+				false, 1, 1));
+		grpFilterGraph.setText("Filter Graph:");
 		{
-			grpProject = new Group(topLevel, SWT.NONE);
-			grpProject.setLayout(new GridLayout(14, false));
-			grpProject.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false,
-					false, 1, 1));
-			grpProject.setText("Project:");
-			{
-				txtProjectName = new Text(grpProject, SWT.BORDER);
-				txtProjectName.setEditable(false);
-				txtProjectName.setLayoutData(new GridData(SWT.FILL, SWT.TOP,
-						true, false, 13, 1));
-			}
-			{
-				btnBrowseProject = new Button(grpProject, SWT.NONE);
-				btnBrowseProject.addSelectionListener(new SelectionAdapter() {
-					@Override
-					public void widgetSelected(final SelectionEvent e) {
-						// FilteredResourcesSelectionDialog dialog = new
-						// FilteredResourcesSelectionDialog(null, false,
-						// ResourcesPlugin.getWorkspace().getRoot(),
-						// IProject.PROJECT);
-						// ListDialog dialog = new ListDialog(null);
-
-						final ITreeContentProvider contentProvider = new WorkbenchContentProvider() {
-							@Override
-							public Object[] getChildren(final Object element) {
-								final ArrayList<Object> ret = new ArrayList<Object>();
-								final Object[] children = super
-										.getChildren(element);
-								for (final Object child : children) {
-									if (child instanceof IProject)
-										ret.add(child);
-								}
-								return ret.toArray(new Object[0]);
-							}
-						};
-
-						final ElementTreeSelectionDialog dialog = new ElementTreeSelectionDialog(
-								null, new WorkbenchLabelProvider(),
-								contentProvider);
-
-						dialog.setComparator(new ResourceComparator(
-								ResourceComparator.NAME));
-						dialog.setInput(ResourcesPlugin.getWorkspace()
-								.getRoot());
-						// dialog.setContentProvider(contentProvider);
-						// dialog.setLabelProvider(new
-						// WorkbenchLabelProvider());
-						if (dialog.open() == Window.OK) {
-							final IProject selectedProject = (IProject) dialog
-									.getResult()[0];
-							txtProjectName.setText(selectedProject.getName());
-						}
-
+			lblActiveGraph = new Label(grpFilterGraph, SWT.NONE);
+			lblActiveGraph.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER,
+					false, false, 1, 1));
+			lblActiveGraph.setText("Active graph:");
+		}
+		{
+			txtActiveGraph = new Text(grpFilterGraph, SWT.BORDER);
+			txtActiveGraph.setEditable(false);
+			txtActiveGraph.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,
+					true, false, 1, 1));
+		}
+		{
+			btnBrowseActiveGraph = new Button(grpFilterGraph, SWT.NONE);
+			btnBrowseActiveGraph.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(final SelectionEvent e) {
+					// FIXME: use a dialog that displays only
+					// available EMF filter graph model file (.fg
+					// extension?)
+					// ElementListSelectionDialog dialog = new
+					// ElementListSelectionDialog(getShell(),
+					// PlatformUI.getWorkbench().);
+					final IFile[] selections = WorkspaceResourceDialog
+							.openFileSelection(null, "Filter graph",
+									"Select filter graph", false, null, null);
+					if (selections.length > 0) {
+						final IFile selection = selections[0];
+						txtActiveGraph.setText(selection
+								.getProjectRelativePath().toString());
 					}
-				});
-				btnBrowseProject.setText("...");
-			}
+					// WorkbenchContentProvider contentProvider =
+					// new WorkbenchContentProvider();
+					// WorkspaceResourceDialog dialog = new
+					// WorkspaceResourceDialog(getShell(), new
+					// WorkbenchLabelProvider(), contentProvider);
+				}
+			});
+			btnBrowseActiveGraph.setText("...");
 		}
 
 	}
@@ -168,7 +146,7 @@ public class LaunchStreamMainTab implements ILaunchConfigurationTab {
 	 */
 	@Override
 	public Control getControl() {
-		return topLevel;
+		return container;
 	}
 
 	/*
@@ -197,7 +175,8 @@ public class LaunchStreamMainTab implements ILaunchConfigurationTab {
 	 */
 	@Override
 	public String getMessage() {
-		return "Update stream options";
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	/*
@@ -206,7 +185,7 @@ public class LaunchStreamMainTab implements ILaunchConfigurationTab {
 	 */
 	@Override
 	public String getName() {
-		return "Stream";
+		return "Filters Setup";
 	}
 
 	/*
@@ -218,8 +197,8 @@ public class LaunchStreamMainTab implements ILaunchConfigurationTab {
 	@Override
 	public void initializeFrom(final ILaunchConfiguration configuration) {
 		try {
-			txtProjectName.setText(configuration.getAttribute(
-					LaunchConfigs.PROJECT_NAME.toString(), "none"));
+			txtActiveGraph.setText(configuration.getAttribute(
+					FilterLaunchConfigs.FILTER_GRAPH.toString(), "none"));
 		} catch (final CoreException e) {
 			e.printStackTrace();
 		}
@@ -257,8 +236,8 @@ public class LaunchStreamMainTab implements ILaunchConfigurationTab {
 	 */
 	@Override
 	public void performApply(final ILaunchConfigurationWorkingCopy configuration) {
-		configuration.setAttribute(LaunchConfigs.PROJECT_NAME.toString(),
-				txtProjectName.getText());
+		configuration.setAttribute(FilterLaunchConfigs.FILTER_GRAPH.toString(),
+				txtActiveGraph.getText());
 	}
 
 	/*

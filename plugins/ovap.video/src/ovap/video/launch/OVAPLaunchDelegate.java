@@ -1,6 +1,6 @@
 package ovap.video.launch;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.ResourcesPlugin;
+import java.util.Map;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Status;
@@ -10,7 +10,6 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.model.ILaunchConfigurationDelegate2;
 
 import ovap.video.Activator;
-import ovap.video.FiltersConfiguration;
 import ovap.video.VideoManager;
 
 
@@ -20,17 +19,10 @@ public class OVAPLaunchDelegate implements ILaunchConfigurationDelegate2 {
 	public void launch(ILaunchConfiguration configuration, String mode,
 			ILaunch launch, IProgressMonitor monitor) throws CoreException {
 		
-		String filterGraphResourcePath = configuration.getAttribute(LaunchConfigs.FILTER_GRAPH.toString(), "");
-		String projectName = configuration.getAttribute(LaunchConfigs.PROJECT_NAME.toString(), "");
-		
-		FiltersConfiguration filtersConfiguration = new FiltersConfiguration();
-		
-		filtersConfiguration.setFilterGraphResourcePath(filterGraphResourcePath);
-		
-		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
-		filtersConfiguration.setProject(project);
+		Map<String,Object> configurations = configuration.getAttributes();
 		
 		String configName = configuration.getName();
+		configurations.put(LaunchConfigs.LAUNCH_CONFIG_NAME.toString(), configName);
 		
 		ILaunch[] launches = DebugPlugin.getDefault().getLaunchManager().getLaunches();
 		int instancesCount=0;
@@ -43,12 +35,13 @@ public class OVAPLaunchDelegate implements ILaunchConfigurationDelegate2 {
 		if(instancesCount>1)
 			throw new CoreException(new Status(Status.ERROR, Activator.PLUGIN_ID, "Cannot run two sessions of the same type simultaneously"));
 		
-		filtersConfiguration.setConfigName(configName);
-		VideoManager.getDefault().initializeSession(configName);
-		VideoManager.getDefault().startStream(configName,filtersConfiguration);
-		
 		StreamTarget streamTarget = new StreamTarget((OVAPLaunch) launch,"Stream");
 		launch.addDebugTarget(streamTarget);
+		
+		VideoManager.getDefault().initializeSession(streamTarget);
+		VideoManager.getDefault().startStream(configName,configurations);
+		
+
 	}
 
 	@Override

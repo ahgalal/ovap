@@ -9,4 +9,8 @@ package ovap.video;
  */
 public interface IModuleManager {
 
+	void pause();
+
+	void resume();
+
 }
