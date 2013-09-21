@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <wizard
+            category="org.eclipse.ui.Examples"
+            class="ovap.project.examples.ui.DemoWizard"
+            hasPages="true"
+            id="ovap.project.examples.demowizard"
+            name="OVAP Demo Project"
+            project="true">
+      </wizard>
+   </extension>
+
+</plugin>

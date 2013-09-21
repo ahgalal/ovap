@@ -1,15 +1,18 @@
 /**
  * 
  */
-package ovap.video.filter;
+package ovap.video.filter.ui;
+
+import java.util.ArrayList;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
-import org.eclipse.debug.ui.ILaunchConfigurationDialog;
-import org.eclipse.debug.ui.ILaunchConfigurationTab;
+import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
 import org.eclipse.emf.common.ui.dialogs.WorkspaceResourceDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -24,27 +27,19 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
+import ovap.video.filter.FilterLaunchConfigs;
+import ovap.video.launch.LaunchConfigs;
+import utils.FileUtils;
+
 /**
  * @author Creative
  */
-public class FiltersLaunchConfigurationTab implements ILaunchConfigurationTab {
+public class FiltersLaunchConfigurationTab extends AbstractLaunchConfigurationTab {
 	private Button		btnBrowseActiveGraph;
 	protected Composite	container;
 	private Group		grpFilterGraph;
 	private Label		lblActiveGraph;
 	private Text		txtActiveGraph;
-
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * org.eclipse.debug.ui.ILaunchConfigurationTab#activated(org.eclipse.debug
-	 * .core.ILaunchConfigurationWorkingCopy)
-	 */
-	@Override
-	public void activated(final ILaunchConfigurationWorkingCopy workingCopy) {
-		// TODO Auto-generated method stub
-
-	}
 
 	/*
 	 * (non-Javadoc)
@@ -120,18 +115,6 @@ public class FiltersLaunchConfigurationTab implements ILaunchConfigurationTab {
 
 	/*
 	 * (non-Javadoc)
-	 * @see
-	 * org.eclipse.debug.ui.ILaunchConfigurationTab#deactivated(org.eclipse.
-	 * debug.core.ILaunchConfigurationWorkingCopy)
-	 */
-	@Override
-	public void deactivated(final ILaunchConfigurationWorkingCopy workingCopy) {
-		// TODO Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
 	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#dispose()
 	 */
 	@Override
@@ -197,8 +180,21 @@ public class FiltersLaunchConfigurationTab implements ILaunchConfigurationTab {
 	@Override
 	public void initializeFrom(final ILaunchConfiguration configuration) {
 		try {
-			txtActiveGraph.setText(configuration.getAttribute(
-					FilterLaunchConfigs.FILTER_GRAPH.toString(), "none"));
+			String detectedFilterGraph="";
+			String projectName = configuration.getAttribute(LaunchConfigs.PROJECT_NAME.toString(), "");
+			IProject selectedProject=null;
+			if(!projectName.equals(""))
+				selectedProject = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
+			if(selectedProject!=null && selectedProject.exists()){
+				ArrayList<IFile> files = FileUtils.getFiles(selectedProject, "fg");
+				if(files.size()>0)
+					detectedFilterGraph=files.get(0).getProjectRelativePath().toString();
+			}
+			String filterGraph = configuration.getAttribute(
+					FilterLaunchConfigs.FILTER_GRAPH.toString(), detectedFilterGraph);
+			if(filterGraph.equals(""))
+				filterGraph=detectedFilterGraph;
+			txtActiveGraph.setText(filterGraph);
 		} catch (final CoreException e) {
 			e.printStackTrace();
 		}
@@ -251,18 +247,4 @@ public class FiltersLaunchConfigurationTab implements ILaunchConfigurationTab {
 		// TODO Auto-generated method stub
 
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * org.eclipse.debug.ui.ILaunchConfigurationTab#setLaunchConfigurationDialog
-	 * (org.eclipse.debug.ui.ILaunchConfigurationDialog)
-	 */
-	@Override
-	public void setLaunchConfigurationDialog(
-			final ILaunchConfigurationDialog dialog) {
-		// TODO Auto-generated method stub
-
-	}
-
 }

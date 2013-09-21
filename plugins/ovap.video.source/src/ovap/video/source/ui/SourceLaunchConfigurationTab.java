@@ -6,6 +6,9 @@ package ovap.video.source.ui;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
@@ -28,10 +31,12 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 
+import ovap.video.launch.LaunchConfigs;
 import ovap.video.source.SourceLaunchConfigs;
 import ovap.video.source.SourceManager;
 import ovap.video.source.SourceType;
 import ovap.video.source.VideoSource;
+import utils.FileUtils;
 
 /**
  * @author Creative
@@ -233,6 +238,10 @@ public class SourceLaunchConfigurationTab extends AbstractLaunchConfigurationTab
 		} catch (final CoreException e) {
 			e.printStackTrace();
 		}
+		
+		// if no saved source, select the first one in the list
+		if(savedSourceName.equals(""))
+			savedSourceName=cmboSources.getItem(0);
 		selectSource(savedSourceName);
 
 		String videoFilePath = null;
@@ -241,6 +250,24 @@ public class SourceLaunchConfigurationTab extends AbstractLaunchConfigurationTab
 					SourceLaunchConfigs.FILE_PATH.toString(), "");
 		} catch (final CoreException e) {
 			e.printStackTrace();
+		}
+		
+		// if no video file path is saved, select the first one found in the project
+		if(videoFilePath.equals("")){
+			String projectName = "";
+			try {
+				projectName = configuration.getAttribute(LaunchConfigs.PROJECT_NAME.toString(), "");
+			} catch (CoreException e) {
+				e.printStackTrace();
+			}
+			IProject selectedProject=null;
+			if(!projectName.equals(""))
+				selectedProject = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
+			if(selectedProject!=null && selectedProject.exists()){
+				ArrayList<IFile> files = FileUtils.getFiles(selectedProject, "avi");
+				if(files.size()>0)
+					videoFilePath=files.get(0).getLocation().toOSString();
+			}
 		}
 		txtVideoFile.setText(videoFilePath);
 	}

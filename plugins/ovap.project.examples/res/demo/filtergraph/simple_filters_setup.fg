@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model:FiltersSetup xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:model="model" name="root">
+  <filterInstances name="source" type="//root/ovap.video.filter.source">
+    <portOutInstance name="out" filterConnection="//root/conn1"/>
+  </filterInstances>
+  <filterInstances name="display" type="//root/ovap.video.filter.display">
+    <portInInstance name="in" filterConnection="//root/conn1"/>
+  </filterInstances>
+  <connections name="conn1" portInInstance="//root/display/in" portOutInstance="//root/source/out"/>
+  <filterTypes name="ovap.video.filter.source"/>
+  <filterTypes name="ovap.video.filter.display"/>
+</model:FiltersSetup>

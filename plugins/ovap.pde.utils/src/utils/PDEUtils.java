@@ -4,11 +4,15 @@
 package utils;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IScopeContext;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.ui.ISelectionService;
+import org.eclipse.ui.PlatformUI;
 import org.osgi.service.prefs.BackingStoreException;
 
 /**
@@ -72,5 +76,25 @@ public class PDEUtils {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	public static IResource getSelectedResource(){
+		ISelectionService selectionService = PlatformUI.getWorkbench().getWorkbenchWindows()[0].getSelectionService();
+		ISelection selection = selectionService.getSelection();
+		if(selection instanceof IResource){
+			return (IResource) selection;
+		}
+		return null;
+	}
+	
+	public static IProject getSelectedProject(){
+		IResource selectedResource = getSelectedResource();
+		if(selectedResource !=null){
+			if(selectedResource instanceof IProject)
+				return (IProject) selectedResource;
+			else
+				return selectedResource.getProject();
+		}
+		return null;
 	}
 }

@@ -11,8 +11,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
+import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
 import org.eclipse.debug.ui.ILaunchConfigurationDialog;
-import org.eclipse.debug.ui.ILaunchConfigurationTab;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
@@ -36,24 +36,12 @@ import ovap.video.launch.LaunchConfigs;
 /**
  * @author Creative
  */
-public class LaunchStreamMainTab implements ILaunchConfigurationTab {
+public class LaunchStreamMainTab extends AbstractLaunchConfigurationTab {
 	private Button		btnBrowseProject;
 
 	private Group		grpProject;
 	protected Composite	topLevel;
 	private Text		txtProjectName;
-
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * org.eclipse.debug.ui.ILaunchConfigurationTab#activated(org.eclipse.debug
-	 * .core.ILaunchConfigurationWorkingCopy)
-	 */
-	@Override
-	public void activated(final ILaunchConfigurationWorkingCopy workingCopy) {
-		// TODO Auto-generated method stub
-
-	}
 
 	/*
 	 * (non-Javadoc)
@@ -137,18 +125,6 @@ public class LaunchStreamMainTab implements ILaunchConfigurationTab {
 				btnBrowseProject.setText("...");
 			}
 		}
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * org.eclipse.debug.ui.ILaunchConfigurationTab#deactivated(org.eclipse.
-	 * debug.core.ILaunchConfigurationWorkingCopy)
-	 */
-	@Override
-	public void deactivated(final ILaunchConfigurationWorkingCopy workingCopy) {
-		// TODO Auto-generated method stub
 
 	}
 
