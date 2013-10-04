@@ -60,7 +60,7 @@ public class FrameDisplayFilter extends VideoFilter {
 
 	@Override
 	public void process() {
-		System.out.println("FrameDisplayFilter.process()");
+		//System.out.println("FrameDisplayFilter.process()");
 		if(img==null){
 			img=new BufferedImage(640, 480, BufferedImage.TYPE_INT_RGB);
 			imgData = ((DataBufferInt) img.getRaster().getDataBuffer()).getData();
@@ -69,7 +69,7 @@ public class FrameDisplayFilter extends VideoFilter {
 		if(linkIn.getData()!=null){
 			System.arraycopy(linkIn.getData(), 0, imgData, 0,linkIn.getData().length );
 		
-			view.getGraphics().drawImage(img, 0, 0, null);
+			view.drawImage(img);
 		}else
 			System.out.println("Skipping null frame");
 	}

@@ -46,7 +46,7 @@ public class SourceFilter extends VideoFilter {
 	@Override
 	public void process() {
 		linkOut.setData(linkIn.getData());
-		System.out.println("SourceFilter.process()");
+		//System.out.println("SourceFilter.process()");
 	}
 
 	@Override
