@@ -61,7 +61,7 @@ public class FilterManager implements IFilterManager {
 	private final ArrayList<VideoFilter>	installedFilters;
 	private boolean							paused	= false;
 	private Link							sourceLink;
-	private FiltersConfigurations configuration;
+	private FiltersLaunchConfigurations configuration;
 	public FilterManager() {
 		/*
 		 * if (self != null) return; else self = this;
@@ -91,7 +91,7 @@ public class FilterManager implements IFilterManager {
 		this.frameData = frameData;
 		sourceLink = new Link();
 		
-		configuration = new FiltersConfigurations(configurations);
+		configuration = new FiltersLaunchConfigurations(configurations);
 
 		// load filters
 		/*
@@ -142,6 +142,9 @@ public class FilterManager implements IFilterManager {
 					filterInstance.getName(), configuration.getConfigName());
 			if (instance.getName().equals("source")) // FIXME
 				instance.setLinkIn(sourceLink);
+			
+			// configure filter according to EMF saved configuration
+			instance.configure(filterInstance.getConfiguration());
 			activeFilters.add(instance);
 		}
 

@@ -26,4 +26,27 @@
             name="Filters Configuration">
       </tab>
    </extension>
+   <extension
+         point="org.eclipse.ui.views.properties.tabbed.propertyTabs">
+      <propertyTabs
+            contributorId="ovap.video.filter.filtergraph.diagram">
+         <propertyTab
+               category="extra"
+               id="ovap.video.filter.propertytab.configuration"
+               label="Configuration">
+         </propertyTab>
+      </propertyTabs>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views.properties.tabbed.propertySections">
+      <propertySections
+            contributorId="ovap.video.filter.filtergraph.diagram">
+         <propertySection
+               class="ovap.video.filter.ConfigurationPropertySection"
+               filter="ovap.video.filter.ui.FilterInstancePropertySectionFilter"
+               id="ovap.video.filter.propertysection.configuration"
+               tab="ovap.video.filter.propertytab.configuration">
+         </propertySection>
+      </propertySections>
+   </extension>
 </plugin>

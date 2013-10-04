@@ -290,7 +290,7 @@
     <styles xmi:type="notation:ConnectorStyle" xmi:id="_RJ7CMQKTEeO9B9VD_zISkg" lineColor="4210752"/>
     <styles xmi:type="notation:FontStyle" xmi:id="_RJ7CMgKTEeO9B9VD_zISkg" fontColor="4210752" fontHeight="10"/>
     <element xmi:type="ecore:EReference" href="FilterSetup.ecore#//video/filter/setup/model/FiltersSetup/connections"/>
-    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_RJ7CMwKTEeO9B9VD_zISkg" points="[0, 0, -231, 60]$[231, -60, 0, 0]"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_RJ7CMwKTEeO9B9VD_zISkg" points="[0, 0, -239, 56]$[117, -24, -122, 32]$[239, -56, 0, 0]"/>
     <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_2CAp0wLLEeO9B9VD_zISkg" id="(0.7549019607843137,0.0)"/>
     <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_2CAp1ALLEeO9B9VD_zISkg" id="(0.6666666666666666,1.0)"/>
   </edges>
@@ -490,9 +490,9 @@
     <styles xmi:type="notation:ConnectorStyle" xmi:id="_i6WhcQKUEeO9B9VD_zISkg" lineColor="4210752"/>
     <styles xmi:type="notation:FontStyle" xmi:id="_i6WhcgKUEeO9B9VD_zISkg" fontColor="4210752" fontHeight="10"/>
     <element xmi:type="ecore:EReference" href="FilterSetup.ecore#//video/filter/setup/model/FilterConnection/filtersSetup"/>
-    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_i6WhcwKUEeO9B9VD_zISkg" points="[0, 0, 231, -60]$[-231, 60, 0, 0]"/>
-    <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_2CE7QALLEeO9B9VD_zISkg" id="(0.6666666666666666,1.0)"/>
-    <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_2CE7QQLLEeO9B9VD_zISkg" id="(0.7549019607843137,0.0)"/>
+    <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_i6WhcwKUEeO9B9VD_zISkg" points="[0, 0, 239, -56]$[-122, 32, 117, -24]$[-239, 56, 0, 0]"/>
+    <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_FffCoCemEeOhWuMe9XUKYg" id="(0.6666666666666666,1.0)"/>
+    <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_FffCoSemEeOhWuMe9XUKYg" id="(0.7549019607843137,0.0)"/>
   </edges>
   <edges xmi:type="notation:Edge" xmi:id="_Ayg4cAKfEeO9B9VD_zISkg" type="3003" source="_RJsYsQKTEeO9B9VD_zISkg" target="_j03IQAKcEeO9B9VD_zISkg">
     <styles xmi:type="notation:ConnectorStyle" xmi:id="_Ayg4cQKfEeO9B9VD_zISkg" routing="Rectilinear" lineColor="4210752"/>

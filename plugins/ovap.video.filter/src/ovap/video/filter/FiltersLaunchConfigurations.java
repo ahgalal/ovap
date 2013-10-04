@@ -11,10 +11,10 @@ import ovap.video.launch.LaunchConfigurations;
  * @author Creative
  *
  */
-public class FiltersConfigurations extends LaunchConfigurations {
+public class FiltersLaunchConfigurations extends LaunchConfigurations {
 	protected String filterGraphResourcePath;
 	
-	public FiltersConfigurations(Map<String, Object> configurations) {
+	public FiltersLaunchConfigurations(Map<String, Object> configurations) {
 		super(configurations);
 		setFilterGraphResourcePath((String) configurations.get(FilterLaunchConfigs.FILTER_GRAPH.toString()));
 	}

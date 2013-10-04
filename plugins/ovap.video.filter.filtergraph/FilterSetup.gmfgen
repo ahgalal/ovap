@@ -508,6 +508,18 @@
         <generatedTypes>abstractNavigatorItem</generatedTypes>
       </filter>
     </tabs>
+    <tabs
+        xsi:type="gmfgen:GenCustomPropertyTab"
+        iD="diagram"
+        label="Configuration"
+        className="FilterConfigurationPropertySection">
+      <filter
+          xsi:type="gmfgen:TypeTabFilter">
+        <types>org.eclipse.gmf.runtime.notation.View</types>
+        <types>org.eclipse.gef.EditPart</types>
+        <generatedTypes>abstractNavigatorItem</generatedTypes>
+      </filter>
+    </tabs>
   </propertySheet>
   <domainGenModel
       href="../ovap.video.filter/emf/FilterSetup.genmodel#/"/>

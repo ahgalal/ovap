@@ -22,6 +22,7 @@
                   ecoreFeature="ecore:EReference FilterSetup.ecore#//video/filter/setup/model/FilterInstance/type"/>
               <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference FilterSetup.ecore#//video/filter/setup/model/FilterInstance/portInInstance"/>
               <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference FilterSetup.ecore#//video/filter/setup/model/FilterInstance/portOutInstance"/>
+              <genFeatures createChild="false" ecoreFeature="ecore:EReference FilterSetup.ecore#//video/filter/setup/model/FilterInstance/configuration"/>
             </genClasses>
             <genClasses ecoreClass="FilterSetup.ecore#//video/filter/setup/model/FilterType">
               <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference FilterSetup.ecore#//video/filter/setup/model/FilterType/portOut"/>
@@ -71,6 +72,10 @@
               <genOperations ecoreOperation="FilterSetup.ecore#//video/filter/setup/model/Identifiable/eObjectForURIFragmentSegment">
                 <genParameters ecoreParameter="FilterSetup.ecore#//video/filter/setup/model/Identifiable/eObjectForURIFragmentSegment/uriFragmentSegment"/>
               </genOperations>
+            </genClasses>
+            <genClasses ecoreClass="FilterSetup.ecore#//video/filter/setup/model/ConfigurationMap">
+              <genFeatures createChild="false" ecoreFeature="ecore:EAttribute FilterSetup.ecore#//video/filter/setup/model/ConfigurationMap/key"/>
+              <genFeatures createChild="false" ecoreFeature="ecore:EAttribute FilterSetup.ecore#//video/filter/setup/model/ConfigurationMap/value"/>
             </genClasses>
           </nestedGenPackages>
         </nestedGenPackages>

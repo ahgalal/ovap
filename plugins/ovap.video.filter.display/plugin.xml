@@ -17,5 +17,14 @@
             class="ovap.video.filter.display.FrameDisplayFilter">
       </filter>
    </extension>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="ovap.video.filter.display.StreamViewer"
+            default="false"
+            id="ovap.video.filter.display.editor.streamviewer"
+            name="Stream Viewer">
+      </editor>
+   </extension>
 
 </plugin>
