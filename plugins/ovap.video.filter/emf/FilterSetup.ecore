@@ -17,8 +17,7 @@
                 upperBound="-1" eType="#//video/filter/setup/model/PortOutInstance"
                 containment="true" eOpposite="#//video/filter/setup/model/PortOutInstance/filterInstance"/>
             <eStructuralFeatures xsi:type="ecore:EReference" name="configuration"
-                upperBound="-1" eType="#//video/filter/setup/model/ConfigurationMap"
-                containment="true"/>
+                lowerBound="1" eType="#//video/filter/setup/model/Configuration" containment="true"/>
           </eClassifiers>
           <eClassifiers xsi:type="ecore:EClass" name="FilterType" eSuperTypes="#//video/filter/setup/model/Identifiable">
             <eStructuralFeatures xsi:type="ecore:EReference" name="portOut" upperBound="-1"
@@ -97,9 +96,13 @@
             <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
                 defaultValueLiteral=""/>
           </eClassifiers>
-          <eClassifiers xsi:type="ecore:EClass" name="ConfigurationMap" instanceClassName="java.util.Map$Entry">
+          <eClassifiers xsi:type="ecore:EClass" name="ConfigurationMapEntry" instanceClassName="java.util.Map$Entry">
             <eStructuralFeatures xsi:type="ecore:EAttribute" name="key" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
             <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+          </eClassifiers>
+          <eClassifiers xsi:type="ecore:EClass" name="Configuration">
+            <eStructuralFeatures xsi:type="ecore:EReference" name="entries" upperBound="-1"
+                eType="#//video/filter/setup/model/ConfigurationMapEntry" containment="true"/>
           </eClassifiers>
         </eSubpackages>
       </eSubpackages>

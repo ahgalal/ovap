@@ -6,31 +6,41 @@ import java.util.Map.Entry;
 import org.eclipse.emf.common.util.EMap;
 
 public abstract class VideoFilter {
-	private HashMap<String, Object>	configuration = new HashMap<String, Object>();
-	protected Link					linkIn, linkOut;
-	protected String				name;
+	private final HashMap<String, Object>	configurations	= new HashMap<String, Object>();
+	protected Link							linkIn, linkOut;
+	protected String						name;
 
 	public void configure(final EMap<String, String> configuration) {
-		HashMap<String, Object> configs=new HashMap<String, Object>();
+		final HashMap<String, Object> configs = new HashMap<String, Object>();
 		for (final Entry<String, String> entry : configuration) {
 			configs.put(entry.getKey(), entry.getValue());
 		}
-		
+
 		configure(configs);
 	}
 
 	public void configure(final HashMap<String, Object> configurations) {
-		this.configuration.putAll(configurations); // TODO: detect updated
-													// params and call
-													// appropriate methods to
-													// handle those updated
-													// params
+		final HashMap<String, Object> updatedConfigurations = new HashMap<String, Object>();
+		for (final String oldKey : configurations.keySet()) {
+			final Object oldValue = this.configurations.get(oldKey);
+			final Object newValue = configurations.get(oldKey);
+			/*
+			 * it is not expected to have configs deleted/added, they are just
+			 * modified
+			 */
+			if (!oldValue.equals(newValue))
+				updatedConfigurations.put(oldKey, newValue);
+		}
+
+		handleConfigurationUpdates(updatedConfigurations);
+
+		this.configurations.putAll(configurations);
 	}
 
 	public abstract void enable(boolean enable);
 
 	public HashMap<String, Object> getConfiguration() {
-		return configuration;
+		return configurations;
 	}
 
 	public abstract FilterData getFilterData();
@@ -52,6 +62,9 @@ public abstract class VideoFilter {
 	}
 
 	public abstract int getOutPortCount();
+
+	protected abstract void handleConfigurationUpdates(
+			final HashMap<String, Object> updatedConfigurations);
 
 	public abstract VideoFilter newInstance(String name, String contextId);
 

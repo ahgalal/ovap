@@ -57,11 +57,11 @@ public class Session implements IStreamEndListener{
 		return streamTarget;
 	}
 
-	public void initialize(final Map<String, Object> configurations) {
-		sourceManager.initialize(configurations);
+	public void initialize(final Map<String, Object> launchConfigurations) {
+		sourceManager.initialize(launchConfigurations);
 		sourceManager.addStreamEndListener(this);
 		final FrameData frameData = sourceManager.getFrameData();
-		filterManager.initialize(configurations, frameData);
+		filterManager.initialize(launchConfigurations, frameData);
 	}
 
 	public boolean pauseStream() {

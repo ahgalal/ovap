@@ -8,6 +8,7 @@ import org.eclipse.gmf.runtime.diagram.ui.editparts.ShapeEditPart;
 import org.eclipse.gmf.runtime.notation.Shape;
 import org.eclipse.jface.viewers.IFilter;
 
+import ovap.video.filter.FilterConfigurationManager;
 import ovap.video.filter.setup.model.FilterInstance;
 
 /**
@@ -27,7 +28,7 @@ public class FilterInstancePropertySectionFilter implements IFilter {
 			if(model instanceof Shape){
 				Shape shape = (Shape)model;
 				EObject element = shape.getElement();
-				if(element instanceof FilterInstance)
+				if(element instanceof FilterInstance && FilterConfigurationManager.getDefault().isContributerPresent(element))
 					return true;
 			}
 		}

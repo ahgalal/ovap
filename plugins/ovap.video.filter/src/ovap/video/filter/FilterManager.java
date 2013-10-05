@@ -87,11 +87,11 @@ public class FilterManager implements IFilterManager {
 	}
 
 	@Override
-	public boolean initialize(Map<String, Object> configurations, FrameData frameData) {
+	public boolean initialize(Map<String, Object> launchConfigurations, FrameData frameData) {
 		this.frameData = frameData;
 		sourceLink = new Link();
 		
-		configuration = new FiltersLaunchConfigurations(configurations);
+		configuration = new FiltersLaunchConfigurations(launchConfigurations);
 
 		// load filters
 		/*
@@ -144,7 +144,7 @@ public class FilterManager implements IFilterManager {
 				instance.setLinkIn(sourceLink);
 			
 			// configure filter according to EMF saved configuration
-			instance.configure(filterInstance.getConfiguration());
+			instance.configure(filterInstance.getConfiguration().getEntries());
 			activeFilters.add(instance);
 		}
 

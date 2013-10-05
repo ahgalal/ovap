@@ -5,6 +5,7 @@ package ovap.video.filter.display;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
+import java.util.HashMap;
 
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbenchPage;
@@ -100,6 +101,13 @@ public class FrameDisplayFilter extends VideoFilter {
 		frameDisplayFilter.setName(name);
 		frameDisplayFilter.setView(view);
 		return frameDisplayFilter;
+	}
+
+	@Override
+	protected void handleConfigurationUpdates(
+			HashMap<String, Object> updatedConfigurations) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

@@ -37,7 +37,7 @@ public class PDEUtils {
 			msg+=o;
 			return (T) o;
 		} catch (final Exception e) {
-			System.err.println();
+			e.printStackTrace();
 		}finally{
 			System.out.println(msg);
 		}

@@ -7,5 +7,11 @@
             class="ovap.video.filter.source.SourceFilter">
       </filter>
    </extension>
-
+   <extension
+         point="ovap.filter.configuration">
+      <configuration
+            class="ovap.video.filter.source.SourceFilterConfigurationContributer"
+            filtertype="ovap.video.filter.source">
+      </configuration>
+   </extension>
 </plugin>

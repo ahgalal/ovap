@@ -2,6 +2,7 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension-point id="ovap.filter.videofilter" name="VideoFilter" schema="schema/ovap.filter.videofilter.exsd"/>
+   <extension-point id="ovap.filter.configuration" name="Filter Configuration" schema="schema/ovap.filter.configuration.exsd"/>
    <extension
          point="ovap.video.filter.manager">
       <filter_manager
@@ -42,7 +43,7 @@
       <propertySections
             contributorId="ovap.video.filter.filtergraph.diagram">
          <propertySection
-               class="ovap.video.filter.ConfigurationPropertySection"
+               class="ovap.video.filter.ui.ConfigurationPropertySection"
                filter="ovap.video.filter.ui.FilterInstancePropertySectionFilter"
                id="ovap.video.filter.propertysection.configuration"
                tab="ovap.video.filter.propertytab.configuration">
