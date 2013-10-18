@@ -18,7 +18,8 @@
       </annotation>
       <complexType>
          <choice>
-            <element ref="device"/>
+            <element ref="camera"/>
+            <element ref="filereader"/>
          </choice>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -47,7 +48,43 @@
       </complexType>
    </element>
 
-   <element name="device">
+   <element name="camera">
+      <complexType>
+         <choice>
+            <element ref="optionsgui"/>
+         </choice>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn="ovap.video.source.CamSource:"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="filereader">
+      <complexType>
+         <choice>
+            <element ref="optionsgui"/>
+         </choice>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn="ovap.video.source.VideoFileSource:"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="optionsgui">
       <complexType>
          <attribute name="class" type="string" use="required">
             <annotation>
@@ -55,7 +92,7 @@
                   
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn="ovap.device.VideoSource:"/>
+                  <meta.attribute kind="java" basedOn="ovap.video.source.ui.AdvancedOptionsGUI:"/>
                </appinfo>
             </annotation>
          </attribute>

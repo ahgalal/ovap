@@ -9,5 +9,7 @@ package ovap.video.source;
  */
 public enum SourceLaunchConfigs {
 	SOURCE_NAME,
-	FILE_PATH;
+	FILE_PATH,
+	CAM_FRAME_SIZE,
+	CAM_INDEX;
 }

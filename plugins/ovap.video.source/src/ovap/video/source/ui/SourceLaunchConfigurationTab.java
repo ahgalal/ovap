@@ -3,18 +3,29 @@
  */
 package ovap.video.source.ui;
 
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
@@ -27,33 +38,51 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.TabFolder;
-import org.eclipse.swt.widgets.TabItem;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 
 import ovap.video.launch.LaunchConfigs;
+import ovap.video.source.CamSource;
 import ovap.video.source.SourceLaunchConfigs;
 import ovap.video.source.SourceManager;
 import ovap.video.source.SourceType;
 import ovap.video.source.VideoSource;
+import ovap.video.source.ui.providers.SourceTableContentProvider;
+import ovap.video.source.ui.providers.SourceTableLabelProvider;
 import utils.FileUtils;
+import utils.PDEUtils;
 
 /**
  * @author Creative
  */
-public class SourceLaunchConfigurationTab extends AbstractLaunchConfigurationTab {
-	private Button					btnBrowseVideoFile;
-	private Combo					cmboSources;
-	private Composite				composite_1;
-	private Composite				container;
-	private Group					grpSourceType;
-	private Label					lblType;
-	private Label					lblVideoFile;
-	private HashMap<String, String>	source2Type;
-	private TabFolder				tabFolder;
-	private TabItem					tbtmCam;
-	private TabItem					tbtmFile;
-	private Text					txtVideoFile;
+public class SourceLaunchConfigurationTab extends
+		AbstractLaunchConfigurationTab {
+	private Button								btnBrowseVideoFile;
+	private Combo								cmboCam;
+	private Combo								cmboFrameSize;
+	private Composite							cmpstBasicOptions;
+	private Composite							cmpstVideoFile;
+	private Composite							container;
+	private Group								grpAdvanced;
+	private Group								grpBasicCam;
+	private Group								grpBasicFile;
+	private Group								grpOptions;
+	private Group								grpSourceType;
+	private ILaunchConfiguration				launchConfiguration;
+	private Label								lblCam;
+	private Label								lblFrameSize;
+	private Label								lblVideoFile;
+	private HashMap<String, AdvancedOptionsGUI>	sourceNameToAdvancedOptionsGUIMap;
+	private Table								table;
+	private TableViewer							tableViewer;
+	private TableViewerColumn					tableViewerColumn;
+	private TableViewerColumn					tableViewerColumn_1;
+	private TableColumn							tblclmnName;
+
+	private TableColumn							tblclmnType;
+
+	private Text								txtVideoFile;
 
 	/*
 	 * (non-Javadoc)
@@ -76,86 +105,230 @@ public class SourceLaunchConfigurationTab extends AbstractLaunchConfigurationTab
 	 */
 	@Override
 	public void createControl(final Composite parent) {
+		sourceNameToAdvancedOptionsGUIMap = new HashMap<String, AdvancedOptionsGUI>();
 		container = new Composite(parent, 0);
 		container.setLayout(new GridLayout(1, false));
 		{
 			grpSourceType = new Group(container, SWT.NONE);
 			grpSourceType.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,
 					true, false, 1, 1));
-			grpSourceType.setText("Source:");
 			grpSourceType.setLayout(new GridLayout(2, false));
+			grpSourceType.setText("Source");
 			{
-				lblType = new Label(grpSourceType, SWT.NONE);
-				lblType.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER,
-						false, false, 1, 1));
-				lblType.setText("Stream Source:");
-			}
-			{
-				cmboSources = new Combo(grpSourceType, SWT.READ_ONLY);
-				cmboSources.addSelectionListener(new SelectionAdapter() {
-					@Override
-					public void widgetSelected(final SelectionEvent e) {
-						selectSource(cmboSources.getText());
+				{
+					// TableViewer tableViewer = new TableViewer(grpSourceType);
+					tableViewer = new TableViewer(grpSourceType, SWT.BORDER
+							| SWT.FULL_SELECTION | SWT.SINGLE);
+					table = tableViewer.getTable();
+					table.setSelection(0);
+					table.setLinesVisible(true);
+					table.setHeaderVisible(true);
+					{
+						final GridData gd_table = new GridData(SWT.FILL,
+								SWT.FILL, true, true, 2, 1);
+						gd_table.widthHint = 198;
+						table.setLayoutData(gd_table);
 					}
-				});
-				cmboSources.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,
-						true, false, 1, 1));
+					{
+						tableViewerColumn = new TableViewerColumn(tableViewer,
+								SWT.NONE);
+						tblclmnName = tableViewerColumn.getColumn();
+						tblclmnName.setWidth(270);
+						tblclmnName.setText("Name");
+					}
+					{
+						tableViewerColumn_1 = new TableViewerColumn(
+								tableViewer, SWT.NONE);
+						tblclmnType = tableViewerColumn_1.getColumn();
+						tblclmnType.setWidth(100);
+						tblclmnType.setText("Type");
+					}
+				}
+
+				tableViewer
+						.setContentProvider(new SourceTableContentProvider());
+				tableViewer.setLabelProvider(new SourceTableLabelProvider());
+
+				tableViewer
+						.addSelectionChangedListener(new ISelectionChangedListener() {
+							@Override
+							public void selectionChanged(
+									final SelectionChangedEvent event) {
+								final IStructuredSelection selection = (IStructuredSelection) event
+										.getSelection();
+								if (selection.getFirstElement() != null) {
+									final VideoSource videoSource = (VideoSource) selection
+											.getFirstElement();
+									switch (videoSource.getType()) {
+										case CAM:
+											grpBasicFile.setVisible(false);
+											grpBasicCam.setVisible(true);
+											break;
+										case FILE:
+											grpBasicCam.setVisible(false);
+											grpBasicFile.setVisible(true);
+											break;
+										default:
+											break;
+									}
+									for (final AdvancedOptionsGUI gui : sourceNameToAdvancedOptionsGUIMap
+											.values())
+										if (!gui.getControl().isDisposed())
+											gui.getControl().setVisible(false);
+
+									final AdvancedOptionsGUI advancedOptionsGUI = sourceNameToAdvancedOptionsGUIMap
+											.get(videoSource.getName());
+									if (advancedOptionsGUI != null)
+										if (!advancedOptionsGUI.getControl()
+												.isDisposed())
+											advancedOptionsGUI.getControl()
+													.setVisible(true);
+								}
+							}
+						});
 			}
 		}
 		{
-			tabFolder = new TabFolder(container, SWT.NONE);
-			tabFolder.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false,
-					false, 1, 1));
+			grpOptions = new Group(container, SWT.NONE);
+			grpOptions.setLayout(new GridLayout(1, false));
+			grpOptions.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false,
+					true, 1, 1));
+			grpOptions.setText("Options");
 			{
-				tbtmCam = new TabItem(tabFolder, SWT.NONE);
-				tbtmCam.setText("CAM");
-			}
-			{
-				tbtmFile = new TabItem(tabFolder, SWT.NONE);
-				tbtmFile.setText("File");
+				cmpstBasicOptions = new Composite(grpOptions, SWT.NONE);
+				cmpstBasicOptions.setLayout(null);
+				cmpstBasicOptions.setLayoutData(new GridData(SWT.FILL,
+						SWT.CENTER, true, false, 1, 1));
 				{
-					composite_1 = new Composite(tabFolder, SWT.NONE);
-					tbtmFile.setControl(composite_1);
-					composite_1.setLayout(new GridLayout(3, false));
+					grpBasicCam = new Group(cmpstBasicOptions, SWT.NONE);
+					grpBasicCam.setBounds(cmpstBasicOptions.getBounds());
+					grpBasicCam.setLayout(new GridLayout(4, false));
+					grpBasicCam.setText("Basic");
 					{
-						lblVideoFile = new Label(composite_1, SWT.NONE);
-						lblVideoFile.setLayoutData(new GridData(SWT.RIGHT,
+						lblCam = new Label(grpBasicCam, SWT.NONE);
+						lblCam.setLayoutData(new GridData(SWT.RIGHT,
 								SWT.CENTER, false, false, 1, 1));
-						lblVideoFile.setBounds(0, 0, 49, 13);
-						lblVideoFile.setText("Video file:");
+						lblCam.setText("Cam:");
 					}
 					{
-						txtVideoFile = new Text(composite_1, SWT.BORDER
-								| SWT.READ_ONLY);
-						txtVideoFile.setLayoutData(new GridData(SWT.FILL,
+						cmboCam = new Combo(grpBasicCam, SWT.READ_ONLY);
+						cmboCam.setLayoutData(new GridData(SWT.FILL,
 								SWT.CENTER, true, false, 1, 1));
+						cmboCam.select(0);
 					}
 					{
-						btnBrowseVideoFile = new Button(composite_1, SWT.NONE);
-						btnBrowseVideoFile
-								.addSelectionListener(new SelectionAdapter() {
-									@Override
-									public void widgetSelected(
-											final SelectionEvent e) {
-										final FileDialog dialog = new FileDialog(
-												container.getShell());
-										final String filePath = dialog.open();
-										if ((filePath != null)
-												&& (filePath != "")) {
-											txtVideoFile.setText(filePath);
+						lblFrameSize = new Label(grpBasicCam, SWT.NONE);
+						lblFrameSize.setLayoutData(new GridData(SWT.RIGHT,
+								SWT.CENTER, false, false, 1, 1));
+						lblFrameSize.setText("Frame size:");
+					}
+					{
+						cmboFrameSize = new Combo(grpBasicCam, SWT.READ_ONLY);
+						cmboFrameSize.setLayoutData(new GridData(SWT.FILL,
+								SWT.CENTER, true, false, 1, 1));
+						cmboFrameSize.select(0);
+					}
+				}
+				cmpstBasicOptions.addControlListener(new ControlListener() {
+
+					@Override
+					public void controlMoved(final ControlEvent e) {
+						// TODO Auto-generated method stub
+
+					}
+
+					@Override
+					public void controlResized(final ControlEvent e) {
+						final Control[] children = cmpstBasicOptions
+								.getChildren();
+						for (final Control control : children)
+							control.setSize(cmpstBasicOptions.getSize());
+					}
+				});
+				{
+					grpBasicFile = new Group(cmpstBasicOptions, SWT.NONE);
+					grpBasicFile.setBounds(cmpstBasicOptions.getBounds());
+					grpBasicFile.setLayout(new GridLayout(1, false));
+					grpBasicFile.setText("Basic");
+					{
+						cmpstVideoFile = new Composite(grpBasicFile, SWT.NONE);
+						cmpstVideoFile.setLayoutData(new GridData(SWT.FILL,
+								SWT.CENTER, true, false, 1, 1));
+						cmpstVideoFile.setSize(432, 33);
+						cmpstVideoFile.setLayout(new GridLayout(3, false));
+						{
+							lblVideoFile = new Label(cmpstVideoFile, SWT.NONE);
+							lblVideoFile.setLayoutData(new GridData(SWT.RIGHT,
+									SWT.CENTER, false, false, 1, 1));
+							lblVideoFile.setBounds(0, 0, 49, 13);
+							lblVideoFile.setText("Video file:");
+						}
+						{
+							txtVideoFile = new Text(cmpstVideoFile, SWT.BORDER
+									| SWT.READ_ONLY);
+							txtVideoFile.setLayoutData(new GridData(SWT.FILL,
+									SWT.CENTER, true, false, 1, 1));
+						}
+						{
+							btnBrowseVideoFile = new Button(cmpstVideoFile,
+									SWT.NONE);
+							btnBrowseVideoFile
+									.addSelectionListener(new SelectionAdapter() {
+										@Override
+										public void widgetSelected(
+												final SelectionEvent e) {
+											final FileDialog dialog = new FileDialog(
+													container.getShell());
+											final String filePath = dialog
+													.open();
+											if ((filePath != null)
+													&& (filePath != "")) {
+												txtVideoFile.setText(filePath);
+											}
 										}
-									}
-								});
-						btnBrowseVideoFile.setText("...");
+									});
+							btnBrowseVideoFile.setText("...");
+						}
 					}
 				}
 			}
+			{
+				grpAdvanced = new Group(grpOptions, SWT.NONE);
+				grpAdvanced.setLayout(null);
+				grpAdvanced.setLayoutData(new GridData(SWT.FILL, SWT.FILL,
+						true, true, 1, 1));
+				grpAdvanced.setText("Advanced");
+			}
 		}
 
-		source2Type = new HashMap<String, String>();
-		
+		/**
+		 * we instantiate both the VideoSource and the AdvancedOptionsGUI
+		 * attached to it here. this is not the smartest technique, as we
+		 * instantiate the VideoSource just to get its name, and fill the
+		 * sourceNameToAdvGUI map. we can alternatively identify the VideoSource
+		 * by adding source name as an attribute in the extension point, and it
+		 * shall match the VideoSource.getName() value for the source in the
+		 * extension point.
+		 */
+		final IConfigurationElement[] extensions = PDEUtils
+				.getExtensions(SourceManager.OVAP_DEVICE_INPUT_EP);
+		for (final IConfigurationElement element : extensions) {
+			final IConfigurationElement[] children = element.getChildren();
+			if (children.length == 1) {
+				final IConfigurationElement advancedOptionsElement = children[0];
+				final AdvancedOptionsGUI advancedOptionsGUI = PDEUtils
+						.instantiateExtension(AdvancedOptionsGUI.class,
+								advancedOptionsElement);
+				final VideoSource videoSource = PDEUtils.instantiateExtension(
+						VideoSource.class, element);
+				if (!sourceNameToAdvancedOptionsGUIMap.containsKey(videoSource
+						.getName()) && advancedOptionsGUI!=null)
+					sourceNameToAdvancedOptionsGUIMap.put(
+							videoSource.getName(), advancedOptionsGUI);
+				advancedOptionsGUI.createControls(grpAdvanced);
+			}
+		}
 	}
-
 
 	/*
 	 * (non-Javadoc)
@@ -163,7 +336,6 @@ public class SourceLaunchConfigurationTab extends AbstractLaunchConfigurationTab
 	 */
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -214,7 +386,46 @@ public class SourceLaunchConfigurationTab extends AbstractLaunchConfigurationTab
 	public String getName() {
 		return "Source";
 	}
-	
+
+	private void initializeCamOptions(final VideoSource source) {
+		if (source.getType() == SourceType.CAM) {
+			cmboCam.removeAll();
+			final CamSource camSource = (CamSource) source;
+			final int numberOfCams = camSource.getNumberOfCams();
+			for (int i = 0; i < numberOfCams; i++)
+				cmboCam.add(i + "");
+			String camIndex = "";
+			try {
+				camIndex = launchConfiguration.getAttribute(
+						SourceLaunchConfigs.CAM_INDEX.toString(), "");
+			} catch (final CoreException e) {
+				e.printStackTrace();
+			}
+			if (camIndex.isEmpty())
+				camIndex = "0";
+			int index = cmboCam.indexOf(camIndex);
+			cmboCam.select(index);
+
+			cmboFrameSize.removeAll();
+			final Point[] supportedFrameSizes = camSource
+					.getSupportedFrameSizes();
+			for (final Point frameSize : supportedFrameSizes)
+				cmboFrameSize.add(frameSize.x + "x" + frameSize.y);
+
+			String camFrameSize = "";
+			try {
+				camFrameSize = launchConfiguration.getAttribute(
+						SourceLaunchConfigs.CAM_FRAME_SIZE.toString(), "");
+			} catch (final CoreException e) {
+				e.printStackTrace();
+			}
+			index = cmboFrameSize.indexOf(camFrameSize);
+			if (index == -1)
+				index = 0;
+			cmboFrameSize.select(index);
+		}
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * @see
@@ -223,53 +434,78 @@ public class SourceLaunchConfigurationTab extends AbstractLaunchConfigurationTab
 	 */
 	@Override
 	public void initializeFrom(final ILaunchConfiguration configuration) {
+		launchConfiguration = configuration;
 		final ArrayList<VideoSource> sources = SourceManager.getSources();
-		cmboSources.removeAll();
-		for (final VideoSource videoSource : sources) {
-			final String sourceName = videoSource.getName();
-			cmboSources.add(sourceName);
-			source2Type.put(sourceName, videoSource.getType().toString());
-		}
-
+		tableViewer.setInput(sources);
 		String savedSourceName = null;
+		VideoSource savedSource = null;
 		try {
 			savedSourceName = configuration.getAttribute(
 					SourceLaunchConfigs.SOURCE_NAME.toString(), "");
 		} catch (final CoreException e) {
 			e.printStackTrace();
 		}
-		
-		// if no saved source, select the first one in the list
-		if(savedSourceName.equals(""))
-			savedSourceName=cmboSources.getItem(0);
-		selectSource(savedSourceName);
 
-		String videoFilePath = null;
+		// if no saved source, select the first one in the list
+		if (savedSourceName.equals(""))
+			savedSource = sources.get(0);
+		else {
+			for (final VideoSource source : sources)
+				if (source.getName().equals(savedSourceName)) {
+					savedSource = source;
+					break;
+				}
+		}
+		selectSource(savedSource);
+
+		initializeVideoFileOptions(savedSource);
+
+		initializeCamOptions(savedSource);
+		
 		try {
-			videoFilePath = configuration.getAttribute(
-					SourceLaunchConfigs.FILE_PATH.toString(), "");
-		} catch (final CoreException e) {
+			Map<?, ?> attributes = launchConfiguration.getAttributes();
+			HashMap<String, String> options=new HashMap<String, String>();
+			for(Object key:attributes.keySet())
+				options.put((String)key, (String) attributes.get(key));
+			sourceNameToAdvancedOptionsGUIMap.get(savedSource.getName()).loadOptions(options);
+		} catch (CoreException e) {
 			e.printStackTrace();
 		}
-		
-		// if no video file path is saved, select the first one found in the project
-		if(videoFilePath.equals("")){
-			String projectName = "";
+	}
+
+	private void initializeVideoFileOptions(final VideoSource source) {
+		if (source.getType() == SourceType.FILE) {
+			String videoFilePath = null;
 			try {
-				projectName = configuration.getAttribute(LaunchConfigs.PROJECT_NAME.toString(), "");
-			} catch (CoreException e) {
+				videoFilePath = launchConfiguration.getAttribute(
+						SourceLaunchConfigs.FILE_PATH.toString(), "");
+			} catch (final CoreException e) {
 				e.printStackTrace();
 			}
-			IProject selectedProject=null;
-			if(!projectName.equals(""))
-				selectedProject = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
-			if(selectedProject!=null && selectedProject.exists()){
-				ArrayList<IFile> files = FileUtils.getFiles(selectedProject, "avi");
-				if(files.size()>0)
-					videoFilePath=files.get(0).getLocation().toOSString();
+
+			// if no video file path is saved, select the first one found in the
+			// project
+			if (videoFilePath.equals("")) {
+				String projectName = "";
+				try {
+					projectName = launchConfiguration.getAttribute(
+							LaunchConfigs.PROJECT_NAME.toString(), "");
+				} catch (final CoreException e) {
+					e.printStackTrace();
+				}
+				IProject selectedProject = null;
+				if (!projectName.equals(""))
+					selectedProject = ResourcesPlugin.getWorkspace().getRoot()
+							.getProject(projectName);
+				if ((selectedProject != null) && selectedProject.exists()) {
+					final ArrayList<IFile> files = FileUtils.getFiles(
+							selectedProject, "avi");
+					if (files.size() > 0)
+						videoFilePath = files.get(0).getLocation().toOSString();
+				}
 			}
+			txtVideoFile.setText(videoFilePath);
 		}
-		txtVideoFile.setText(videoFilePath);
 	}
 
 	/*
@@ -305,22 +541,27 @@ public class SourceLaunchConfigurationTab extends AbstractLaunchConfigurationTab
 	@Override
 	public void performApply(final ILaunchConfigurationWorkingCopy configuration) {
 		configuration.setAttribute(SourceLaunchConfigs.SOURCE_NAME.toString(),
-				cmboSources.getText());
+				((VideoSource) ((IStructuredSelection) tableViewer
+						.getSelection()).getFirstElement()).getName());
 		configuration.setAttribute(SourceLaunchConfigs.FILE_PATH.toString(),
 				txtVideoFile.getText());
+		configuration.setAttribute(SourceLaunchConfigs.CAM_INDEX.toString(),
+				cmboCam.getText());
+		configuration.setAttribute(
+				SourceLaunchConfigs.CAM_FRAME_SIZE.toString(),
+				cmboFrameSize.getText());
+		
+		// copy updated options from advanced options GUI of the selected source
+		VideoSource selectedSource= (VideoSource) ((IStructuredSelection)tableViewer.getSelection()).getFirstElement();
+		AdvancedOptionsGUI advancedOptionsGUI = sourceNameToAdvancedOptionsGUIMap.get(selectedSource.getName());
+		HashMap<String, String> updatedOptions = advancedOptionsGUI.getUpdatedOptions();
+		for(String key:updatedOptions.keySet())
+			configuration.setAttribute(key, updatedOptions.get(key));
+
 	}
 
-	private void selectSource(final String sourceName) {
-		final int index = cmboSources.indexOf(sourceName);
-		cmboSources.select(index);
-		final String type = source2Type.get(sourceName);
-		if (type != null) {
-			if (type.equals(SourceType.CAM.toString())) {
-				tabFolder.setSelection(0);
-			} else if (type.equals(SourceType.FILE.toString())) {
-				tabFolder.setSelection(1);
-			}
-		}
+	private void selectSource(final VideoSource source) {
+		tableViewer.setSelection(new StructuredSelection(source));
 	}
 
 	/*
@@ -334,5 +575,4 @@ public class SourceLaunchConfigurationTab extends AbstractLaunchConfigurationTab
 		// TODO Auto-generated method stub
 
 	}
-
 }

@@ -9,11 +9,10 @@ import ovap.video.FrameData;
 import ovap.video.source.SourceConfiguration;
 import ovap.video.source.SourceFileConfiguration;
 import ovap.video.source.SourceStatus;
-import ovap.video.source.SourceType;
-import ovap.video.source.VideoSource;
+import ovap.video.source.VideoFileSource;
 import sys.utils.Utils;
 
-public class AGVideoFileSource extends VideoSource {
+public class AGVideoFileSource extends VideoFileSource {
 
 	private class RunnableAGVidLib implements Runnable {
 		@Override
@@ -35,25 +34,22 @@ public class AGVideoFileSource extends VideoSource {
 
 				// long l1 = System.currentTimeMillis();
 				fia.setFrameData(vidLib.getCurrentFrameInt());
-				
+
 				// long l2 = System.currentTimeMillis();
 
 				if (fia.getFrameData() != null)
 					stableStreamSynchronizer.signalStableStream();
-				
-				else{ // check if stream ended
-					if(vidLib.getLength()<=vidLib.getPosition())
+
+				else { // check if stream ended
+					if (vidLib.getLength() <= vidLib.getPosition())
 						notifyStreamEndListeners();
 				}
-				
-				/*if (fia.getFrameData() != null)
-					status = SourceStatus.STREAMING;
-				else {
-					if (paused)
-						status = SourceStatus.PAUSED;
-					else
-						status = SourceStatus.ERROR;
-				}*/
+
+				/*
+				 * if (fia.getFrameData() != null) status =
+				 * SourceStatus.STREAMING; else { if (paused) status =
+				 * SourceStatus.PAUSED; else status = SourceStatus.ERROR; }
+				 */
 
 				try {
 					Thread.sleep(30);
@@ -98,11 +94,11 @@ public class AGVideoFileSource extends VideoSource {
 		}
 	}
 
+	private SourceFileConfiguration		configuration;
 	private StableStreamSynchronizer	stableStreamSynchronizer;
 	private boolean						stopStream;
 	private Thread						thUpdateImage;
 	private final JAGVidLib				vidLib;
-	private SourceFileConfiguration	configuration;
 
 	/**
 	 * 
@@ -162,17 +158,12 @@ public class AGVideoFileSource extends VideoSource {
 	}
 
 	@Override
-	public SourceType getType() {
-		return SourceType.FILE;
-	}
-
-	@Override
 	public boolean initialize(final FrameData frameData,
 			final SourceConfiguration configs) {
-		this.configuration=(SourceFileConfiguration) configs;
+		this.configuration = (SourceFileConfiguration) configs;
 		fia = frameData;
 		stableStreamSynchronizer = new StableStreamSynchronizer();
-		stopStream=false;
+		stopStream = false;
 		return true;
 	}
 
@@ -213,7 +204,7 @@ public class AGVideoFileSource extends VideoSource {
 	@Override
 	public boolean stopStream() {
 		stopStream = true;
-		paused=false;
+		paused = false;
 		thUpdateImage.interrupt();
 		vidLib.stop();
 		return true;

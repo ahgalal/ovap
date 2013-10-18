@@ -12,4 +12,5 @@ Require-Bundle: org.eclipse.ui,
  ovap.video.filter
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Export-Package: ovap.video.source
+Export-Package: ovap.video.source,
+ ovap.video.source.ui

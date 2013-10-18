@@ -3,12 +3,12 @@
 <plugin>
    <extension
          point="ovap.device.input">
-      <filereader
-            class="ovap.device.videofile.AGVideoFileSource">
+      <camera
+            class="ovap.video.source.cam.agcam.AGCamSource">
          <optionsgui
-               class="ovap.video.source.videofile.agvid.AGVidAdvancedOptionsComposite">
+               class="ovap.video.source.cam.agcam.AGCamAdvancedOptionsComposite">
          </optionsgui>
-      </filereader>
+      </camera>
    </extension>
 
 </plugin>

@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: AGCam
+Bundle-SymbolicName: ovap.video.source.cam.agcam;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: ovap.video.source.cam.agcam.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ ovap.video.source,
+ ovap.video;bundle-version="1.0.0"
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

@@ -18,10 +18,12 @@ import utils.PDEUtils;
  */
 public class SourceManager implements ISourceManager, IStreamEndListener {
 
+	public static final String	OVAP_DEVICE_INPUT_EP	= "ovap.device.input";
+
 	public static ArrayList<VideoSource> getSources() {
 		final ArrayList<VideoSource> sources = new ArrayList<VideoSource>();
 		final IConfigurationElement[] config = PDEUtils
-				.getExtensions("ovap.device.input");
+				.getExtensions(OVAP_DEVICE_INPUT_EP);
 		for (final IConfigurationElement e : config) {
 			final VideoSource videoSource = PDEUtils.instantiateExtension(
 					VideoSource.class, e);
