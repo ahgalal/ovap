@@ -4,16 +4,16 @@
 package ovap.video.filter.source;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.FocusEvent;
-import org.eclipse.swt.events.FocusListener;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.wb.swt.SWTResourceManager;
 
 import ovap.video.filter.FilterConfigurationContributer;
-import org.eclipse.swt.widgets.Text;
 
 /**
  * @author Creative
@@ -49,17 +49,12 @@ public class SourceFilterConfigurationContributer extends
 			{
 				text = new Text(grpSourceFilterConfigurations, SWT.BORDER);
 				text.setBounds(30, 27, 76, 19);
-				text.addFocusListener(new FocusListener() {
+				text.addModifyListener(new ModifyListener() {
 					
 					@Override
-					public void focusLost(FocusEvent e) {
+					public void modifyText(ModifyEvent e) {
 						getConfigurations().put("a", text.getText());
-					}
-					
-					@Override
-					public void focusGained(FocusEvent e) {
-						// TODO Auto-generated method stub
-						
+						signalConfigurationChange();
 					}
 				});
 			}
@@ -68,7 +63,7 @@ public class SourceFilterConfigurationContributer extends
 	}
 	@Override
 	protected void initializeGUI() {
-		// TODO: initialize group gui controls with configuration data
+		// FIXME: initialize group gui controls with configuration data
 		text.setText(getConfigurations().get("a"));
 	}
 }
