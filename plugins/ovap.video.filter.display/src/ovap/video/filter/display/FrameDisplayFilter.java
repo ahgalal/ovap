@@ -47,17 +47,6 @@ public class FrameDisplayFilter extends VideoFilter {
 		return Activator.PLUGIN_ID;
 	}
 
-	@Override
-	public int getInPortCount() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int getOutPortCount() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
 
 	@Override
 	public void process() {
@@ -108,6 +97,16 @@ public class FrameDisplayFilter extends VideoFilter {
 			HashMap<String, Object> updatedConfigurations) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public String[] getInPortIDs() {
+		return new String[]{"in"};
+	}
+
+	@Override
+	public String[] getOutPortIDs() {
+		return new String[0];
 	}
 
 }

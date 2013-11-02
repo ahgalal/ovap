@@ -9,7 +9,7 @@
         <eSubpackages name="model" nsURI="model" nsPrefix="model">
           <eClassifiers xsi:type="ecore:EClass" name="FilterInstance" eSuperTypes="#//video/filter/setup/model/Identifiable">
             <eStructuralFeatures xsi:type="ecore:EReference" name="type" lowerBound="1"
-                eType="#//video/filter/setup/model/FilterType"/>
+                eType="#//video/filter/setup/model/FilterType" eKeys="#//video/filter/setup/model/Identifiable/name"/>
             <eStructuralFeatures xsi:type="ecore:EReference" name="portInInstance"
                 upperBound="-1" eType="#//video/filter/setup/model/PortInInstance"
                 containment="true" eOpposite="#//video/filter/setup/model/PortInInstance/filterInstance"/>
@@ -21,22 +21,24 @@
           </eClassifiers>
           <eClassifiers xsi:type="ecore:EClass" name="FilterType" eSuperTypes="#//video/filter/setup/model/Identifiable">
             <eStructuralFeatures xsi:type="ecore:EReference" name="portOut" upperBound="-1"
-                eType="#//video/filter/setup/model/PortOut" containment="true" eOpposite="#//video/filter/setup/model/PortOut/filterType"/>
+                eType="#//video/filter/setup/model/PortOut" containment="true" eOpposite="#//video/filter/setup/model/PortOut/filterType"
+                eKeys="#//video/filter/setup/model/Identifiable/name"/>
             <eStructuralFeatures xsi:type="ecore:EReference" name="portIn" upperBound="-1"
-                eType="#//video/filter/setup/model/PortIn" containment="true" eOpposite="#//video/filter/setup/model/PortIn/filterType"/>
-            <eStructuralFeatures xsi:type="ecore:EReference" name="filtersSetup" eType="#//video/filter/setup/model/FiltersSetup"
-                eOpposite="#//video/filter/setup/model/FiltersSetup/filterTypes"/>
+                eType="#//video/filter/setup/model/PortIn" containment="true" eOpposite="#//video/filter/setup/model/PortIn/filterType"
+                eKeys="#//video/filter/setup/model/Identifiable/name"/>
+            <eStructuralFeatures xsi:type="ecore:EReference" name="model" eType="#//video/filter/setup/model/FilterModel"
+                eOpposite="#//video/filter/setup/model/FilterModel/filterTypes"/>
           </eClassifiers>
           <eClassifiers xsi:type="ecore:EClass" name="FiltersSetup" eSuperTypes="#//video/filter/setup/model/Identifiable">
             <eStructuralFeatures xsi:type="ecore:EReference" name="filterInstances"
                 upperBound="-1" eType="#//video/filter/setup/model/FilterInstance"
-                containment="true"/>
+                containment="true" eKeys="#//video/filter/setup/model/Identifiable/name"/>
             <eStructuralFeatures xsi:type="ecore:EReference" name="connections" upperBound="-1"
                 eType="#//video/filter/setup/model/FilterConnection" containment="true"
-                eOpposite="#//video/filter/setup/model/FilterConnection/filtersSetup"/>
-            <eStructuralFeatures xsi:type="ecore:EReference" name="filterTypes" upperBound="-1"
-                eType="#//video/filter/setup/model/FilterType" containment="true"
-                eOpposite="#//video/filter/setup/model/FilterType/filtersSetup"/>
+                eOpposite="#//video/filter/setup/model/FilterConnection/filtersSetup"
+                eKeys="#//video/filter/setup/model/Identifiable/name"/>
+            <eStructuralFeatures xsi:type="ecore:EReference" name="model" eType="#//video/filter/setup/model/FilterModel"
+                eOpposite="#//video/filter/setup/model/FilterModel/setup"/>
           </eClassifiers>
           <eClassifiers xsi:type="ecore:EClass" name="FilterConnection" eSuperTypes="#//video/filter/setup/model/Identifiable">
             <eStructuralFeatures xsi:type="ecore:EReference" name="portInInstance"
@@ -57,8 +59,7 @@
                 eOpposite="#//video/filter/setup/model/FilterType/portOut"/>
           </eClassifiers>
           <eClassifiers xsi:type="ecore:EClass" name="Port" abstract="true" eSuperTypes="#//video/filter/setup/model/Identifiable"/>
-          <eClassifiers xsi:type="ecore:EClass" name="PortInstance" abstract="true"
-              eSuperTypes="#//video/filter/setup/model/Identifiable"/>
+          <eClassifiers xsi:type="ecore:EClass" name="PortInstance" abstract="true"/>
           <eClassifiers xsi:type="ecore:EClass" name="PortInInstance" eSuperTypes="#//video/filter/setup/model/PortInstance">
             <eStructuralFeatures xsi:type="ecore:EReference" name="filterInstance"
                 lowerBound="1" eType="#//video/filter/setup/model/FilterInstance"
@@ -82,14 +83,14 @@
           <eClassifiers xsi:type="ecore:EClass" name="Identifiable">
             <eOperations name="eURIFragmentSegment" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
               <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-                <details key="body" value="&#xD;&#xA;&#x9;&#x9;//return ((Identifiable)eObject).getName();&#xD;&#xA;&#x9;&#x9;String container=&quot;&quot;;&#xD;&#xA;&#x9;&#x9;if(eObject.eContainer().eContainer()==null) // if root is our container&#xD;&#xA;&#x9;&#x9;&#x9;container= ((Identifiable)eObject.eContainer()).getName()+&quot;/&quot;;&#xD;&#xA;&#x9;&#x9;&#xD;&#xA;&#x9;&#x9;return container + ((Identifiable)eObject).getName();&#xD;&#xA;&#x9;&#x9;//return super.eURIFragmentSegment(eStructuralFeature, eObject);&#xD;&#xA;&#x9;"/>
+                <details key="body" value="&#xD;&#xA;&#x9;&#x9;//return ((Identifiable)eObject).getName();&#xD;&#xA;&#x9;&#x9;//String container=&quot;&quot;;&#xD;&#xA;&#x9;&#x9;//if(eObject.eContainer().eContainer()==null) // if root is our container&#xD;&#xA;&#x9;&#x9;//&#x9;container= ((Identifiable)eObject.eContainer()).getName()+&quot;/&quot;;&#xD;&#xA;&#x9;&#x9;&#xD;&#xA;&#x9;&#x9;//return container + ((Identifiable)eObject).getName();&#xD;&#xA;&#x9;&#x9;return super.eURIFragmentSegment(eStructuralFeature, eObject);&#xD;&#xA;&#x9;"/>
               </eAnnotations>
               <eParameters name="eStructuralFeature" eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature"/>
               <eParameters name="eObject" eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EObject"/>
             </eOperations>
             <eOperations name="eObjectForURIFragmentSegment" eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EObject">
               <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-                <details key="body" value="&#xD;&#xA;&#x9;&#x9;&#xD;&#xA;&#x9;&#x9;if(getName().equals(uriFragmentSegment))&#xD;&#xA;&#x9;&#x9;&#x9;return this;&#xD;&#xA;&#x9;&#x9;&#xD;&#xA;&#x9;&#x9;for(EObject eObject:eContents()){&#xD;&#xA;&#x9;&#x9;&#x9;if(((Identifiable)eObject).getName().equals(uriFragmentSegment))&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;return eObject;&#xD;&#xA;&#x9;&#x9;}&#xD;&#xA;&#x9;&#x9;return null;&#xD;&#xA;&#x9;&#x9;//return super.eObjectForURIFragmentSegment(uriFragmentSegment);&#xD;&#xA;&#x9;"/>
+                <details key="body" value="&#xD;&#xA;&#x9;&#x9;// TODO: need to override getEObjectForURIFragmentRootSegment.getEObjectForURIFragmentRootSegment&#xD;&#xA;&#x9;&#x9;// to fully support hierarchical EObject paths&#xD;&#xA;&#x9;&#x9;//if(getName().equals(uriFragmentSegment))&#xD;&#xA;&#x9;&#x9;//&#x9;return this;&#xD;&#xA;&#x9;&#x9;&#xD;&#xA;&#x9;&#x9;//for(EObject eObject:eContents()){&#xD;&#xA;&#x9;&#x9;//&#x9;if(((Identifiable)eObject).getName().equals(uriFragmentSegment))&#xD;&#xA;&#x9;&#x9;//&#x9;&#x9;return eObject;&#xD;&#xA;&#x9;&#x9;//}&#xD;&#xA;&#x9;&#x9;//return null;&#xD;&#xA;&#x9;&#x9;return super.eObjectForURIFragmentSegment(uriFragmentSegment);&#xD;&#xA;&#x9;"/>
               </eAnnotations>
               <eParameters name="uriFragmentSegment" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
             </eOperations>
@@ -103,6 +104,14 @@
           <eClassifiers xsi:type="ecore:EClass" name="Configuration">
             <eStructuralFeatures xsi:type="ecore:EReference" name="entries" upperBound="-1"
                 eType="#//video/filter/setup/model/ConfigurationMapEntry" containment="true"/>
+          </eClassifiers>
+          <eClassifiers xsi:type="ecore:EClass" name="FilterModel" eSuperTypes="#//video/filter/setup/model/Identifiable">
+            <eStructuralFeatures xsi:type="ecore:EReference" name="filterTypes" upperBound="-1"
+                eType="#//video/filter/setup/model/FilterType" containment="true"
+                eOpposite="#//video/filter/setup/model/FilterType/model" eKeys="#//video/filter/setup/model/Identifiable/name"/>
+            <eStructuralFeatures xsi:type="ecore:EReference" name="setup" lowerBound="1"
+                eType="#//video/filter/setup/model/FiltersSetup" containment="true"
+                eOpposite="#//video/filter/setup/model/FiltersSetup/model"/>
           </eClassifiers>
         </eSubpackages>
       </eSubpackages>

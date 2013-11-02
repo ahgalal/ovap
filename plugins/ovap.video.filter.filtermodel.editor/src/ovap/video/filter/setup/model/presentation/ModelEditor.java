@@ -22,6 +22,7 @@ import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
@@ -33,6 +34,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Path;
 
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -160,6 +162,8 @@ import org.eclipse.emf.edit.ui.view.ExtendedPropertySheetPage;
 import ovap.video.filter.setup.model.provider.ModelItemProviderAdapterFactory;
 
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
+
+import utils.FileUtils;
 
 
 /**
@@ -948,12 +952,13 @@ public class ModelEditor
 		viewer.addDragSupport(dndOperations, transfers, new ViewerDragAdapter(viewer));
 		viewer.addDropSupport(dndOperations, transfers, new EditingDomainViewerDropAdapter(editingDomain, viewer));
 	}
+  
+  private Resource editedResource;
 
   /**
 	 * This is the method called to load a resource into the editing domain's resource set based on the editor's input.
 	 * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-	 * @generated
 	 */
   public void createModel()
   {
@@ -969,13 +974,26 @@ public class ModelEditor
 			exception = e;
 			resource = editingDomain.getResourceSet().getResource(resourceURI, false);
 		}
+		
+		editedResource = resource;
 
-		Diagnostic diagnostic = analyzeResourceProblems(resource, exception);
-		if (diagnostic.getSeverity() != Diagnostic.OK) {
-			resourceToDiagnosticMap.put(resource,  analyzeResourceProblems(resource, exception));
+		// Loading all available model resources into the editing domain, in order to access installed filters EObjects
+		String filePathRelWorkspace = resource.getURI().toPlatformString(true);
+		IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(filePathRelWorkspace));
+		IProject project = file.getProject();
+
+		ArrayList<IFile> files = FileUtils.getFiles(project, "model");
+		for(IFile modelFile:files){
+			URI uri = URI.createPlatformResourceURI(modelFile.getFullPath().toString(),true);
+			resource = editingDomain.getResourceSet().getResource(uri, true);
+			Diagnostic diagnostic = analyzeResourceProblems(resource, exception);
+			if (diagnostic.getSeverity() != Diagnostic.OK) {
+				resourceToDiagnosticMap.put(resource,  analyzeResourceProblems(resource, exception));
+			}
 		}
+
 		editingDomain.getResourceSet().eAdapters().add(problemIndicationAdapter);
-	}
+  }
 
   /**
 	 * Returns a diagnostic describing the errors and warnings listed in the resource
@@ -1050,7 +1068,7 @@ public class ModelEditor
 				selectionViewer.setContentProvider(new AdapterFactoryContentProvider(adapterFactory));
 
 				selectionViewer.setLabelProvider(new AdapterFactoryLabelProvider(adapterFactory));
-				selectionViewer.setInput(editingDomain.getResourceSet());
+				selectionViewer.setInput(editedResource);
 				selectionViewer.setSelection(new StructuredSelection(editingDomain.getResourceSet().getResources().get(0)), true);
 				viewerPane.setTitle(editingDomain.getResourceSet());
 

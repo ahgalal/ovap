@@ -44,39 +44,11 @@
           figure="//@figures.0/@descriptors.0/@actualFigure/@children.2"/>
     </descriptors>
     <descriptors
-        name="FilterTypeFigure">
-      <actualFigure
-          xsi:type="gmfgraph:Rectangle"
-          name="FilterTypeFigure">
-        <layout
-            xsi:type="gmfgraph:BorderLayout"/>
-        <children
-            xsi:type="gmfgraph:Label"
-            name="FilterTypeIdFigure"
-            text="&lt;...>">
-          <layoutData
-              xsi:type="gmfgraph:BorderLayoutData"
-              alignment="BEGINNING"
-              vertical="true"/>
-        </children>
-        <children
-            xsi:type="gmfgraph:Rectangle"
-            name="FilterTypeCompartmentFigure">
-          <layoutData
-              xsi:type="gmfgraph:BorderLayoutData"/>
-        </children>
-      </actualFigure>
-      <accessors
-          figure="//@figures.0/@descriptors.1/@actualFigure/@children.0"/>
-      <accessors
-          figure="//@figures.0/@descriptors.1/@actualFigure/@children.1"/>
-    </descriptors>
-    <descriptors
         name="FilterConnectionFigure">
       <actualFigure
           xsi:type="gmfgraph:PolylineConnection"
           name="FilterConnectionFigure"
-          targetDecoration="//@figures.0/@descriptors.2/@actualFigure/@children.0">
+          targetDecoration="//@figures.0/@descriptors.1/@actualFigure/@children.0">
         <children
             xsi:type="gmfgraph:PolylineDecoration"
             name="Arrow"/>
@@ -95,7 +67,7 @@
             text="&lt;...>"/>
       </actualFigure>
       <accessors
-          figure="//@figures.0/@descriptors.3/@actualFigure/@children.0"/>
+          figure="//@figures.0/@descriptors.2/@actualFigure/@children.0"/>
     </descriptors>
     <descriptors
         name="PortOutFigure">
@@ -110,7 +82,7 @@
             text="&lt;...>"/>
       </actualFigure>
       <accessors
-          figure="//@figures.0/@descriptors.4/@actualFigure/@children.0"/>
+          figure="//@figures.0/@descriptors.3/@actualFigure/@children.0"/>
     </descriptors>
     <descriptors
         name="PortInInstanceFigure">
@@ -123,7 +95,7 @@
             text=""/>
       </actualFigure>
       <accessors
-          figure="//@figures.0/@descriptors.5/@actualFigure/@children.0"/>
+          figure="//@figures.0/@descriptors.4/@actualFigure/@children.0"/>
     </descriptors>
     <descriptors
         name="PortOutInstanceFigure">
@@ -136,15 +108,12 @@
             text=""/>
       </actualFigure>
       <accessors
-          figure="//@figures.0/@descriptors.6/@actualFigure/@children.0"/>
+          figure="//@figures.0/@descriptors.5/@actualFigure/@children.0"/>
     </descriptors>
   </figures>
   <nodes
       name="FilterInstance"
       figure="FilterInstanceFigure"/>
-  <nodes
-      name="FilterType"
-      figure="FilterTypeFigure"/>
   <nodes
       name="PortIn"
       figure="PortInFigure"/>
@@ -165,10 +134,6 @@
       figure="FilterInstanceFigure"
       accessor="//@figures.0/@descriptors.0/@accessors.1"/>
   <compartments
-      name="FilterTypeCompartment"
-      figure="FilterTypeFigure"
-      accessor="//@figures.0/@descriptors.1/@accessors.1"/>
-  <compartments
       name="FilterInstanceRightCompartment"
       figure="FilterInstanceFigure"
       accessor="//@figures.0/@descriptors.0/@accessors.2"/>
@@ -177,23 +142,21 @@
       figure="FilterInstanceFigure"
       accessor="//@figures.0/@descriptors.0/@accessors.0"/>
   <labels
-      name="FilterTypeId"
-      figure="FilterTypeFigure"
-      accessor="//@figures.0/@descriptors.1/@accessors.0"/>
+      name="FilterTypeId"/>
   <labels
       name="PortInName"
       figure="PortInFigure"
-      accessor="//@figures.0/@descriptors.3/@accessors.0"/>
+      accessor="//@figures.0/@descriptors.2/@accessors.0"/>
   <labels
       name="PortOutName"
       figure="PortOutFigure"
-      accessor="//@figures.0/@descriptors.4/@accessors.0"/>
+      accessor="//@figures.0/@descriptors.3/@accessors.0"/>
   <labels
       name="PortInInstanceName"
       figure="PortInInstanceFigure"
-      accessor="//@figures.0/@descriptors.5/@accessors.0"/>
+      accessor="//@figures.0/@descriptors.4/@accessors.0"/>
   <labels
       name="PortOutInstanceName"
       figure="PortOutInstanceFigure"
-      accessor="//@figures.0/@descriptors.6/@accessors.0"/>
+      accessor="//@figures.0/@descriptors.5/@accessors.0"/>
 </gmfgraph:Canvas>

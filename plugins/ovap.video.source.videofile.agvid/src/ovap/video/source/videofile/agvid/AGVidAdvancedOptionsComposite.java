@@ -27,8 +27,7 @@ public class AGVidAdvancedOptionsComposite extends AdvancedOptionsGUI {
 
 	@Override
 	public HashMap<String, String> getUpdatedOptions() {
-		// TODO Auto-generated method stub
-		return null;
+		return getOptions();
 	}
 
 	@Override

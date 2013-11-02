@@ -29,16 +29,6 @@ public class SourceFilter extends VideoFilter {
 	}
 
 	@Override
-	public int getInPortCount() {
-		return 0;
-	}
-
-	@Override
-	public int getOutPortCount() {
-		return 0;
-	}
-
-	@Override
 	protected void handleConfigurationUpdates(
 			final HashMap<String, Object> updatedConfigurations) {
 		// TODO Auto-generated method stub
@@ -61,5 +51,14 @@ public class SourceFilter extends VideoFilter {
 	@Override
 	public void registerDependentData(final FilterData data) {
 	}
+	@Override
+	public String[] getInPortIDs() {
+		return new String[0];
+	}
 
+	@Override
+	public String[] getOutPortIDs() {
+		return new String[]{"out"};
+		
+	}
 }

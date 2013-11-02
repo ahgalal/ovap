@@ -1,23 +1,11 @@
 package ovap.video.filter;
 
 import java.util.HashMap;
-import java.util.Map.Entry;
-
-import org.eclipse.emf.common.util.EMap;
 
 public abstract class VideoFilter {
 	private final HashMap<String, Object>	configurations	= new HashMap<String, Object>();
 	protected Link							linkIn, linkOut;
 	protected String						name;
-
-	public void configure(final EMap<String, String> configuration) {
-		final HashMap<String, Object> configs = new HashMap<String, Object>();
-		for (final Entry<String, String> entry : configuration) {
-			configs.put(entry.getKey(), entry.getValue());
-		}
-
-		configure(configs);
-	}
 
 	public void configure(final HashMap<String, Object> configurations) {
 		final HashMap<String, Object> updatedConfigurations = new HashMap<String, Object>();
@@ -47,7 +35,7 @@ public abstract class VideoFilter {
 
 	public abstract String getID();
 
-	public abstract int getInPortCount();
+	public abstract String[] getInPortIDs();
 
 	public Link getLinkIn() {
 		return linkIn;
@@ -61,7 +49,7 @@ public abstract class VideoFilter {
 		return name;
 	}
 
-	public abstract int getOutPortCount();
+	public abstract String[] getOutPortIDs();
 
 	protected abstract void handleConfigurationUpdates(
 			final HashMap<String, Object> updatedConfigurations);

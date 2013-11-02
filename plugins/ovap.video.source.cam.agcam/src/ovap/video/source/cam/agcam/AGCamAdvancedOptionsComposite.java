@@ -17,9 +17,6 @@ public class AGCamAdvancedOptionsComposite extends AdvancedOptionsGUI {
 
 	private Label	lbl;
 
-	public AGCamAdvancedOptionsComposite() {
-	}
-
 	@Override
 	public void createControls(final Composite parent) {
 		composite = new Composite(parent, 0);

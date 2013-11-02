@@ -21,103 +21,13 @@
     <domainDiagramElement
         href="../ovap.video.filter/emf/FilterSetup.genmodel#//ovap/video/filter/setup/model/FiltersSetup"/>
     <childNodes
-        visualID="3005"
-        editPartClassName="PortInEditPart"
-        itemSemanticEditPolicyClassName="PortInItemSemanticEditPolicy"
-        canonicalEditPolicyClassName="PortInCanonicalEditPolicy"
-        graphicalNodeEditPolicyClassName="PortInGraphicalNodeEditPolicy"
-        createCommandClassName="PortInCreateCommand"
-        containers="//@diagram/@compartments.0">
-      <diagramRunTimeClass
-          href="../../plugin/org.eclipse.gmf.runtime.notation/model/notation.genmodel#//notation/Node"/>
-      <elementType
-          xsi:type="gmfgen:MetamodelType"
-          editHelperClassName="PortInEditHelper"/>
-      <viewmap
-          xsi:type="gmfgen:InnerClassViewmap"
-          layoutType="FLOW_LAYOUT"
-          className="PortInFigure"
-          classBody="&#xA;/**&#xA; * @generated&#xA; */&#xA;public class PortInFigure extends org.eclipse.draw2d.RectangleFigure {&#xA;&#xA;&#xA;&#x9;/**&#xA;&#x9; * @generated&#xA;&#x9; */&#xA;&#x9;private org.eclipse.gmf.runtime.draw2d.ui.figures.WrappingLabel fFigurePortInNameFigure; &#xA;&#xA;&#xA;&#x9;/**&#xA;&#x9; * @generated&#xA;&#x9; */&#xA;&#x9;public PortInFigure() {&#xA;&#x9;&#x9;&#xA;&#x9;org.eclipse.draw2d.FlowLayout layoutThis = new org.eclipse.draw2d.FlowLayout();&#xA;&#x9;layoutThis.setStretchMinorAxis(false);&#xA;&#x9;layoutThis.setMinorAlignment(org.eclipse.draw2d.FlowLayout.ALIGN_LEFTTOP&#xA;);&#xA;&#xA;&#x9;layoutThis.setMajorAlignment(org.eclipse.draw2d.FlowLayout.ALIGN_LEFTTOP&#xA;);&#xA;&#x9;layoutThis.setMajorSpacing(5);&#xA;&#x9;layoutThis.setMinorSpacing(5);&#xA;&#x9;layoutThis.setHorizontal(true);&#xA;&#xA;&#x9;this.setLayoutManager(layoutThis);&#xA;&#xA;&#x9;&#x9;&#x9;&#x9;createContents();&#xA;&#x9;}&#xA;&#x9;/**&#xA;&#x9; * @generated&#xA;&#x9; */&#xA;&#x9;private void createContents(){&#xA;&#xA;&#xA;fFigurePortInNameFigure = new org.eclipse.gmf.runtime.draw2d.ui.figures.WrappingLabel();&#xA;fFigurePortInNameFigure.setText(&quot;&lt;...>&quot;);&#xA;&#xA;this.add(fFigurePortInNameFigure);&#xA;&#xA;&#xA;&#x9;}&#xA;&#xA;&#xA;&#xA;&#xA;&#xA;&#x9;/**&#xA;&#x9; * @generated&#xA;&#x9; */&#xA;&#x9;public org.eclipse.gmf.runtime.draw2d.ui.figures.WrappingLabel getFigurePortInNameFigure() {&#xA;&#x9;&#x9;return fFigurePortInNameFigure;&#xA;&#x9;}&#xA;&#xA;&#xA;}&#xA;&#xA;"/>
-      <modelFacet>
-        <metaClass
-            href="../ovap.video.filter/emf/FilterSetup.genmodel#//ovap/video/filter/setup/model/PortIn"/>
-        <containmentMetaFeature
-            href="../ovap.video.filter/emf/FilterSetup.genmodel#//ovap/video/filter/setup/model/FilterType/portIn"/>
-        <childMetaFeature
-            href="../ovap.video.filter/emf/FilterSetup.genmodel#//ovap/video/filter/setup/model/FilterType/portIn"/>
-      </modelFacet>
-      <labels
-          visualID="5003"
-          editPartClassName="PortInNameEditPart"
-          itemSemanticEditPolicyClassName="PortInNameItemSemanticEditPolicy"
-          elementIcon="true">
-        <diagramRunTimeClass
-            href="../../plugin/org.eclipse.gmf.runtime.notation/model/notation.genmodel#//notation/Node"/>
-        <viewmap
-            xsi:type="gmfgen:ParentAssignedViewmap"
-            getterName="getFigurePortInNameFigure"
-            figureQualifiedClassName="org.eclipse.gmf.runtime.draw2d.ui.figures.WrappingLabel"/>
-        <modelFacet
-            xsi:type="gmfgen:FeatureLabelModelFacet"
-            parser="//@labelParsers/@implementations.0">
-          <metaFeatures
-              href="../ovap.video.filter/emf/FilterSetup.genmodel#//ovap/video/filter/setup/model/Identifiable/name"/>
-        </modelFacet>
-      </labels>
-    </childNodes>
-    <childNodes
-        visualID="3006"
-        editPartClassName="PortOutEditPart"
-        itemSemanticEditPolicyClassName="PortOutItemSemanticEditPolicy"
-        canonicalEditPolicyClassName="PortOutCanonicalEditPolicy"
-        graphicalNodeEditPolicyClassName="PortOutGraphicalNodeEditPolicy"
-        createCommandClassName="PortOutCreateCommand"
-        containers="//@diagram/@compartments.0">
-      <diagramRunTimeClass
-          href="../../plugin/org.eclipse.gmf.runtime.notation/model/notation.genmodel#//notation/Node"/>
-      <elementType
-          xsi:type="gmfgen:MetamodelType"
-          editHelperClassName="PortOutEditHelper"/>
-      <viewmap
-          xsi:type="gmfgen:InnerClassViewmap"
-          layoutType="FLOW_LAYOUT"
-          className="PortOutFigure"
-          classBody="&#xA;/**&#xA; * @generated&#xA; */&#xA;public class PortOutFigure extends org.eclipse.draw2d.RectangleFigure {&#xA;&#xA;&#xA;&#x9;/**&#xA;&#x9; * @generated&#xA;&#x9; */&#xA;&#x9;private org.eclipse.gmf.runtime.draw2d.ui.figures.WrappingLabel fFigurePortOutNameFigure; &#xA;&#xA;&#xA;&#x9;/**&#xA;&#x9; * @generated&#xA;&#x9; */&#xA;&#x9;public PortOutFigure() {&#xA;&#x9;&#x9;&#xA;&#x9;org.eclipse.draw2d.FlowLayout layoutThis = new org.eclipse.draw2d.FlowLayout();&#xA;&#x9;layoutThis.setStretchMinorAxis(false);&#xA;&#x9;layoutThis.setMinorAlignment(org.eclipse.draw2d.FlowLayout.ALIGN_LEFTTOP&#xA;);&#xA;&#xA;&#x9;layoutThis.setMajorAlignment(org.eclipse.draw2d.FlowLayout.ALIGN_LEFTTOP&#xA;);&#xA;&#x9;layoutThis.setMajorSpacing(5);&#xA;&#x9;layoutThis.setMinorSpacing(5);&#xA;&#x9;layoutThis.setHorizontal(true);&#xA;&#xA;&#x9;this.setLayoutManager(layoutThis);&#xA;&#xA;&#x9;&#x9;&#x9;&#x9;createContents();&#xA;&#x9;}&#xA;&#x9;/**&#xA;&#x9; * @generated&#xA;&#x9; */&#xA;&#x9;private void createContents(){&#xA;&#xA;&#xA;fFigurePortOutNameFigure = new org.eclipse.gmf.runtime.draw2d.ui.figures.WrappingLabel();&#xA;fFigurePortOutNameFigure.setText(&quot;&lt;...>&quot;);&#xA;&#xA;this.add(fFigurePortOutNameFigure);&#xA;&#xA;&#xA;&#x9;}&#xA;&#xA;&#xA;&#xA;&#xA;&#xA;&#x9;/**&#xA;&#x9; * @generated&#xA;&#x9; */&#xA;&#x9;public org.eclipse.gmf.runtime.draw2d.ui.figures.WrappingLabel getFigurePortOutNameFigure() {&#xA;&#x9;&#x9;return fFigurePortOutNameFigure;&#xA;&#x9;}&#xA;&#xA;&#xA;}&#xA;&#xA;"/>
-      <modelFacet>
-        <metaClass
-            href="../ovap.video.filter/emf/FilterSetup.genmodel#//ovap/video/filter/setup/model/PortOut"/>
-        <containmentMetaFeature
-            href="../ovap.video.filter/emf/FilterSetup.genmodel#//ovap/video/filter/setup/model/FilterType/portOut"/>
-        <childMetaFeature
-            href="../ovap.video.filter/emf/FilterSetup.genmodel#//ovap/video/filter/setup/model/FilterType/portOut"/>
-      </modelFacet>
-      <labels
-          visualID="5004"
-          editPartClassName="PortOutNameEditPart"
-          itemSemanticEditPolicyClassName="PortOutNameItemSemanticEditPolicy"
-          elementIcon="true">
-        <diagramRunTimeClass
-            href="../../plugin/org.eclipse.gmf.runtime.notation/model/notation.genmodel#//notation/Node"/>
-        <viewmap
-            xsi:type="gmfgen:ParentAssignedViewmap"
-            getterName="getFigurePortOutNameFigure"
-            figureQualifiedClassName="org.eclipse.gmf.runtime.draw2d.ui.figures.WrappingLabel"/>
-        <modelFacet
-            xsi:type="gmfgen:FeatureLabelModelFacet"
-            parser="//@labelParsers/@implementations.0">
-          <metaFeatures
-              href="../ovap.video.filter/emf/FilterSetup.genmodel#//ovap/video/filter/setup/model/Identifiable/name"/>
-        </modelFacet>
-      </labels>
-    </childNodes>
-    <childNodes
         visualID="3007"
         editPartClassName="PortInInstanceEditPart"
         itemSemanticEditPolicyClassName="PortInInstanceItemSemanticEditPolicy"
         canonicalEditPolicyClassName="PortInInstanceCanonicalEditPolicy"
         graphicalNodeEditPolicyClassName="PortInInstanceGraphicalNodeEditPolicy"
         createCommandClassName="PortInInstanceCreateCommand"
-        containers="//@diagram/@compartments.1">
+        containers="//@diagram/@compartments.0">
       <diagramRunTimeClass
           href="../../plugin/org.eclipse.gmf.runtime.notation/model/notation.genmodel#//notation/Node"/>
       <elementType
@@ -161,7 +71,7 @@
         canonicalEditPolicyClassName="PortOutInstanceCanonicalEditPolicy"
         graphicalNodeEditPolicyClassName="PortOutInstanceGraphicalNodeEditPolicy"
         createCommandClassName="PortOutInstanceCreateCommand"
-        containers="//@diagram/@compartments.2">
+        containers="//@diagram/@compartments.1">
       <diagramRunTimeClass
           href="../../plugin/org.eclipse.gmf.runtime.notation/model/notation.genmodel#//notation/Node"/>
       <elementType
@@ -199,55 +109,11 @@
       </labels>
     </childNodes>
     <topLevelNodes
-        visualID="2001"
-        editPartClassName="FilterTypeEditPart"
-        itemSemanticEditPolicyClassName="FilterTypeItemSemanticEditPolicy"
-        canonicalEditPolicyClassName="FilterTypeCanonicalEditPolicy"
-        compartments="//@diagram/@compartments.0"
-        graphicalNodeEditPolicyClassName="FilterTypeGraphicalNodeEditPolicy"
-        createCommandClassName="FilterTypeCreateCommand">
-      <diagramRunTimeClass
-          href="../../plugin/org.eclipse.gmf.runtime.notation/model/notation.genmodel#//notation/Node"/>
-      <elementType
-          xsi:type="gmfgen:MetamodelType"
-          editHelperClassName="FilterTypeEditHelper"/>
-      <viewmap
-          xsi:type="gmfgen:InnerClassViewmap"
-          className="FilterTypeFigure"
-          classBody="&#xA;/**&#xA; * @generated&#xA; */&#xA;public class FilterTypeFigure extends org.eclipse.draw2d.RectangleFigure {&#xA;&#xA;&#xA;&#x9;/**&#xA;&#x9; * @generated&#xA;&#x9; */&#xA;&#x9;private org.eclipse.gmf.runtime.draw2d.ui.figures.WrappingLabel fFigureFilterTypeIdFigure; &#xA;&#x9;/**&#xA;&#x9; * @generated&#xA;&#x9; */&#xA;&#x9;private org.eclipse.draw2d.RectangleFigure fFigureFilterTypeCompartmentFigure; &#xA;&#xA;&#xA;&#x9;/**&#xA;&#x9; * @generated&#xA;&#x9; */&#xA;&#x9;public FilterTypeFigure() {&#xA;&#x9;&#x9;&#xA;&#x9;org.eclipse.draw2d.BorderLayout layoutThis = new org.eclipse.draw2d.BorderLayout();&#xA;&#x9;this.setLayoutManager(layoutThis);&#xA;&#xA;&#x9;&#x9;&#x9;&#x9;createContents();&#xA;&#x9;}&#xA;&#x9;/**&#xA;&#x9; * @generated&#xA;&#x9; */&#xA;&#x9;private void createContents(){&#xA;&#xA;&#xA;fFigureFilterTypeIdFigure = new org.eclipse.gmf.runtime.draw2d.ui.figures.WrappingLabel();&#xA;fFigureFilterTypeIdFigure.setText(&quot;&lt;...>&quot;);&#xA;&#xA;this.add(fFigureFilterTypeIdFigure, org.eclipse.draw2d.BorderLayout.TOP);&#xA;&#xA;&#xA;&#xA;fFigureFilterTypeCompartmentFigure = new org.eclipse.draw2d.RectangleFigure();&#xA;&#xA;this.add(fFigureFilterTypeCompartmentFigure, org.eclipse.draw2d.BorderLayout.CENTER);&#xA;&#xA;&#xA;&#x9;}&#xA;&#xA;&#xA;&#xA;&#xA;&#xA;&#x9;/**&#xA;&#x9; * @generated&#xA;&#x9; */&#xA;&#x9;public org.eclipse.gmf.runtime.draw2d.ui.figures.WrappingLabel getFigureFilterTypeIdFigure() {&#xA;&#x9;&#x9;return fFigureFilterTypeIdFigure;&#xA;&#x9;}&#xA;&#x9;/**&#xA;&#x9; * @generated&#xA;&#x9; */&#xA;&#x9;public org.eclipse.draw2d.RectangleFigure getFigureFilterTypeCompartmentFigure() {&#xA;&#x9;&#x9;return fFigureFilterTypeCompartmentFigure;&#xA;&#x9;}&#xA;&#xA;&#xA;}&#xA;&#xA;"/>
-      <modelFacet>
-        <metaClass
-            href="../ovap.video.filter/emf/FilterSetup.genmodel#//ovap/video/filter/setup/model/FilterType"/>
-        <containmentMetaFeature
-            href="../ovap.video.filter/emf/FilterSetup.genmodel#//ovap/video/filter/setup/model/FiltersSetup/filterTypes"/>
-        <childMetaFeature
-            href="../ovap.video.filter/emf/FilterSetup.genmodel#//ovap/video/filter/setup/model/FiltersSetup/filterTypes"/>
-      </modelFacet>
-      <labels
-          visualID="5001"
-          editPartClassName="FilterTypeNameEditPart"
-          itemSemanticEditPolicyClassName="FilterTypeNameItemSemanticEditPolicy"
-          elementIcon="true">
-        <diagramRunTimeClass
-            href="../../plugin/org.eclipse.gmf.runtime.notation/model/notation.genmodel#//notation/Node"/>
-        <viewmap
-            xsi:type="gmfgen:ParentAssignedViewmap"
-            getterName="getFigureFilterTypeIdFigure"
-            figureQualifiedClassName="org.eclipse.gmf.runtime.draw2d.ui.figures.WrappingLabel"/>
-        <modelFacet
-            xsi:type="gmfgen:FeatureLabelModelFacet"
-            parser="//@labelParsers/@implementations.0">
-          <metaFeatures
-              href="../ovap.video.filter/emf/FilterSetup.genmodel#//ovap/video/filter/setup/model/Identifiable/name"/>
-        </modelFacet>
-      </labels>
-    </topLevelNodes>
-    <topLevelNodes
         visualID="2002"
         editPartClassName="FilterInstanceEditPart"
         itemSemanticEditPolicyClassName="FilterInstanceItemSemanticEditPolicy"
         canonicalEditPolicyClassName="FilterInstanceCanonicalEditPolicy"
-        compartments="//@diagram/@compartments.1 //@diagram/@compartments.2"
+        compartments="//@diagram/@compartments.0 //@diagram/@compartments.1"
         graphicalNodeEditPolicyClassName="FilterInstanceGraphicalNodeEditPolicy"
         createCommandClassName="FilterInstanceCreateCommand">
       <diagramRunTimeClass
@@ -316,32 +182,15 @@
       </modelFacet>
     </links>
     <compartments
-        visualID="7001"
-        editPartClassName="FilterTypeFilterTypeCompartmentEditPart"
-        itemSemanticEditPolicyClassName="FilterTypeFilterTypeCompartmentItemSemanticEditPolicy"
-        canonicalEditPolicyClassName="FilterTypeFilterTypeCompartmentCanonicalEditPolicy"
-        childNodes="//@diagram/@childNodes.0 //@diagram/@childNodes.1"
-        title="FilterTypeCompartment"
-        canCollapse="false"
-        needsTitle="false"
-        node="//@diagram/@topLevelNodes.0">
-      <diagramRunTimeClass
-          href="../../plugin/org.eclipse.gmf.runtime.notation/model/notation.genmodel#//notation/Node"/>
-      <viewmap
-          xsi:type="gmfgen:ParentAssignedViewmap"
-          getterName="getFigureFilterTypeCompartmentFigure"
-          figureQualifiedClassName="org.eclipse.draw2d.RectangleFigure"/>
-    </compartments>
-    <compartments
         visualID="7002"
         editPartClassName="FilterInstanceFilterInstanceLeftCompartmentEditPart"
         itemSemanticEditPolicyClassName="FilterInstanceFilterInstanceLeftCompartmentItemSemanticEditPolicy"
         canonicalEditPolicyClassName="FilterInstanceFilterInstanceLeftCompartmentCanonicalEditPolicy"
-        childNodes="//@diagram/@childNodes.2"
+        childNodes="//@diagram/@childNodes.0"
         title="FilterInstanceLeftCompartment"
         canCollapse="false"
         needsTitle="false"
-        node="//@diagram/@topLevelNodes.1">
+        node="//@diagram/@topLevelNodes.0">
       <diagramRunTimeClass
           href="../../plugin/org.eclipse.gmf.runtime.notation/model/notation.genmodel#//notation/Node"/>
       <viewmap
@@ -354,11 +203,11 @@
         editPartClassName="FilterInstanceFilterInstanceRightCompartmentEditPart"
         itemSemanticEditPolicyClassName="FilterInstanceFilterInstanceRightCompartmentItemSemanticEditPolicy"
         canonicalEditPolicyClassName="FilterInstanceFilterInstanceRightCompartmentCanonicalEditPolicy"
-        childNodes="//@diagram/@childNodes.3"
+        childNodes="//@diagram/@childNodes.1"
         title="FilterInstanceRightCompartment"
         canCollapse="false"
         needsTitle="false"
-        node="//@diagram/@topLevelNodes.1">
+        node="//@diagram/@topLevelNodes.0">
       <diagramRunTimeClass
           href="../../plugin/org.eclipse.gmf.runtime.notation/model/notation.genmodel#//notation/Node"/>
       <viewmap
@@ -373,11 +222,6 @@
             xsi:type="gmfgen:ToolEntry"
             title="FilterInstance"
             description="Create new FilterInstance"
-            genNodes="//@diagram/@topLevelNodes.1"/>
-        <entries
-            xsi:type="gmfgen:ToolEntry"
-            title="FilterType"
-            description="Create new FilterType"
             genNodes="//@diagram/@topLevelNodes.0"/>
         <entries
             xsi:type="gmfgen:ToolEntry"
@@ -386,24 +230,14 @@
             genLinks="//@diagram/@links.0"/>
         <entries
             xsi:type="gmfgen:ToolEntry"
-            title="PortIn"
-            description="Create new PortIn"
-            genNodes="//@diagram/@childNodes.0"/>
-        <entries
-            xsi:type="gmfgen:ToolEntry"
-            title="PortOut"
-            description="Create new PortOut"
-            genNodes="//@diagram/@childNodes.1"/>
-        <entries
-            xsi:type="gmfgen:ToolEntry"
             title="PortInInstance"
             description="Create new PortInInstance"
-            genNodes="//@diagram/@childNodes.2"/>
+            genNodes="//@diagram/@childNodes.0"/>
         <entries
             xsi:type="gmfgen:ToolEntry"
             title="PortOutInstance"
             description="Create new PortOutInstance"
-            genNodes="//@diagram/@childNodes.3"/>
+            genNodes="//@diagram/@childNodes.1"/>
       </groups>
     </palette>
     <preferencePages
@@ -451,39 +285,30 @@
         parent="//@diagram"
         child="//@diagram/@topLevelNodes.0"/>
     <childReferences
-        parent="//@diagram/@topLevelNodes.1"
-        child="//@diagram/@childNodes.2"/>
-    <childReferences
-        parent="//@diagram/@topLevelNodes.1"
-        child="//@diagram/@childNodes.3"/>
-    <childReferences
-        parent="//@diagram"
-        child="//@diagram/@topLevelNodes.1"/>
-    <childReferences
         parent="//@diagram"
         child="//@diagram/@links.0"
         groupName="links"
         groupIcon="icons/linksNavigatorGroup.gif"/>
     <childReferences
         parent="//@diagram/@links.0"
-        child="//@diagram/@childNodes.2"
+        child="//@diagram/@childNodes.0"
         referenceType="out_target"
         groupName="target"
         groupIcon="icons/linkTargetNavigatorGroup.gif"/>
     <childReferences
-        parent="//@diagram/@childNodes.2"
+        parent="//@diagram/@childNodes.0"
         child="//@diagram/@links.0"
         referenceType="in_source"
         groupName="incoming links"
         groupIcon="icons/incomingLinksNavigatorGroup.gif"/>
     <childReferences
         parent="//@diagram/@links.0"
-        child="//@diagram/@childNodes.3"
+        child="//@diagram/@childNodes.1"
         referenceType="in_source"
         groupName="source"
         groupIcon="icons/linkSourceNavigatorGroup.gif"/>
     <childReferences
-        parent="//@diagram/@childNodes.3"
+        parent="//@diagram/@childNodes.1"
         child="//@diagram/@links.0"
         referenceType="out_target"
         groupName="outgoing links"
@@ -527,7 +352,7 @@
       extensibleViaService="true">
     <implementations
         xsi:type="gmfgen:PredefinedParser"
-        uses="//@diagram/@childNodes.0/@labels.0/@modelFacet //@diagram/@childNodes.1/@labels.0/@modelFacet //@diagram/@topLevelNodes.0/@labels.0/@modelFacet //@diagram/@childNodes.2/@labels.0/@modelFacet //@diagram/@childNodes.3/@labels.0/@modelFacet //@diagram/@topLevelNodes.1/@labels.0/@modelFacet"/>
+        uses="//@diagram/@childNodes.0/@labels.0/@modelFacet //@diagram/@childNodes.1/@labels.0/@modelFacet //@diagram/@topLevelNodes.0/@labels.0/@modelFacet"/>
   </labelParsers>
   <contextMenus
       context="//@diagram">

@@ -7,77 +7,6 @@
     xmlns:gmftool="http://www.eclipse.org/gmf/2005/ToolDefinition">
   <nodes>
     <containmentFeature
-        href="../ovap.video.filter/emf/FilterSetup.ecore#//video/filter/setup/model/FiltersSetup/filterTypes"/>
-    <ownedChild>
-      <domainMetaElement
-          href="../ovap.video.filter/emf/FilterSetup.ecore#//video/filter/setup/model/FilterType"/>
-      <labelMappings
-          xsi:type="gmfmap:FeatureLabelMapping">
-        <diagramLabel
-            href="FilterSetup.gmfgraph#FilterTypeId"/>
-        <features
-            href="../ovap.video.filter/emf/FilterSetup.ecore#//video/filter/setup/model/Identifiable/name"/>
-      </labelMappings>
-      <tool
-          xsi:type="gmftool:CreationTool"
-          href="FilterSetup.gmftool#//@palette/@tools.0/@tools.1"/>
-      <diagramNode
-          href="FilterSetup.gmfgraph#FilterType"/>
-      <children
-          compartment="//@nodes.0/@ownedChild/@compartments.0">
-        <containmentFeature
-            href="../ovap.video.filter/emf/FilterSetup.ecore#//video/filter/setup/model/FilterType/portIn"/>
-        <childrenFeature
-            href="../ovap.video.filter/emf/FilterSetup.ecore#//video/filter/setup/model/FilterType/portIn"/>
-        <ownedChild>
-          <domainMetaElement
-              href="../ovap.video.filter/emf/FilterSetup.ecore#//video/filter/setup/model/PortIn"/>
-          <labelMappings
-              xsi:type="gmfmap:FeatureLabelMapping">
-            <diagramLabel
-                href="FilterSetup.gmfgraph#PortInName"/>
-            <features
-                href="../ovap.video.filter/emf/FilterSetup.ecore#//video/filter/setup/model/Identifiable/name"/>
-          </labelMappings>
-          <tool
-              xsi:type="gmftool:CreationTool"
-              href="FilterSetup.gmftool#//@palette/@tools.0/@tools.3"/>
-          <diagramNode
-              href="FilterSetup.gmfgraph#PortIn"/>
-        </ownedChild>
-      </children>
-      <children
-          compartment="//@nodes.0/@ownedChild/@compartments.0">
-        <containmentFeature
-            href="../ovap.video.filter/emf/FilterSetup.ecore#//video/filter/setup/model/FilterType/portOut"/>
-        <childrenFeature
-            href="../ovap.video.filter/emf/FilterSetup.ecore#//video/filter/setup/model/FilterType/portOut"/>
-        <ownedChild>
-          <domainMetaElement
-              href="../ovap.video.filter/emf/FilterSetup.ecore#//video/filter/setup/model/PortOut"/>
-          <labelMappings
-              xsi:type="gmfmap:FeatureLabelMapping">
-            <diagramLabel
-                href="FilterSetup.gmfgraph#PortOutName"/>
-            <features
-                href="../ovap.video.filter/emf/FilterSetup.ecore#//video/filter/setup/model/Identifiable/name"/>
-          </labelMappings>
-          <tool
-              xsi:type="gmftool:CreationTool"
-              href="FilterSetup.gmftool#//@palette/@tools.0/@tools.4"/>
-          <diagramNode
-              href="FilterSetup.gmfgraph#PortOut"/>
-        </ownedChild>
-      </children>
-      <compartments
-          children="//@nodes.0/@ownedChild/@children.0 //@nodes.0/@ownedChild/@children.1">
-        <compartment
-            href="FilterSetup.gmfgraph#FilterTypeCompartment"/>
-      </compartments>
-    </ownedChild>
-  </nodes>
-  <nodes>
-    <containmentFeature
         href="../ovap.video.filter/emf/FilterSetup.ecore#//video/filter/setup/model/FiltersSetup/filterInstances"/>
     <ownedChild>
       <domainMetaElement
@@ -95,7 +24,7 @@
       <diagramNode
           href="FilterSetup.gmfgraph#FilterInstance"/>
       <children
-          compartment="//@nodes.1/@ownedChild/@compartments.0">
+          compartment="//@nodes.0/@ownedChild/@compartments.0">
         <containmentFeature
             href="../ovap.video.filter/emf/FilterSetup.ecore#//video/filter/setup/model/FilterInstance/portInInstance"/>
         <childrenFeature
@@ -118,7 +47,7 @@
         </ownedChild>
       </children>
       <children
-          compartment="//@nodes.1/@ownedChild/@compartments.1">
+          compartment="//@nodes.0/@ownedChild/@compartments.1">
         <containmentFeature
             href="../ovap.video.filter/emf/FilterSetup.ecore#//video/filter/setup/model/FilterInstance/portOutInstance"/>
         <childrenFeature
@@ -141,12 +70,12 @@
         </ownedChild>
       </children>
       <compartments
-          children="//@nodes.1/@ownedChild/@children.0">
+          children="//@nodes.0/@ownedChild/@children.0">
         <compartment
             href="FilterSetup.gmfgraph#FilterInstanceLeftCompartment"/>
       </compartments>
       <compartments
-          children="//@nodes.1/@ownedChild/@children.1">
+          children="//@nodes.0/@ownedChild/@children.1">
         <compartment
             href="FilterSetup.gmfgraph#FilterInstanceRightCompartment"/>
       </compartments>
