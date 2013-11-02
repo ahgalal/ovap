@@ -68,14 +68,15 @@ public class FilterManager implements IFilterManager, IStartup {
 
 	}
 
-	private ArrayList<VideoFilter>	activeFilters;
+	private final ArrayList<VideoFilter>	activeFilters;
+	private FiltersLaunchConfigurations		configuration;
 	private boolean							enabled	= false;
 	private Thread							filtersThread;
 	private FrameData						frameData;
-	private ArrayList<VideoFilter>	installedFilters;
+	private final ArrayList<VideoFilter>	installedFilters;
 	private boolean							paused	= false;
 	private Link							sourceLink;
-	private FiltersLaunchConfigurations configuration;
+
 	public FilterManager() {
 		installedFilters = new ArrayList<VideoFilter>();
 		activeFilters = new ArrayList<VideoFilter>();
@@ -87,49 +88,76 @@ public class FilterManager implements IFilterManager, IStartup {
 			installedFilters.add(videoFilter);
 		}
 	}
-	
-	private void createInstalledFiltersEMFModel(){
-		FilterModel filterModel = ModelFactory.eINSTANCE.createFilterModel();
-		ArrayList<FilterType> filterTypes=new ArrayList<FilterType>();
-		for(VideoFilter filter:installedFilters){
-			FilterType filterType = ModelFactory.eINSTANCE.createFilterType();
+
+	private void createInstalledFiltersEMFModel() {
+		final FilterModel filterModel = ModelFactory.eINSTANCE
+				.createFilterModel();
+		final ArrayList<FilterType> filterTypes = new ArrayList<FilterType>();
+		for (final VideoFilter filter : installedFilters) {
+			final FilterType filterType = ModelFactory.eINSTANCE
+					.createFilterType();
 			filterType.setModel(filterModel);
 			filterType.setName(filter.getID());
-			
-			String[] inPortIDs = filter.getInPortIDs();
-			for(String inPortID: inPortIDs){
-				PortIn portIn = ModelFactory.eINSTANCE.createPortIn();
+
+			final String[] inPortIDs = filter.getInPortIDs();
+			for (final String inPortID : inPortIDs) {
+				final PortIn portIn = ModelFactory.eINSTANCE.createPortIn();
 				portIn.setName(inPortID);
 				filterType.getPortIn().add(portIn);
 			}
-			
-			String[] outPortIDs = filter.getOutPortIDs();
-			for(String outPortID: outPortIDs ){
-				PortOut portOut = ModelFactory.eINSTANCE.createPortOut();
+
+			final String[] outPortIDs = filter.getOutPortIDs();
+			for (final String outPortID : outPortIDs) {
+				final PortOut portOut = ModelFactory.eINSTANCE.createPortOut();
 				portOut.setName(outPortID);
 				filterType.getPortOut().add(portOut);
 			}
-			
+
 			filterTypes.add(filterType);
 		}
-		
+
 		// create installed_filters.emf
 		// Obtain a new resource set
-	    ResourceSet resSet = new ResourceSetImpl();
+		final ResourceSet resSet = new ResourceSetImpl();
 
-	    // create a resource
-	    Resource resource = resSet.createResource(URI
-	        .createURI("/test/installed_filters.model"));
-	    // Get the first model element and cast it to the right type, in my
-	    // example everything is hierarchical included in this first node
-	    resource.getContents().add(filterModel);
+		// create a resource
+		final Resource resource = resSet.createResource(URI
+				.createURI("/test/installed_filters.model"));/*
+															 * FIXME: hardcoded
+															 * to project
+															 * "test", need to
+															 * use a linked
+															 * resource to the
+															 * installed_filters
+															 * .model file
+															 * located under
+															 * .metadata folder
+															 * of the workspace
+															 */
+		// Get the first model element and cast it to the right type, in my
+		// example everything is hierarchical included in this first node
+		resource.getContents().add(filterModel);
 
-	    // now save the content.
-	    try {
-	      resource.save(Collections.EMPTY_MAP);
-	    } catch (IOException e) {
-	      e.printStackTrace();
-	    }	
+		// now save the content.
+		try {
+			resource.save(Collections.EMPTY_MAP);
+		} catch (final IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void earlyStartup() {
+		createInstalledFiltersEMFModel();
+	}
+
+	private HashMap<String, Object> EMapToHashMap(
+			final EMap<String, String> configuration) {
+		final HashMap<String, Object> configs = new HashMap<String, Object>();
+		for (final Entry<String, String> entry : configuration) {
+			configs.put(entry.getKey(), entry.getValue());
+		}
+		return configs;
 	}
 
 	private VideoFilter getActiveFilter(final String name) {
@@ -141,45 +169,40 @@ public class FilterManager implements IFilterManager, IStartup {
 	}
 
 	@Override
-	public boolean initialize(Map<String, Object> launchConfigurations, FrameData frameData) {
+	public boolean initialize(final Map<String, Object> launchConfigurations,
+			final FrameData frameData) {
 		this.frameData = frameData;
 		sourceLink = new Link();
-		
+
 		configuration = new FiltersLaunchConfigurations(launchConfigurations);
 
 		// load filters
-		/*
-		 * Resource.Factory.Registry reg = Resource.Factory.Registry.INSTANCE;
-		 * Map<String, Object> m = reg.getExtensionToFactoryMap(); m.put("ovap",
-		 * new XMIResourceFactoryImpl());
-		 */
 		final EditingDomain editingDomain = TransactionalEditingDomain.Factory.INSTANCE
 				.createEditingDomain();
 		final IProject project = configuration.getProject();// ResourcesPlugin.getWorkspace().getRoot().getProjects()[0];
-		final String activeGraphFile = configuration.getFilterGraphResourcePath();// FilterSettingsUtil.getFilterSetting(project,
-																			// FilterSettings.ACTIVE_GRAPH);
+		final String activeGraphFile = configuration
+				.getFilterGraphResourcePath();// FilterSettingsUtil.getFilterSetting(project,
+		// FilterSettings.ACTIVE_GRAPH);
 		final IFile file = project.getFile(activeGraphFile);
 		final ResourceSet resourceSet = editingDomain.getResourceSet();
 		EObject modelRoot;
 		FiltersSetup filtersSetup = null;
 		final Resource resource = resourceSet.getResource(
-				URI.createPlatformResourceURI(file.getFullPath().toString(),true), true);
-		
-		// Loading all available model resources into the editing domain, in order to access installed filters EObjects
-		ArrayList<IFile> files = FileUtils.getFiles(project, "model");
-		for(IFile modelFile:files){
-			URI uri = URI.createPlatformResourceURI(modelFile.getFullPath().toString(),true);
+				URI.createPlatformResourceURI(file.getFullPath().toString(),
+						true), true);
+
+		// Loading all available model resources into the editing domain, in
+		// order to access installed filters EObjects
+		final ArrayList<IFile> files = FileUtils.getFiles(project, "model");
+		for (final IFile modelFile : files) {
+			final URI uri = URI.createPlatformResourceURI(modelFile
+					.getFullPath().toString(), true);
 			resourceSet.getResource(uri, true);
 		}
-		
-		//resourceSet.getResource(URI.createURI("/test/sources.model"), true);
 
-		modelRoot = resource.getContents().get(0);// EcoreResourceUtil.loadModelRoot(resourceSet
-													// , new
-													// File(file.getFullPath().toOSString()),
-													// null);
+		modelRoot = resource.getContents().get(0);
 		filtersSetup = (FiltersSetup) modelRoot;
-		
+
 		activeFilters.clear();
 		for (final FilterInstance filterInstance : filtersSetup
 				.getFilterInstances()) {
@@ -196,12 +219,14 @@ public class FilterManager implements IFilterManager, IStartup {
 			// instantiate filter, add it to active filters
 			final VideoFilter instance = filter.newInstance(
 					filterInstance.getName(), configuration.getConfigName());
-			if (instance.getName().equals("source")) // FIXME: remove hardcoded source filter name
+			if (instance.getName().equals("source")) // FIXME: remove hardcoded
+														// source filter name
 				instance.setLinkIn(sourceLink);
-			
+
 			// configure filter according to EMF saved configuration
-			Configuration filterConfigs = filterInstance.getConfiguration();
-			if(filterConfigs!=null)
+			final Configuration filterConfigs = filterInstance
+					.getConfiguration();
+			if (filterConfigs != null)
 				instance.configure(EMapToHashMap(filterConfigs.getEntries()));
 			activeFilters.add(instance);
 		}
@@ -225,13 +250,7 @@ public class FilterManager implements IFilterManager, IStartup {
 
 		return true;
 	}
-	private HashMap<String, Object> EMapToHashMap(final EMap<String, String> configuration) {
-		final HashMap<String, Object> configs = new HashMap<String, Object>();
-		for (final Entry<String, String> entry : configuration) {
-			configs.put(entry.getKey(), entry.getValue());
-		}
-		return configs;
-	}
+
 	@Override
 	public boolean pauseStream() {
 		paused = true;
@@ -259,14 +278,9 @@ public class FilterManager implements IFilterManager, IStartup {
 	@Override
 	public boolean stopStream() {
 		enabled = false;
-		paused=false;
+		paused = false;
 		filtersThread.interrupt();
 		return false;
-	}
-
-	@Override
-	public void earlyStartup() {
-		createInstalledFiltersEMFModel();
 	}
 
 }

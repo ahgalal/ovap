@@ -3,7 +3,7 @@
  */
 package ovap.video;
 
-import ovap.project.OVAPException;
+import ovap.video.exception.OVAPException;
 
 /**
  * @author Creative
