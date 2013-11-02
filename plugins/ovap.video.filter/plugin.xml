@@ -10,15 +10,6 @@
       </filter_manager>
    </extension>
    <extension
-         point="org.eclipse.ui.propertyPages">
-      <page
-            category="ovap.project.propertypage.info"
-            class="ovap.video.filter.ui.FilterManagerPage"
-            id="ovap.video.filter.proprtypage.main"
-            name="Filters">
-      </page>
-   </extension>
-   <extension
          point="org.eclipse.debug.ui.launchConfigurationTabs">
       <tab
             class="ovap.video.filter.ui.FiltersLaunchConfigurationTab"

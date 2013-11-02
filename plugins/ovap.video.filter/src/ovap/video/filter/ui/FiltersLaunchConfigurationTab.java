@@ -12,7 +12,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
-import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
 import org.eclipse.emf.common.ui.dialogs.WorkspaceResourceDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -29,27 +28,19 @@ import org.eclipse.swt.widgets.Text;
 
 import ovap.video.filter.FilterLaunchConfigs;
 import ovap.video.launch.LaunchConfigs;
+import ovap.video.launch.ui.OVAPLaunchConfigurationTab;
 import utils.FileUtils;
 
 /**
  * @author Creative
  */
-public class FiltersLaunchConfigurationTab extends AbstractLaunchConfigurationTab {
+public class FiltersLaunchConfigurationTab extends OVAPLaunchConfigurationTab {
 	private Button		btnBrowseActiveGraph;
 	protected Composite	container;
 	private Group		grpFilterGraph;
 	private Label		lblActiveGraph;
 	private Text		txtActiveGraph;
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#canSave()
-	 */
-	@Override
-	public boolean canSave() {
-		// TODO Auto-generated method stub
-		return true;
-	}
 
 	/*
 	 * (non-Javadoc)
@@ -100,6 +91,7 @@ public class FiltersLaunchConfigurationTab extends AbstractLaunchConfigurationTa
 						final IFile selection = selections[0];
 						txtActiveGraph.setText(selection
 								.getProjectRelativePath().toString());
+						updateLaunchConfigurationDialog();
 					}
 					// WorkbenchContentProvider contentProvider =
 					// new WorkbenchContentProvider();
@@ -130,16 +122,6 @@ public class FiltersLaunchConfigurationTab extends AbstractLaunchConfigurationTa
 	@Override
 	public Control getControl() {
 		return container;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#getErrorMessage()
-	 */
-	@Override
-	public String getErrorMessage() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	/*
@@ -203,18 +185,6 @@ public class FiltersLaunchConfigurationTab extends AbstractLaunchConfigurationTa
 	/*
 	 * (non-Javadoc)
 	 * @see
-	 * org.eclipse.debug.ui.ILaunchConfigurationTab#isValid(org.eclipse.debug
-	 * .core.ILaunchConfiguration)
-	 */
-	@Override
-	public boolean isValid(final ILaunchConfiguration launchConfig) {
-		// TODO Auto-generated method stub
-		return true;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see
 	 * org.eclipse.debug.ui.ILaunchConfigurationTab#launched(org.eclipse.debug
 	 * .core.ILaunch)
 	 */
@@ -246,5 +216,15 @@ public class FiltersLaunchConfigurationTab extends AbstractLaunchConfigurationTa
 	public void setDefaults(final ILaunchConfigurationWorkingCopy configuration) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	protected boolean validateData() {
+		String activeGraphFile = txtActiveGraph.getText();
+		if(activeGraphFile==null || activeGraphFile.isEmpty()){
+			errorMessage="Please select filter configuration file";
+			return false;
+		}
+		return true;
 	}
 }

@@ -16,7 +16,6 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
-import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -43,10 +42,12 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 
 import ovap.video.launch.LaunchConfigs;
+import ovap.video.launch.ui.OVAPLaunchConfigurationTab;
 import ovap.video.source.CamSource;
 import ovap.video.source.SourceLaunchConfigs;
 import ovap.video.source.SourceManager;
 import ovap.video.source.SourceType;
+import ovap.video.source.VideoFileSource;
 import ovap.video.source.VideoSource;
 import ovap.video.source.ui.providers.SourceTableContentProvider;
 import ovap.video.source.ui.providers.SourceTableLabelProvider;
@@ -57,7 +58,7 @@ import utils.PDEUtils;
  * @author Creative
  */
 public class SourceLaunchConfigurationTab extends
-		AbstractLaunchConfigurationTab {
+		OVAPLaunchConfigurationTab {
 	private Button								btnBrowseVideoFile;
 	private Combo								cmboCam;
 	private Combo								cmboFrameSize;
@@ -84,13 +85,32 @@ public class SourceLaunchConfigurationTab extends
 
 	private Text								txtVideoFile;
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#canSave()
-	 */
-	@Override
-	public boolean canSave() {
-		// TODO Auto-generated method stub
+
+	
+	protected boolean validateData(){
+		VideoSource selectedSource = (VideoSource) ((IStructuredSelection)tableViewer.getSelection()).getFirstElement();
+		if(selectedSource==null){
+			errorMessage="Please select a video source";
+			return false;
+		}
+		
+		if(selectedSource instanceof CamSource){
+			if(cmboCam.getText().isEmpty()){
+				errorMessage="Please select a camera";
+				return false;
+			}
+			
+			if(cmboFrameSize.getText().isEmpty()){
+				errorMessage="Please select a valid frame size";
+				return false;
+			}
+		}else if(selectedSource instanceof VideoFileSource){
+			if(txtVideoFile.getText().isEmpty()){
+				errorMessage="Please select a video file";
+				return false;
+			}
+		}
+		errorMessage=null;
 		return true;
 	}
 
@@ -183,6 +203,12 @@ public class SourceLaunchConfigurationTab extends
 												.isDisposed())
 											advancedOptionsGUI.getControl()
 													.setVisible(true);
+									
+									// load values to basic options group
+									initializeCamOptions(videoSource);
+									initializeVideoFileOptions(videoSource);
+									
+									updateLaunchConfigurationDialog();
 								}
 							}
 						});
@@ -215,6 +241,12 @@ public class SourceLaunchConfigurationTab extends
 						cmboCam.setLayoutData(new GridData(SWT.FILL,
 								SWT.CENTER, true, false, 1, 1));
 						cmboCam.select(0);
+						cmboCam.addSelectionListener(new SelectionAdapter() {
+							@Override
+							public void widgetSelected(SelectionEvent e) {
+								updateLaunchConfigurationDialog();
+							}
+						});
 					}
 					{
 						lblFrameSize = new Label(grpBasicCam, SWT.NONE);
@@ -227,6 +259,12 @@ public class SourceLaunchConfigurationTab extends
 						cmboFrameSize.setLayoutData(new GridData(SWT.FILL,
 								SWT.CENTER, true, false, 1, 1));
 						cmboFrameSize.select(0);
+						cmboFrameSize.addSelectionListener(new SelectionAdapter() {
+							@Override
+							public void widgetSelected(SelectionEvent e) {
+								updateLaunchConfigurationDialog();
+							}
+						});
 					}
 				}
 				cmpstBasicOptions.addControlListener(new ControlListener() {
@@ -284,6 +322,7 @@ public class SourceLaunchConfigurationTab extends
 											if ((filePath != null)
 													&& (filePath != "")) {
 												txtVideoFile.setText(filePath);
+												updateLaunchConfigurationDialog();
 											}
 										}
 									});
@@ -346,16 +385,6 @@ public class SourceLaunchConfigurationTab extends
 	@Override
 	public Control getControl() {
 		return container;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#getErrorMessage()
-	 */
-	@Override
-	public String getErrorMessage() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	/*
@@ -506,18 +535,6 @@ public class SourceLaunchConfigurationTab extends
 			}
 			txtVideoFile.setText(videoFilePath);
 		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * org.eclipse.debug.ui.ILaunchConfigurationTab#isValid(org.eclipse.debug
-	 * .core.ILaunchConfiguration)
-	 */
-	@Override
-	public boolean isValid(final ILaunchConfiguration launchConfig) {
-		// TODO Auto-generated method stub
-		return true;
 	}
 
 	/*

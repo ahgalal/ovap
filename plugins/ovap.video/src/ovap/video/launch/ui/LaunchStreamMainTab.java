@@ -11,8 +11,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
-import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
-import org.eclipse.debug.ui.ILaunchConfigurationDialog;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
@@ -36,20 +34,26 @@ import ovap.video.launch.LaunchConfigs;
 /**
  * @author Creative
  */
-public class LaunchStreamMainTab extends AbstractLaunchConfigurationTab {
+public class LaunchStreamMainTab extends OVAPLaunchConfigurationTab {
 	private Button		btnBrowseProject;
 
 	private Group		grpProject;
 	protected Composite	topLevel;
 	private Text		txtProjectName;
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#canSave()
-	 */
-	@Override
-	public boolean canSave() {
-		// TODO Auto-generated method stub
+	protected boolean validateData(){
+		String projName = txtProjectName.getText();
+		if(projName==null || projName.isEmpty()){
+			errorMessage="Please select a valid project";
+			return false;
+		}
+		
+		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(projName);
+		if(!project.exists()){
+			errorMessage="Selected project does not exist, Please select a valid project";
+			return false;
+		}
+		errorMessage=null;
 		return true;
 	}
 
@@ -118,6 +122,7 @@ public class LaunchStreamMainTab extends AbstractLaunchConfigurationTab {
 							final IProject selectedProject = (IProject) dialog
 									.getResult()[0];
 							txtProjectName.setText(selectedProject.getName());
+							updateLaunchConfigurationDialog();
 						}
 
 					}
@@ -145,16 +150,6 @@ public class LaunchStreamMainTab extends AbstractLaunchConfigurationTab {
 	@Override
 	public Control getControl() {
 		return topLevel;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#getErrorMessage()
-	 */
-	@Override
-	public String getErrorMessage() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	/*
@@ -204,18 +199,6 @@ public class LaunchStreamMainTab extends AbstractLaunchConfigurationTab {
 	/*
 	 * (non-Javadoc)
 	 * @see
-	 * org.eclipse.debug.ui.ILaunchConfigurationTab#isValid(org.eclipse.debug
-	 * .core.ILaunchConfiguration)
-	 */
-	@Override
-	public boolean isValid(final ILaunchConfiguration launchConfig) {
-		// TODO Auto-generated method stub
-		return true;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see
 	 * org.eclipse.debug.ui.ILaunchConfigurationTab#launched(org.eclipse.debug
 	 * .core.ILaunch)
 	 */
@@ -248,18 +231,4 @@ public class LaunchStreamMainTab extends AbstractLaunchConfigurationTab {
 		// TODO Auto-generated method stub
 
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * org.eclipse.debug.ui.ILaunchConfigurationTab#setLaunchConfigurationDialog
-	 * (org.eclipse.debug.ui.ILaunchConfigurationDialog)
-	 */
-	@Override
-	public void setLaunchConfigurationDialog(
-			final ILaunchConfigurationDialog dialog) {
-		// TODO Auto-generated method stub
-
-	}
-
 }
