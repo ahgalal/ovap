@@ -27,6 +27,7 @@ import org.eclipse.ui.views.properties.IPropertySourceProvider;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
+import ovap.emf.utils.EMFUtils;
 import ovap.video.filter.FilterConfigurationChangeListener;
 import ovap.video.filter.FilterConfigurationContributer;
 import ovap.video.filter.FilterConfigurationManager;
@@ -67,14 +68,6 @@ public class ConfigurationPropertySection extends AbstractPropertySection
 			final TabbedPropertySheetPage aTabbedPropertySheetPage) {
 		super.createControls(parent, aTabbedPropertySheetPage);
 		composite = getWidgetFactory().createFlatFormComposite(parent);
-	}
-
-	private HashMap<String, String> getHashMap(final EMap<String, String> map) {
-		final HashMap<String, String> hashMap = new HashMap<String, String>();
-		for (final Entry<String, String> entry : map) {
-			hashMap.put(entry.getKey(), entry.getValue());
-		}
-		return hashMap;
 	}
 
 	@Override
@@ -134,11 +127,11 @@ public class ConfigurationPropertySection extends AbstractPropertySection
 		final Configuration inputConfiguration = filterInstance
 				.getConfiguration();
 		final HashMap<String, String> configuration;
-		if (inputConfiguration != null)
-			configuration = getHashMap(inputConfiguration.getEntries());
-		else
+		//if (inputConfiguration != null)
+			configuration = EMFUtils.getHashMap(inputConfiguration.getEntries());
+		//else
 			// for first time loading configurations from EMF, they are null
-			configuration = new HashMap<String, String>();
+			//configuration = new HashMap<String, String>();
 		if(configurationContributer.getConfigurations()==null || !isIdenticalMap(inputConfiguration.getEntries(), configurationContributer.getConfigurations()))
 			configurationContributer.setConfigurations(configuration);
 	}

@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IExecutableExtensionFactory;
+import org.eclipse.debug.core.ILaunchConfiguration;
 
 import ovap.video.launch.StreamTarget;
 

@@ -4,7 +4,7 @@
 package ovap.video.filter;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.swt.widgets.Composite;
@@ -15,13 +15,13 @@ import ovap.video.filter.setup.model.FilterInstance;
  * @author Creative
  */
 public abstract class FilterConfigurationContributer {
-
-	private HashMap<String, String>	configuration;
+	private Composite	container;
+	private Map<String, String>	configuration;
 	private ArrayList<FilterConfigurationChangeListener> changeListeners;
 
 	public abstract void createControls(final Composite parent);
 
-	public HashMap<String, String> getConfigurations() {
+	public Map<String, String> getConfigurations() {
 		return configuration;
 	}
 	
@@ -37,8 +37,8 @@ public abstract class FilterConfigurationContributer {
 		return false;
 	}
 
-	public void setConfigurations(final HashMap<String, String> configuration) {
-		this.configuration = configuration;
+	public void setConfigurations(final Map<String, String> filterConfigMap) {
+		this.configuration = filterConfigMap;
 		initializeGUI();
 	}
 	
@@ -50,6 +50,10 @@ public abstract class FilterConfigurationContributer {
 	protected void signalConfigurationChange(){
 		for(FilterConfigurationChangeListener listener:changeListeners)
 			listener.signalConfigurationChange(this);
+	}
+
+	public Composite getContainer() {
+		return container;
 	}
 
 }

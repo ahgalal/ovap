@@ -168,42 +168,6 @@ public class FilterInstanceItemProvider
 		switch (notification.getFeatureID(FilterInstance.class)) {
 			case ModelPackage.FILTER_INSTANCE__TYPE:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
-				
-		/*		FilterType newType = (FilterType) notification.getNewValue();
-				FilterInstance filterInstance = (FilterInstance) notification.getNotifier();
-				if(newType !=null){
-					
-					//DeleteCommand deleteCommand = 
-					// remove old port instances
-					for(Iterator<PortInInstance>it=getPortInInstance().iterator();it.hasNext();)
-						it.remove();
-
-					for(Iterator<PortOutInstance>it=getPortOutInstance().iterator();it.hasNext();)
-						it.remove();*/
-					
-		/*			getPortInInstance().removeAll(getPortInInstance());
-					getPortOutInstance().removeAll(getPortOutInstance());*/
-					
-					// add port instances according to the new filter type
-/*					for(PortIn portIn:newType.getPortIn()){
-						PortInInstance portInInstance = ModelFactory.eINSTANCE.createPortInInstance();
-						portInInstance.setType(portIn);
-						
-						filterInstance.getPortInInstance().add(portInInstance);
-					}
-
-					for(PortOut portOut:newType.getPortOut()){
-						PortOutInstance portOutInstance = ModelFactory.eINSTANCE.createPortOutInstance();
-						portOutInstance.setType(portOut);
-						filterInstance.getPortOutInstance().add(portOutInstance);
-					}
-				}
-				*/
-				
-				
-				
-				
-				
 				return;
 			case ModelPackage.FILTER_INSTANCE__PORT_IN_INSTANCE:
 			case ModelPackage.FILTER_INSTANCE__PORT_OUT_INSTANCE:

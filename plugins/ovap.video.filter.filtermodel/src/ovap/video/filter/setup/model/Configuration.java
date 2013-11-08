@@ -7,7 +7,6 @@
 package ovap.video.filter.setup.model;
 
 import org.eclipse.emf.common.util.EMap;
-
 import org.eclipse.emf.ecore.EObject;
 
 /**

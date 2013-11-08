@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="ovap.video.filter" xmlns="http://www.w3.org/2001/XMLSchema">
+<schema targetNamespace="ovap.video" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appinfo>
-         <meta.schema plugin="ovap.video.filter" id="ovap.filter.configuration" name="Filter Configuration"/>
+         <meta.schema plugin="ovap.video" id="ovap.video.analysis.wizard.page" name="AnalysisWizardPage"/>
       </appinfo>
       <documentation>
          [Enter description of this extension point.]
@@ -17,9 +17,9 @@
          </appinfo>
       </annotation>
       <complexType>
-         <choice>
-            <element ref="configuration"/>
-         </choice>
+         <sequence>
+            <element ref="wizardpage" minOccurs="1" maxOccurs="unbounded"/>
+         </sequence>
          <attribute name="point" type="string" use="required">
             <annotation>
                <documentation>
@@ -47,23 +47,31 @@
       </complexType>
    </element>
 
-   <element name="configuration">
+   <element name="wizardpage">
+      <annotation>
+         <documentation>
+            Page to be added to the analysis session wizard.
+         </documentation>
+      </annotation>
       <complexType>
          <attribute name="class" type="string" use="required">
             <annotation>
                <documentation>
-                  
+                  Page to be added to the wizard.
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn="ovap.video.filter.FilterConfigurationContributer:"/>
+                  <meta.attribute kind="java" basedOn="org.eclipse.jface.wizard.WizardPage:"/>
                </appinfo>
             </annotation>
          </attribute>
-         <attribute name="filtertype" type="string" use="required">
+         <attribute name="runnable" type="string">
             <annotation>
                <documentation>
-                  
+                  Runnable executed when user clicks finish for the wizard.
                </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":ovap.video.launch.analysis.wizard.AnalysisWizardRunnable"/>
+               </appinfo>
             </annotation>
          </attribute>
       </complexType>

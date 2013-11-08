@@ -3,16 +3,21 @@
  */
 package ovap.video.launch;
 
+import java.util.Map;
+
 import org.eclipse.core.resources.IMarkerDelta;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
+import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IMemoryBlock;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IThread;
+import org.eclipse.debug.internal.core.LaunchManager;
 
 import ovap.video.Activator;
 import ovap.video.StreamState;
@@ -194,4 +199,14 @@ public class StreamTarget implements IDebugTarget {
 		terminated = true;
 		fireEvent(DebugEvent.TERMINATE);
 	}
+
+/*	public void launchConfigurationChanged(ILaunchConfiguration configuration) {
+		Map<String, Object> attributes = null;
+		try {
+			attributes = configuration.getAttributes();
+		} catch (CoreException e) {
+			e.printStackTrace();
+		}
+		VideoManager.getDefault().launchConfigurationChanged(attributes,configuration.getName());
+	}*/
 }

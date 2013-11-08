@@ -7,7 +7,6 @@
 package ovap.video.filter.setup.model.impl;
 
 import java.util.Collection;
-import java.util.Iterator;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -27,9 +26,7 @@ import ovap.video.filter.setup.model.FilterInstance;
 import ovap.video.filter.setup.model.FilterType;
 import ovap.video.filter.setup.model.ModelFactory;
 import ovap.video.filter.setup.model.ModelPackage;
-import ovap.video.filter.setup.model.PortIn;
 import ovap.video.filter.setup.model.PortInInstance;
-import ovap.video.filter.setup.model.PortOut;
 import ovap.video.filter.setup.model.PortOutInstance;
 
 /**
@@ -139,45 +136,11 @@ public class FilterInstanceImpl extends IdentifiableImpl implements FilterInstan
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setTypeGen(FilterType newType) {
+	public void setType(FilterType newType) {
 		FilterType oldType = type;
 		type = newType;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.FILTER_INSTANCE__TYPE, oldType, type));
-	}
-	
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 */
-	public void setType(FilterType newType) {
-		setTypeGen(newType);
-		if(newType!=null){
-			// remove old port instances
-/*			for(Iterator<PortInInstance>it=getPortInInstance().iterator();it.hasNext();)
-				it.remove();
-
-			for(Iterator<PortOutInstance>it=getPortOutInstance().iterator();it.hasNext();)
-				it.remove();*/
-			
-			
-			// TODO: need to remove old port instances using an EMF efficient mechanism
-			getPortInInstance().removeAll(getPortInInstance());
-			getPortOutInstance().removeAll(getPortOutInstance());
-			
-			// add port instances according to the new filter type
-			for(PortIn portIn:newType.getPortIn()){
-				PortInInstance portInInstance = ModelFactory.eINSTANCE.createPortInInstance();
-				portInInstance.setType(portIn);
-				getPortInInstance().add(portInInstance);
-			}
-
-			for(PortOut portOut:newType.getPortOut()){
-				PortOutInstance portOutInstance = ModelFactory.eINSTANCE.createPortOutInstance();
-				portOutInstance.setType(portOut);
-				getPortOutInstance().add(portOutInstance);
-			}
-		}
 	}
 
 	/**
@@ -207,9 +170,10 @@ public class FilterInstanceImpl extends IdentifiableImpl implements FilterInstan
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
 	 */
 	public Configuration getConfiguration() {
+		if(configuration==null)
+			configuration = ModelFactory.eINSTANCE.createConfiguration();
 		return configuration;
 	}
 

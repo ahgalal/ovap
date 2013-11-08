@@ -8,6 +8,7 @@ import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.model.ILaunchConfigurationDelegate2;
+import org.eclipse.debug.internal.core.LaunchManager;
 
 import ovap.video.Activator;
 import ovap.video.VideoManager;
@@ -40,14 +41,11 @@ public class OVAPLaunchDelegate implements ILaunchConfigurationDelegate2 {
 		
 		VideoManager.getDefault().initializeSession(streamTarget);
 		VideoManager.getDefault().startStream(configName,configurations);
-		
-
 	}
 
 	@Override
 	public ILaunch getLaunch(ILaunchConfiguration configuration, String mode)
 			throws CoreException {
-		// TODO Auto-generated method stub
 		return new OVAPLaunch(configuration, mode, null);
 	}
 

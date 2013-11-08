@@ -12,6 +12,13 @@ import java.util.Map.Entry;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceChangeListener;
+import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.IResourceDeltaVisitor;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.emf.common.util.EMap;
 import org.eclipse.emf.common.util.URI;
@@ -19,10 +26,10 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.eclipse.emf.edit.domain.EditingDomain;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.ui.IStartup;
 
+import ovap.emf.utils.EMFUtils;
 import ovap.video.FrameData;
 import ovap.video.IFilterManager;
 import ovap.video.filter.setup.model.Configuration;
@@ -41,7 +48,34 @@ import utils.PDEUtils;
 /**
  * @author Creative
  */
-public class FilterManager implements IFilterManager, IStartup {
+public class FilterManager implements IFilterManager, IStartup,IResourceChangeListener {
+	private class ResourceDeltaVisitor implements IResourceDeltaVisitor{
+
+		@Override
+		public boolean visit(IResourceDelta delta) throws CoreException {
+			if(configuration!=null){
+				IResource resource = delta.getResource();
+				if(resource.getFullPath().toString().endsWith(configuration.getFilterGraphResourcePath())){
+					// file has changed
+					
+					// reload file
+					Resource emfResource = EMFUtils.getEMFResource(resource);
+					emfResource.unload();
+					try {
+						emfResource.load(null);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					
+					configureFiltersFromActiveGraph();
+
+					return false;
+				}
+			}
+			return true;
+		}
+
+	}
 	private class FiltersRunnable implements Runnable {
 
 		@Override
@@ -73,23 +107,15 @@ public class FilterManager implements IFilterManager, IStartup {
 	private boolean							enabled	= false;
 	private Thread							filtersThread;
 	private FrameData						frameData;
-	private final ArrayList<VideoFilter>	installedFilters;
+	private static ArrayList<VideoFilter>	installedFilters;
 	private boolean							paused	= false;
 	private Link							sourceLink;
 
 	public FilterManager() {
-		installedFilters = new ArrayList<VideoFilter>();
 		activeFilters = new ArrayList<VideoFilter>();
-		final IConfigurationElement[] config = PDEUtils
-				.getExtensions("ovap.filter.videofilter");
-		for (final IConfigurationElement e : config) {
-			final VideoFilter videoFilter = PDEUtils.instantiateExtension(
-					VideoFilter.class, e);
-			installedFilters.add(videoFilter);
-		}
 	}
 
-	private void createInstalledFiltersEMFModel() {
+	private static void createInstalledFiltersEMFModel() {
 		final FilterModel filterModel = ModelFactory.eINSTANCE
 				.createFilterModel();
 		final ArrayList<FilterType> filterTypes = new ArrayList<FilterType>();
@@ -148,6 +174,15 @@ public class FilterManager implements IFilterManager, IStartup {
 
 	@Override
 	public void earlyStartup() {
+		installedFilters = new ArrayList<VideoFilter>();
+		final IConfigurationElement[] config = PDEUtils
+				.getExtensions("ovap.filter.videofilter");
+		for (final IConfigurationElement e : config) {
+			final VideoFilter videoFilter = PDEUtils.instantiateExtension(
+					VideoFilter.class, e);
+			installedFilters.add(videoFilter);
+		}
+		
 		createInstalledFiltersEMFModel();
 	}
 
@@ -167,23 +202,42 @@ public class FilterManager implements IFilterManager, IStartup {
 		}
 		return null;
 	}
+	
+	private void configureFiltersFromActiveGraph(){
+		final IProject project = configuration.getProject();
+		final String activeGraphFile = configuration
+				.getFilterGraphResourcePath();
+		final IFile file = project.getFile(activeGraphFile);
+		final Resource resource = EMFUtils.getEMFResource(file);
+		EObject modelRoot = resource.getContents().get(0);
+		FiltersSetup filtersSetup = (FiltersSetup) modelRoot;
+		
+		for (final FilterInstance filterInstance : filtersSetup
+				.getFilterInstances()) {
+			// configure filter according to EMF saved configuration
+			final Configuration filterConfigs = filterInstance
+					.getConfiguration();
+			configureFilter(filterInstance.getName(), filterConfigs);
+		}
+	}
 
 	@Override
-	public boolean initialize(final Map<String, Object> launchConfigurations,
+	public boolean initialize(final Map<String, Object> configAttributes,
 			final FrameData frameData) {
 		this.frameData = frameData;
 		sourceLink = new Link();
 
-		configuration = new FiltersLaunchConfigurations(launchConfigurations);
+		configuration = new FiltersLaunchConfigurations(configAttributes);
 
 		// load filters
-		final EditingDomain editingDomain = TransactionalEditingDomain.Factory.INSTANCE
-				.createEditingDomain();
-		final IProject project = configuration.getProject();// ResourcesPlugin.getWorkspace().getRoot().getProjects()[0];
+		final TransactionalEditingDomain editingDomain = EMFUtils.getEditingDomain(configuration.getProject());
+		final IProject project = configuration.getProject();
 		final String activeGraphFile = configuration
-				.getFilterGraphResourcePath();// FilterSettingsUtil.getFilterSetting(project,
+				.getFilterGraphResourcePath();
+		
 		// FilterSettings.ACTIVE_GRAPH);
 		final IFile file = project.getFile(activeGraphFile);
+		
 		final ResourceSet resourceSet = editingDomain.getResourceSet();
 		EObject modelRoot;
 		FiltersSetup filtersSetup = null;
@@ -200,6 +254,7 @@ public class FilterManager implements IFilterManager, IStartup {
 			resourceSet.getResource(uri, true);
 		}
 
+		ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
 		modelRoot = resource.getContents().get(0);
 		filtersSetup = (FiltersSetup) modelRoot;
 
@@ -219,16 +274,16 @@ public class FilterManager implements IFilterManager, IStartup {
 			// instantiate filter, add it to active filters
 			final VideoFilter instance = filter.newInstance(
 					filterInstance.getName(), configuration.getConfigName());
-			if (instance.getName().equals("source")) // FIXME: remove hardcoded
-														// source filter name
-				instance.setLinkIn(sourceLink);
-
+			activeFilters.add(instance);
+			
 			// configure filter according to EMF saved configuration
 			final Configuration filterConfigs = filterInstance
 					.getConfiguration();
-			if (filterConfigs != null)
-				instance.configure(EMapToHashMap(filterConfigs.getEntries()));
-			activeFilters.add(instance);
+			
+			configureFilter(filterInstance.getName(), filterConfigs);
+			
+			if (instance.getName().equals("source")) // FIXME: remove hardcoded source filter name
+				instance.setLinkIn(sourceLink);
 		}
 
 		for (final FilterConnection connection : filtersSetup.getConnections()) {
@@ -249,6 +304,12 @@ public class FilterManager implements IFilterManager, IStartup {
 		}
 
 		return true;
+	}
+	
+	private void configureFilter(String filterName, Configuration filterConfigs){
+		VideoFilter filter = getActiveFilter(filterName);
+		if (filterConfigs != null)
+			filter.configure(EMapToHashMap(filterConfigs.getEntries()));
 	}
 
 	@Override
@@ -281,6 +342,16 @@ public class FilterManager implements IFilterManager, IStartup {
 		paused = false;
 		filtersThread.interrupt();
 		return false;
+	}
+
+	@Override
+	public void resourceChanged(IResourceChangeEvent event) {
+		ResourceDeltaVisitor deltaVisitor = new ResourceDeltaVisitor();
+		try {
+			event.getDelta().accept(deltaVisitor);
+		} catch (CoreException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

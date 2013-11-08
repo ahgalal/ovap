@@ -3,6 +3,9 @@
  */
 package ovap.video.filter.source;
 
+import java.io.FilterInputStream;
+
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -14,13 +17,14 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.wb.swt.SWTResourceManager;
 
 import ovap.video.filter.FilterConfigurationContributer;
+import ovap.video.filter.setup.model.FilterInstance;
 
 /**
  * @author Creative
  */
 public class SourceFilterConfigurationContributer extends
 		FilterConfigurationContributer {
-	private Composite	container;
+	
 	private Group		grpSourceFilterConfigurations;
 	private Text text;
 
@@ -29,12 +33,12 @@ public class SourceFilterConfigurationContributer extends
 	 */
 	@Override
 	public void createControls(final Composite parent) {
-		container = new Composite(parent, 0);
-		container.setBackground(SWTResourceManager
+		setContainer(new Composite(parent, 0));
+		getContainer().setBackground(SWTResourceManager
 				.getColor(SWT.COLOR_LIST_BACKGROUND));
-		container.setLayout(new GridLayout(1, false));
+		getContainer().setLayout(new GridLayout(1, false));
 		{
-			grpSourceFilterConfigurations = new Group(container, SWT.NONE);
+			grpSourceFilterConfigurations = new Group(getContainer(), SWT.NONE);
 			{
 				final GridData gd_grpSourceFilterConfigurations = new GridData(
 						SWT.LEFT, SWT.FILL, false, false, 1, 1);
@@ -61,9 +65,15 @@ public class SourceFilterConfigurationContributer extends
 		}
 
 	}
+	
+	public boolean isAcceptableElement(EObject eObject) {
+		return super.isAcceptableElement(eObject) && ((FilterInstance)eObject).getType().getName().equals(Activator.PLUGIN_ID);
+	};
+	
 	@Override
 	protected void initializeGUI() {
 		// FIXME: initialize group gui controls with configuration data
-		text.setText(getConfigurations().get("a"));
+		if(getConfigurations().get("a")!=null)
+			text.setText(getConfigurations().get("a"));
 	}
 }

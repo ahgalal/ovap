@@ -7,6 +7,8 @@ Bundle-Activator: ovap.video.filter.source.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  ovap.video.filter;bundle-version="1.0.0",
- ovap.video;bundle-version="1.0.0"
+ ovap.video;bundle-version="1.0.0",
+ org.eclipse.emf.ecore;bundle-version="2.7.0",
+ ovap.video.filter.filtermodel;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

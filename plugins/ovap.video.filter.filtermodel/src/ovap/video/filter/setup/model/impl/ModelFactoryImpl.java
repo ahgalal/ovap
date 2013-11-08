@@ -11,12 +11,22 @@ import java.util.Map;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
-
 import org.eclipse.emf.ecore.impl.EFactoryImpl;
-
 import org.eclipse.emf.ecore.plugin.EcorePlugin;
 
-import ovap.video.filter.setup.model.*;
+import ovap.video.filter.setup.model.Configuration;
+import ovap.video.filter.setup.model.FilterConnection;
+import ovap.video.filter.setup.model.FilterInstance;
+import ovap.video.filter.setup.model.FilterModel;
+import ovap.video.filter.setup.model.FilterType;
+import ovap.video.filter.setup.model.FiltersSetup;
+import ovap.video.filter.setup.model.Identifiable;
+import ovap.video.filter.setup.model.ModelFactory;
+import ovap.video.filter.setup.model.ModelPackage;
+import ovap.video.filter.setup.model.PortIn;
+import ovap.video.filter.setup.model.PortInInstance;
+import ovap.video.filter.setup.model.PortOut;
+import ovap.video.filter.setup.model.PortOutInstance;
 
 /**
  * <!-- begin-user-doc -->

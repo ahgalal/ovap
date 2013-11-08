@@ -6,6 +6,7 @@ public abstract class VideoFilter {
 	private final HashMap<String, Object>	configurations	= new HashMap<String, Object>();
 	protected Link							linkIn, linkOut;
 	protected String						name;
+	protected boolean enabled;
 
 	public void configure(final HashMap<String, Object> configurations) {
 		final HashMap<String, Object> updatedConfigurations = new HashMap<String, Object>();
@@ -16,16 +17,18 @@ public abstract class VideoFilter {
 			 * it is not expected to have configs deleted/added, they are just
 			 * modified
 			 */
-			if (!oldValue.equals(newValue))
+			if (oldValue ==null || !oldValue.equals(newValue))
 				updatedConfigurations.put(oldKey, newValue);
 		}
 
 		handleConfigurationUpdates(updatedConfigurations);
 
-		this.configurations.putAll(configurations);
+		this.configurations.putAll(updatedConfigurations);
 	}
 
-	public abstract void enable(boolean enable);
+	public void enable(boolean enable){
+		enabled = enable;
+	}
 
 	public HashMap<String, Object> getConfiguration() {
 		return configurations;

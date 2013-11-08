@@ -3,40 +3,36 @@
  */
 package ovap.video.filter.ui;
 
-import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.emf.common.command.AbstractCommand;
 
-import ovap.video.filter.setup.model.Configuration;
+import ovap.emf.utils.EMFUtils;
 import ovap.video.filter.setup.model.FilterInstance;
-import ovap.video.filter.setup.model.ModelFactory;
 
 /**
  * @author Creative
  */
 public class ApplyFilterConfigurationCommand extends AbstractCommand {
-	private HashMap<String, String>	configurationMap;
-	public ApplyFilterConfigurationCommand(HashMap<String, String> configurationMap,
+	private Map<String, String>	configurationMap;
+	private Map<String, String>	oldConfigurationMap;
+	public ApplyFilterConfigurationCommand(Map<String, String> map,
 			FilterInstance filterInstance) {
 		super();
-		this.configurationMap = configurationMap;
+		this.configurationMap = map;
 		this.filterInstance = filterInstance;
 	}
 
 	private FilterInstance			filterInstance;
-	private Configuration			oldConfiguration;
 
 	@Override
 	public void execute() {
-		oldConfiguration = filterInstance.getConfiguration();
+		oldConfigurationMap = EMFUtils.getHashMap(filterInstance.getConfiguration().getEntries());
 		applyConfigurationUpdates();
 	}
 
 	private void applyConfigurationUpdates() {
-		final Configuration configuration = ModelFactory.eINSTANCE
-				.createConfiguration();
-		configuration.getEntries().putAll(configurationMap);
-		filterInstance.setConfiguration(configuration);
+		filterInstance.getConfiguration().getEntries().putAll(configurationMap);
 	}
 
 	@Override
@@ -51,7 +47,7 @@ public class ApplyFilterConfigurationCommand extends AbstractCommand {
 
 	@Override
 	public void undo() {
-		filterInstance.setConfiguration(oldConfiguration);
+		filterInstance.getConfiguration().getEntries().putAll(oldConfigurationMap);
 	}
 
 }

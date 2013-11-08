@@ -6,11 +6,9 @@
  */
 package ovap.video.filter.setup.model.impl;
 
-import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.ecore.EClass;
-
-import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
+
 import ovap.video.filter.setup.model.ModelPackage;
 import ovap.video.filter.setup.model.PortInstance;
 

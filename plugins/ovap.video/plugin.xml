@@ -4,6 +4,7 @@
    <extension-point id="ovap.video.module.manager" name="ModuleManager" schema="schema/ovap.video.module.manager.exsd"/>
    <extension-point id="ovap.video.source.manager" name="SourceManager" schema="schema/ovap.video.source.manager.exsd"/>
    <extension-point id="ovap.video.filter.manager" name="FilterManager" schema="schema/ovap.video.filter.manager.exsd"/>
+   <extension-point id="ovap.video.analysis.wizard.page" name="AnalysisWizardPage" schema="schema/ovap.video.analysis.wizard.page.exsd"/>
    <extension
          point="org.eclipse.debug.core.launchConfigurationTypes">
       <launchConfigurationType
@@ -21,5 +22,30 @@
             id="ovap.video.launch.stream.tabgroup"
             type="ovap.video.launch.stream">
       </launchConfigurationTabGroup>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            id="ovap.video.command.analysis"
+            name="Start Analysis">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.eclipse.ui.popup.any?endof=editGroup">
+         <command
+               commandId="ovap.video.command.analysis"
+               style="push">
+         </command>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="ovap.video.launch.analysis.command.handler.StartAnalysisCommandHandler"
+            commandId="ovap.video.command.analysis">
+      </handler>
    </extension>
 </plugin>
