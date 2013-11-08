@@ -15,18 +15,28 @@ import ovap.video.filter.setup.model.FilterInstance;
  * @author Creative
  */
 public abstract class FilterConfigurationContributer {
-	private Composite	container;
-	private Map<String, String>	configuration;
-	private ArrayList<FilterConfigurationChangeListener> changeListeners;
+	private final ArrayList<FilterConfigurationChangeListener>	changeListeners;
+	private Map<String, String>									configuration;
+	private Composite											container;
+
+	public FilterConfigurationContributer() {
+		changeListeners = new ArrayList<FilterConfigurationChangeListener>();
+	}
+
+	public void addChangeListener(
+			final FilterConfigurationChangeListener listener) {
+		if (!changeListeners.contains(listener))
+			changeListeners.add(listener);
+	}
 
 	public abstract void createControls(final Composite parent);
 
 	public Map<String, String> getConfigurations() {
 		return configuration;
 	}
-	
-	public FilterConfigurationContributer() {
-		changeListeners = new ArrayList<FilterConfigurationChangeListener>();
+
+	public Composite getContainer() {
+		return container;
 	}
 
 	protected abstract void initializeGUI();
@@ -41,19 +51,14 @@ public abstract class FilterConfigurationContributer {
 		this.configuration = filterConfigMap;
 		initializeGUI();
 	}
-	
-	public void addChangeListener(FilterConfigurationChangeListener listener){
-		if(!changeListeners.contains(listener))
-			changeListeners.add(listener);
-	}
-	
-	protected void signalConfigurationChange(){
-		for(FilterConfigurationChangeListener listener:changeListeners)
-			listener.signalConfigurationChange(this);
+
+	protected void setContainer(final Composite container) {
+		this.container = container;
 	}
 
-	public Composite getContainer() {
-		return container;
+	protected void signalConfigurationChange() {
+		for (final FilterConfigurationChangeListener listener : changeListeners)
+			listener.signalConfigurationChange(this);
 	}
 
 }
