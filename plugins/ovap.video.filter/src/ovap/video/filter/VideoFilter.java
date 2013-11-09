@@ -1,12 +1,21 @@
 package ovap.video.filter;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.eclipse.core.runtime.IConfigurationElement;
+
+import utils.PDEUtils;
+
 public abstract class VideoFilter {
-	private final HashMap<String, Object>	configurations	= new HashMap<String, Object>();
+	private static final String				OUTPUT_PARAM_ELEMENT	= "output_param";
+	private static final String				PARAM_ID				= "id";
+	private static final String				PARAM_NAME				= "name";
+	private final HashMap<String, Object>	configurations			= new HashMap<String, Object>();
+	protected boolean						enabled;
 	protected Link							linkIn, linkOut;
 	protected String						name;
-	protected boolean enabled;
+	private ArrayList<Parameter>			parameters;
 
 	public void configure(final HashMap<String, Object> configurations) {
 		final HashMap<String, Object> updatedConfigurations = new HashMap<String, Object>();
@@ -17,7 +26,7 @@ public abstract class VideoFilter {
 			 * it is not expected to have configs deleted/added, they are just
 			 * modified
 			 */
-			if (oldValue ==null || !oldValue.equals(newValue))
+			if ((oldValue == null) || !oldValue.equals(newValue))
 				updatedConfigurations.put(oldKey, newValue);
 		}
 
@@ -25,8 +34,8 @@ public abstract class VideoFilter {
 
 		this.configurations.putAll(updatedConfigurations);
 	}
-
-	public void enable(boolean enable){
+	
+	public void enable(final boolean enable) {
 		enabled = enable;
 	}
 
@@ -53,6 +62,33 @@ public abstract class VideoFilter {
 	}
 
 	public abstract String[] getOutPortIDs();
+
+	protected ArrayList<Parameter> getParameters() {
+		if (parameters != null)
+			return parameters;
+		parameters = new ArrayList<Parameter>();
+		final IConfigurationElement[] extensions = PDEUtils
+				.getExtensions(Activator.OVAP_FILTER_VIDEOFILTER_EP);
+
+		for (final IConfigurationElement element : extensions) {
+			if (element.getContributor().getName().equals(getID())) {
+				for (final IConfigurationElement child : element.getChildren()) {
+					if (child.getName().equals(OUTPUT_PARAM_ELEMENT))
+						parameters.add(new Parameter(child
+								.getAttribute(PARAM_ID), child
+								.getAttribute(PARAM_NAME)));
+				}
+			}
+		}
+		return parameters;
+	}
+	
+	protected Parameter getParameter(String name){
+		for(Parameter parameter:getParameters())
+			if(parameter.getName().equals(name))
+				return parameter;
+		return null;
+	}
 
 	protected abstract void handleConfigurationUpdates(
 			final HashMap<String, Object> updatedConfigurations);

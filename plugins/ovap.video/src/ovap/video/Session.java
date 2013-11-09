@@ -63,6 +63,10 @@ public class Session implements IStreamEndListener{
 		final FrameData frameData = sourceManager.getFrameData();
 		filterManager.initialize(attributes, frameData);
 	}
+	
+	public void deInitialize(){
+		filterManager.deInitialize();
+	}
 
 	public boolean pauseStream() {
 		moduleManager.pause();

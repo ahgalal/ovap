@@ -5,6 +5,10 @@
          point="ovap.filter.videofilter">
       <filter
             class="ovap.video.filter.delta.DeltaFilter">
+         <output_param
+               id="ovap.video.filter.delta.pixeldelta"
+               name="pixeldelta">
+         </output_param>
       </filter>
    </extension>
    <extension

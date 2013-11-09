@@ -49,6 +49,8 @@ import utils.PDEUtils;
  * @author Creative
  */
 public class FilterManager implements IFilterManager, IStartup,IResourceChangeListener {
+	
+
 	private class ResourceDeltaVisitor implements IResourceDeltaVisitor{
 
 		@Override
@@ -176,7 +178,7 @@ public class FilterManager implements IFilterManager, IStartup,IResourceChangeLi
 	public void earlyStartup() {
 		installedFilters = new ArrayList<VideoFilter>();
 		final IConfigurationElement[] config = PDEUtils
-				.getExtensions("ovap.filter.videofilter");
+				.getExtensions(Activator.OVAP_FILTER_VIDEOFILTER_EP);
 		for (final IConfigurationElement e : config) {
 			final VideoFilter videoFilter = PDEUtils.instantiateExtension(
 					VideoFilter.class, e);
@@ -232,10 +234,8 @@ public class FilterManager implements IFilterManager, IStartup,IResourceChangeLi
 		// load filters
 		final TransactionalEditingDomain editingDomain = EMFUtils.getEditingDomain(configuration.getProject());
 		final IProject project = configuration.getProject();
-		final String activeGraphFile = configuration
-				.getFilterGraphResourcePath();
+		final String activeGraphFile = configuration.getFilterGraphResourcePath();
 		
-		// FilterSettings.ACTIVE_GRAPH);
 		final IFile file = project.getFile(activeGraphFile);
 		
 		final ResourceSet resourceSet = editingDomain.getResourceSet();
@@ -327,6 +327,14 @@ public class FilterManager implements IFilterManager, IStartup,IResourceChangeLi
 		}
 		return true;
 	}
+	
+	public ArrayList<Parameter> getParameters(){
+		ArrayList<Parameter> activeParameters = new ArrayList<Parameter>();
+		for(VideoFilter filter:activeFilters){
+			activeParameters.addAll(filter.getParameters());
+		}
+		return activeParameters;
+	}
 
 	@Override
 	public boolean startStream() {
@@ -352,6 +360,12 @@ public class FilterManager implements IFilterManager, IStartup,IResourceChangeLi
 		} catch (CoreException e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public boolean deInitialize() {
+		ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
+		return true;
 	}
 
 }

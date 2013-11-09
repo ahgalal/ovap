@@ -5,7 +5,6 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IExecutableExtensionFactory;
-import org.eclipse.debug.core.ILaunchConfiguration;
 
 import ovap.video.launch.StreamTarget;
 
@@ -58,7 +57,9 @@ public class VideoManager implements IExecutableExtensionFactory{
 
 
 	public void stopStream(String sessionId) {
-		getSession(sessionId).stopStream();
+		Session session = getSession(sessionId);
+		session.stopStream();
+		session.deInitialize();
 	}
 
 	public StreamState getState(String sessionId) {

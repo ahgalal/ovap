@@ -49,6 +49,9 @@
 
    <element name="filter">
       <complexType>
+         <choice>
+            <element ref="output_param" minOccurs="0" maxOccurs="unbounded"/>
+         </choice>
          <attribute name="class" type="string" use="required">
             <annotation>
                <documentation>
@@ -57,6 +60,25 @@
                <appinfo>
                   <meta.attribute kind="java" basedOn="VideoFilter:"/>
                </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="output_param">
+      <complexType>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
             </annotation>
          </attribute>
       </complexType>
