@@ -3,19 +3,18 @@ package ovap.video.filter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.eclipse.core.runtime.IConfigurationElement;
-
-import utils.PDEUtils;
+import ovap.video.Parameter;
+import ovap.video.ParametersContainer;
 
 public abstract class VideoFilter {
-	private static final String				OUTPUT_PARAM_ELEMENT	= "output_param";
+	private static final String				OUTPUT_PARAM_ELEMENT	= "out_parameter";
 	private static final String				PARAM_ID				= "id";
 	private static final String				PARAM_NAME				= "name";
 	private final HashMap<String, Object>	configurations			= new HashMap<String, Object>();
 	protected boolean						enabled;
 	protected Link							linkIn, linkOut;
 	protected String						name;
-	private ArrayList<Parameter>			parameters;
+	private ParametersContainer				paramsContainer;
 
 	public void configure(final HashMap<String, Object> configurations) {
 		final HashMap<String, Object> updatedConfigurations = new HashMap<String, Object>();
@@ -34,7 +33,7 @@ public abstract class VideoFilter {
 
 		this.configurations.putAll(updatedConfigurations);
 	}
-	
+
 	public void enable(final boolean enable) {
 		enabled = enable;
 	}
@@ -63,31 +62,20 @@ public abstract class VideoFilter {
 
 	public abstract String[] getOutPortIDs();
 
-	protected ArrayList<Parameter> getParameters() {
-		if (parameters != null)
-			return parameters;
-		parameters = new ArrayList<Parameter>();
-		final IConfigurationElement[] extensions = PDEUtils
-				.getExtensions(Activator.OVAP_FILTER_VIDEOFILTER_EP);
-
-		for (final IConfigurationElement element : extensions) {
-			if (element.getContributor().getName().equals(getID())) {
-				for (final IConfigurationElement child : element.getChildren()) {
-					if (child.getName().equals(OUTPUT_PARAM_ELEMENT))
-						parameters.add(new Parameter(child
-								.getAttribute(PARAM_ID), child
-								.getAttribute(PARAM_NAME)));
-				}
-			}
-		}
-		return parameters;
+	protected Parameter getParameter(final String name) {
+		return getParametersContainer().getParameter(name);
 	}
-	
-	protected Parameter getParameter(String name){
-		for(Parameter parameter:getParameters())
-			if(parameter.getName().equals(name))
-				return parameter;
-		return null;
+
+	protected ArrayList<Parameter> getParameters() {
+		return getParametersContainer().getParameters();
+	}
+
+	private ParametersContainer getParametersContainer() {
+		if (paramsContainer == null)
+			paramsContainer = new ParametersContainer(getID(),
+					Activator.OVAP_FILTER_VIDEOFILTER_EP, OUTPUT_PARAM_ELEMENT,
+					PARAM_ID, PARAM_NAME);
+		return paramsContainer;
 	}
 
 	protected abstract void handleConfigurationUpdates(

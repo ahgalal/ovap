@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Module
+Bundle-Name: ModuleManager
 Bundle-SymbolicName: ovap.video.module;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: ovap.module.Activator

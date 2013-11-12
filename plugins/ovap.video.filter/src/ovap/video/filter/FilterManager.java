@@ -32,6 +32,7 @@ import org.eclipse.ui.IStartup;
 import ovap.emf.utils.EMFUtils;
 import ovap.video.FrameData;
 import ovap.video.IFilterManager;
+import ovap.video.Parameter;
 import ovap.video.filter.setup.model.Configuration;
 import ovap.video.filter.setup.model.FilterConnection;
 import ovap.video.filter.setup.model.FilterInstance;

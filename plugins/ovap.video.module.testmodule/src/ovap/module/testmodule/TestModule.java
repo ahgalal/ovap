@@ -42,4 +42,9 @@ private static int a=0;
 			}
 		return this.getClass().toString();
 	}
+
+	@Override
+	public String getID() {
+		return Activator.PLUGIN_ID;
+	}
 }

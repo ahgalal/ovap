@@ -10,7 +10,7 @@ public class Activator extends AbstractUIPlugin {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "ovap.module"; //$NON-NLS-1$
-
+	public static final String OVAP_VIDEO_MODULE_EP = "ovap.video.module";
 	// The shared instance
 	private static Activator plugin;
 	

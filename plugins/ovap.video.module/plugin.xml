@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-   <extension-point id="ovap.module" name="ovap.module.module" schema="schema/ovap.module.exsd"/>
+   <extension-point id="ovap.video.module" name="ovap.video.module" schema="schema/ovap.video.module.exsd"/>
    <extension
          point="ovap.video.module.manager">
       <module_manager

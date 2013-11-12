@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="ovap.module" xmlns="http://www.w3.org/2001/XMLSchema">
+<schema targetNamespace="ovap.video.module" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appinfo>
-         <meta.schema plugin="ovap.module" id="ovap.module" name="ovap.module"/>
+         <meta.schema plugin="ovap.video.module" id="ovap.video.module" name="Module"/>
       </appinfo>
       <documentation>
          [Enter description of this extension point.]
@@ -49,6 +49,10 @@
 
    <element name="module">
       <complexType>
+         <choice>
+            <element ref="in_parameter" minOccurs="0" maxOccurs="unbounded"/>
+            <element ref="out_parameter" minOccurs="0" maxOccurs="unbounded"/>
+         </choice>
          <attribute name="class" type="string" use="required">
             <annotation>
                <documentation>
@@ -57,6 +61,44 @@
                <appinfo>
                   <meta.attribute kind="java" basedOn="ovap.module.Module:"/>
                </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="in_parameter">
+      <complexType>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  Id for the input parameter as defined by the contributing filter.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  Name of the input parameter as defined by the contributing filter.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="out_parameter">
+      <complexType>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  Id for the output parameter.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  Name of the output parameter.
+               </documentation>
             </annotation>
          </attribute>
       </complexType>
