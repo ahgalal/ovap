@@ -1,14 +1,12 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Delta
-Bundle-SymbolicName: ovap.video.filter.delta;singleton:=true
+Bundle-Name: Blobdetector
+Bundle-SymbolicName: ovap.video.filter.blobdetector;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Bundle-Activator: ovap.video.filter.delta.Activator
+Bundle-Activator: ovap.video.filter.blobdetector.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  ovap.video.filter,
- org.eclipse.emf.ecore;bundle-version="2.7.0",
- ovap.video.filter.filtermodel;bundle-version="1.0.0",
  ovap.video.utils;bundle-version="1.0.0",
  ovap.video;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy

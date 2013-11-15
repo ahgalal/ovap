@@ -28,7 +28,7 @@ public class FilterInstancePropertySectionFilter implements IFilter {
 			if(model instanceof Shape){
 				Shape shape = (Shape)model;
 				EObject element = shape.getElement();
-				if(element instanceof FilterInstance && FilterConfigurationManager.getDefault().isContributerPresent(element))
+				if(element instanceof FilterInstance && FilterConfigurationManager.getDefault().isContributerPresent((FilterInstance) element))
 					return true;
 			}
 		}

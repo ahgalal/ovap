@@ -12,7 +12,7 @@
  * <http://www.gnu.org/licenses/>.
  **************************************************************************/
 
-package ovap.video.filter.delta;
+package ovap.video.utils;
 
 import java.awt.Point;
 import java.awt.image.BufferedImage;
@@ -99,6 +99,22 @@ public class ImageManipulator {
 		}
 	}
 	
+	public static void negativeImage(int[] inImage,int[] outImage){
+		RGB pixelRGB = new RGB(0, 0, 0);
+		for(int i=0;i<inImage.length;i++){
+			int pixel = inImage[i];
+			intToRGB(pixel, pixelRGB);
+			int newR = (255- pixelRGB.getR()) & 0x000000FF;
+			int newG = (255- pixelRGB.getG()) & 0x000000FF;
+			int newB = (255- pixelRGB.getB()) & 0x000000FF;
+			pixelRGB.setR(newR);
+			pixelRGB.setG(newG);
+			pixelRGB.setB(newB);
+			int newPixel = rgbToInt(pixelRGB);
+			outImage[i] = newPixel;
+		}
+	}
+	
 	public static void intensirySlicing(int[] inImg,int[] outImg,RGB[] sliceColors,RGB[] sliceThresholds){
 		RGB pixelRGB=new RGB(0, 0, 0);
 		for(int pixelIndex =0;pixelIndex<inImg.length;pixelIndex++){
@@ -151,10 +167,10 @@ public class ImageManipulator {
 		public BlobFinder() {
 			centroidFinder = new CentroidFinder();
 		}
-		final int[][] labelTable = new int[40][40]; // FIXME: maximum of 40
+		final int[][] labelTable = new int[200][200]; // FIXME: maximum of 40
 		// labels only!, need to
 		// be dynamic
-		final int[] labelTableIndices = new int[40];
+		final int[] labelTableIndices = new int[200];
 
 		private void resetLabelTable(){
 			for(int i=0;i<labelTable.length;i++){
@@ -181,8 +197,8 @@ public class ImageManipulator {
 				final int xPixel = i % width;
 				final int yPixel = i / width;
 
-				if ((xPixel < xStart) || (xPixel > xEnd) || (yPixel < yStart)
-						|| (yPixel > yEnd))
+				if ((xPixel-1 < xStart) || (xPixel+1 > xEnd-1) || (yPixel-1 < yStart)
+						|| (yPixel+1 > yEnd-1))
 					continue;
 
 				if (pixel == 0x00FFFFFF) { // pixel is foreground

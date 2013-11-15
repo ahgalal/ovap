@@ -108,8 +108,9 @@ public class ConfigurationPropertySection extends AbstractPropertySection
 			return;
 
 		prevSelection = selectedEObject;
+		if(selectedEObject instanceof FilterInstance)
 		configurationContributer = FilterConfigurationManager.getDefault()
-				.getContributerForObject(selectedEObject);
+				.getContributerForFilter((FilterInstance) selectedEObject);
 
 		if (configurationContributer != null) {
 			configurationContributer.createControls(composite);

@@ -14,7 +14,8 @@
    <extension
          point="ovap.filter.videofilter">
       <filter
-            class="ovap.video.filter.display.FrameDisplayFilter">
+            class="ovap.video.filter.display.FrameDisplayFilter"
+            id="ovap.video.filter.display">
       </filter>
    </extension>
 

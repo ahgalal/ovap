@@ -4,19 +4,16 @@
    <extension
          point="ovap.filter.videofilter">
       <filter
-            class="ovap.video.filter.delta.DeltaFilter">
+            class="ovap.video.filter.delta.DeltaFilter"
+            id="ovap.video.filter.delta">
          <output_param
                id="ovap.video.filter.delta.pixeldelta"
                name="pixeldelta">
          </output_param>
+         <configuration_gui
+               class="ovap.video.filter.delta.DeltaFilterConfigurationContributer">
+         </configuration_gui>
       </filter>
-   </extension>
-   <extension
-         point="ovap.filter.configuration">
-      <configuration
-            class="ovap.video.filter.delta.DeltaFilterConfigurationContributer"
-            filtertype="ovap.video.filter.delta">
-      </configuration>
    </extension>
 
 </plugin>

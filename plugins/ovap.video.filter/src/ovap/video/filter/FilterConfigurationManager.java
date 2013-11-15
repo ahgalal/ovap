@@ -4,10 +4,8 @@
 package ovap.video.filter;
 
 import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.emf.ecore.EObject;
 
 import ovap.video.filter.setup.model.FilterInstance;
-
 import utils.PDEUtils;
 
 /**
@@ -15,7 +13,6 @@ import utils.PDEUtils;
  */
 public class FilterConfigurationManager {
 	private static FilterConfigurationManager	defaultInstance;
-	private static String						EXP_ID	= "ovap.filter.configuration";
 
 	public static FilterConfigurationManager getDefault() {
 		if (defaultInstance == null)
@@ -26,32 +23,36 @@ public class FilterConfigurationManager {
 	private FilterConfigurationManager() {
 	}
 	
-	public boolean isContributerPresent(EObject eObject){
-		final IConfigurationElement[] extensions = PDEUtils
-				.getExtensions(EXP_ID);
-		for (final IConfigurationElement element : extensions) {
-			String supportedFilterType = element.getAttribute("filtertype");
-			String filterInstanceTypeId = ((FilterInstance)eObject).getType().getName();
-			if(supportedFilterType.equals(filterInstanceTypeId))
+	public boolean isContributerPresent(FilterInstance filterInstance){
+		IConfigurationElement videoFilterExtension = getVideoFilterExtension(filterInstance.getType().getName());
+		for(IConfigurationElement child:videoFilterExtension.getChildren()){
+			// look for Configuration contributer
+			if(child.getName().equals("configuration_gui"))
 				return true;
 		}
 		return false;
 	}
-
-	public FilterConfigurationContributer getContributerForObject(
-			final EObject eObject) {
+	
+	private IConfigurationElement getVideoFilterExtension(String filterId){
 		final IConfigurationElement[] extensions = PDEUtils
-				.getExtensions(EXP_ID);
+				.getExtensions(Activator.OVAP_FILTER_VIDEOFILTER_EP);
 		for (final IConfigurationElement element : extensions) {
-			final FilterConfigurationContributer instance = PDEUtils
-					.instantiateExtension(FilterConfigurationContributer.class,
-							element);
-			final boolean accepted = instance.isAcceptableElement(eObject);
-			if (accepted) {
-				return instance;
+			String tmpId = element.getAttribute("id");
+			if(tmpId.equals(filterId)){
+				return element;
 			}
 		}
+		return null;
+	}
 
+	public FilterConfigurationContributer getContributerForFilter(
+			final FilterInstance filterInstance) {
+		IConfigurationElement videoFilterExtension = getVideoFilterExtension(filterInstance.getType().getName());
+		for(IConfigurationElement child:videoFilterExtension.getChildren()){
+			// look for Configuration contributer
+			if(child.getName().equals("configuration_gui"))
+				return PDEUtils.instantiateExtension(FilterConfigurationContributer.class, child);
+		}
 		return null;
 	}
 }

@@ -8,7 +8,6 @@ import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.model.ILaunchConfigurationDelegate2;
-import org.eclipse.debug.internal.core.LaunchManager;
 
 import ovap.video.Activator;
 import ovap.video.VideoManager;
@@ -16,6 +15,7 @@ import ovap.video.VideoManager;
 
 public class OVAPLaunchDelegate implements ILaunchConfigurationDelegate2 {
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void launch(ILaunchConfiguration configuration, String mode,
 			ILaunch launch, IProgressMonitor monitor) throws CoreException {

@@ -13,7 +13,7 @@ import ovap.video.IStreamEndListener;
  * @author Creative
  */
 public abstract class VideoSource {
-	protected FrameData						fia;
+	protected FrameData						frameData;
 	protected boolean						paused	= false;
 	protected SourceStatus					status;
 	protected ArrayList<IStreamEndListener>	streamEndListeners;
@@ -38,8 +38,12 @@ public abstract class VideoSource {
 
 	public abstract SourceType getType();
 
-	public abstract boolean initialize(FrameData frame,
-			SourceConfiguration configs);
+	/**
+	 * Initializes the video source, including the creation of the {@link #frameData} instance.
+	 * @param configs
+	 * @return
+	 */
+	public abstract boolean initialize(SourceConfiguration configs);
 
 	public void notifyStreamEndListeners() {
 		for (final IStreamEndListener streamEndListener : streamEndListeners) {
@@ -67,4 +71,8 @@ public abstract class VideoSource {
 	public abstract boolean startStream();
 
 	public abstract boolean stopStream();
+
+	public FrameData getFrameData() {
+		return frameData;
+	}
 }

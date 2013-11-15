@@ -25,6 +25,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -59,6 +60,7 @@ public class FiltersLaunchConfigurationTab extends OVAPLaunchConfigurationTab im
 	private List listActivetFilters;
 	private Label lblSs;
 	private Composite cmpstConfiguration;
+	private Composite cmpstDummy;
 	private HashMap<FilterInstance,FilterConfigurationContributer> filterInstanceToConfigContributer;
 	private ILaunchConfiguration	launchConfiguration;
 	private Button btnSaveFilters;
@@ -145,10 +147,16 @@ public class FiltersLaunchConfigurationTab extends OVAPLaunchConfigurationTab im
 								for(FilterInstance filterInstance:filterInstanceToConfigContributer.keySet()){
 									if(filterInstance.getName().equals(selection[0])){
 										FilterConfigurationContributer configContributer = getFilterConfigurationGUI(filterInstance);
-										for(Control child:cmpstConfiguration.getChildren())
+										for(Control child:cmpstConfiguration.getChildren()){
 											child.setVisible(false);
-										if(configContributer!=null)
+											child.setParent(cmpstDummy);
+										}
+										if(configContributer!=null){
+											configContributer.getContainer().setParent(cmpstConfiguration);
 											configContributer.getContainer().setVisible(true);
+											configContributer.getContainer().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+											cmpstConfiguration.layout();
+										}
 									}
 								}
 							}
@@ -163,8 +171,17 @@ public class FiltersLaunchConfigurationTab extends OVAPLaunchConfigurationTab im
 			}
 			{
 				cmpstConfiguration = new Composite(grpFilterConfigurations, SWT.NONE);
+				cmpstConfiguration.setLayout(new GridLayout(1, false));
 				cmpstConfiguration.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 			}
+			cmpstDummy  = new Composite(grpFilterConfigurations, SWT.NONE);
+			{
+				GridData gd_cmpstDummy = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+				gd_cmpstDummy.widthHint = -5;
+				gd_cmpstDummy.heightHint = -6;
+				cmpstDummy.setLayoutData(gd_cmpstDummy);
+			}
+			cmpstDummy.setSize(0,0);
 			{
 				btnSaveFilters = new Button(grpFilterConfigurations, SWT.NONE);
 				btnSaveFilters.addSelectionListener(new SelectionAdapter() {
@@ -176,6 +193,8 @@ public class FiltersLaunchConfigurationTab extends OVAPLaunchConfigurationTab im
 				btnSaveFilters.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 				btnSaveFilters.setText("Save Filters");
 			}
+			new Label(grpFilterConfigurations, SWT.NONE);
+			new Label(grpFilterConfigurations, SWT.NONE);
 		}
 
 	}
@@ -223,13 +242,15 @@ public class FiltersLaunchConfigurationTab extends OVAPLaunchConfigurationTab im
 	}
 	
 	private FilterConfigurationContributer loadFilterConfigurationGUI(FilterInstance filterInstance){
-		FilterConfigurationContributer configContributer = FilterConfigurationManager.getDefault().getContributerForObject(filterInstance);
+		FilterConfigurationContributer configContributer = FilterConfigurationManager.getDefault().getContributerForFilter(filterInstance);
 		if(configContributer!=null){
 			configContributer.createControls(cmpstConfiguration);
 			configContributer.setConfigurations(EMFUtils.getHashMap(filterInstance.getConfiguration().getEntries()));
 			configContributer.addChangeListener(this);
-			configContributer.getContainer().setBounds(0,0,100,100);
+			//configContributer.getContainer().setLocation(0, 0);
+			//configContributer.getContainer().setSize(400,400);
 			configContributer.getContainer().setVisible(false);
+			//configContributer.getContainer().layout();
 		}
 		return configContributer;
 	}
@@ -306,6 +327,9 @@ public class FiltersLaunchConfigurationTab extends OVAPLaunchConfigurationTab im
 			if(filterGraph.equals(""))
 				filterGraph=detectedFilterGraph;
 			txtActiveGraph.setText(filterGraph);
+			
+			EMFUtils.loadAllResourcesInProjectToEditingDomain(selectedProject,"model");
+			
 			loadFilterInstances(selectedProject.getFile(filterGraph),configuration);
 			
 			updateLaunchConfiguration(filterInstanceToConfigContributer.keySet(), configuration);

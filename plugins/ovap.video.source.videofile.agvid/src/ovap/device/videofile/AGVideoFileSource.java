@@ -18,7 +18,7 @@ public class AGVideoFileSource extends VideoFileSource {
 		@Override
 		public void run() {
 			final Point dims = vidLib.getVideoDimensions();
-			fia.setFrameData(new int[dims.x * dims.y]);
+			frameData.setFrameData(new int[dims.x * dims.y]);
 
 			vidLib.play();
 			Utils.sleep(100);
@@ -33,11 +33,11 @@ public class AGVideoFileSource extends VideoFileSource {
 				}
 
 				// long l1 = System.currentTimeMillis();
-				fia.setFrameData(vidLib.getCurrentFrameInt());
+				frameData.setFrameData(vidLib.getCurrentFrameInt());
 
 				// long l2 = System.currentTimeMillis();
 
-				if (fia.getFrameData() != null)
+				if (frameData.getFrameData() != null)
 					stableStreamSynchronizer.signalStableStream();
 
 				else { // check if stream ended
@@ -158,10 +158,12 @@ public class AGVideoFileSource extends VideoFileSource {
 	}
 
 	@Override
-	public boolean initialize(final FrameData frameData,
-			final SourceConfiguration configs) {
+	public boolean initialize(final SourceConfiguration configs) {
 		this.configuration = (SourceFileConfiguration) configs;
-		fia = frameData;
+		vidLib.initialize(configuration.getFileName());
+		Utils.sleep(100);
+		Point videoDimensions = vidLib.getVideoDimensions();
+		frameData = new FrameData(videoDimensions.x, videoDimensions.y);
 		stableStreamSynchronizer = new StableStreamSynchronizer();
 		stopStream = false;
 		return true;
@@ -188,8 +190,6 @@ public class AGVideoFileSource extends VideoFileSource {
 	 */
 	@Override
 	public boolean startStream() {
-		vidLib.initialize(configuration.getFileName());
-		Utils.sleep(100);
 		thUpdateImage = new Thread(new RunnableAGVidLib(), "AGVidLib");
 		thUpdateImage.start();
 		stableStreamSynchronizer.waitForStableStream(1000);

@@ -70,9 +70,10 @@ public class SourceManager implements ISourceManager, IStreamEndListener {
 		else
 			configuration = new SourceCamConfiguration(configurations);
 
-		frameData = new FrameData();
-		activeSource.initialize(frameData, configuration);
+		
+		activeSource.initialize(configuration);
 		activeSource.addStreamEndListener(this);
+		frameData = activeSource.getFrameData();
 		return true;
 	}
 

@@ -3,9 +3,11 @@
  */
 package ovap.emf.utils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.emf.common.util.EMap;
@@ -15,6 +17,8 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.edit.domain.EditingDomain;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
+
+import utils.FileUtils;
 
 /**
  * @author Creative
@@ -50,6 +54,16 @@ public class EMFUtils {
 			hashMap.put(entry.getKey(), entry.getValue());
 		}
 		return hashMap;
+	}
+
+	public static void loadAllResourcesInProjectToEditingDomain(IProject project,String string) {
+		final ArrayList<IFile> files = FileUtils.getFiles(project, "model");
+		TransactionalEditingDomain editingDomain = getEditingDomain(project);
+		for (final IFile modelFile : files) {
+			final URI uri = URI.createPlatformResourceURI(modelFile
+					.getFullPath().toString(), true);
+			editingDomain.getResourceSet().getResource(uri, true);
+		}		
 	}
 
 

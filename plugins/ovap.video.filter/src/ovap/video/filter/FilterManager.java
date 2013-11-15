@@ -3,6 +3,7 @@
  */
 package ovap.video.filter;
 
+import java.awt.Point;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -43,7 +44,6 @@ import ovap.video.filter.setup.model.ModelFactory;
 import ovap.video.filter.setup.model.PortIn;
 import ovap.video.filter.setup.model.PortOut;
 import sys.utils.Utils;
-import utils.FileUtils;
 import utils.PDEUtils;
 
 /**
@@ -107,6 +107,7 @@ public class FilterManager implements IFilterManager, IStartup,IResourceChangeLi
 
 	private final ArrayList<VideoFilter>	activeFilters;
 	private FiltersLaunchConfigurations		configuration;
+	private Map<String,Object> dynamicConfigurations;
 	private boolean							enabled	= false;
 	private Thread							filtersThread;
 	private FrameData						frameData;
@@ -116,6 +117,7 @@ public class FilterManager implements IFilterManager, IStartup,IResourceChangeLi
 
 	public FilterManager() {
 		activeFilters = new ArrayList<VideoFilter>();
+		dynamicConfigurations=new HashMap<String, Object>();
 	}
 
 	private static void createInstalledFiltersEMFModel() {
@@ -220,7 +222,7 @@ public class FilterManager implements IFilterManager, IStartup,IResourceChangeLi
 			// configure filter according to EMF saved configuration
 			final Configuration filterConfigs = filterInstance
 					.getConfiguration();
-			configureFilter(filterInstance.getName(), filterConfigs);
+			configureFilter(filterInstance.getName(), filterConfigs,dynamicConfigurations);
 		}
 	}
 
@@ -231,6 +233,7 @@ public class FilterManager implements IFilterManager, IStartup,IResourceChangeLi
 		sourceLink = new Link();
 
 		configuration = new FiltersLaunchConfigurations(configAttributes);
+		dynamicConfigurations.put(VideoFilter.FRAME_SIZE, new Point(frameData.getWidth(),frameData.getHeight()));
 
 		// load filters
 		final TransactionalEditingDomain editingDomain = EMFUtils.getEditingDomain(configuration.getProject());
@@ -248,12 +251,7 @@ public class FilterManager implements IFilterManager, IStartup,IResourceChangeLi
 
 		// Loading all available model resources into the editing domain, in
 		// order to access installed filters EObjects
-		final ArrayList<IFile> files = FileUtils.getFiles(project, "model");
-		for (final IFile modelFile : files) {
-			final URI uri = URI.createPlatformResourceURI(modelFile
-					.getFullPath().toString(), true);
-			resourceSet.getResource(uri, true);
-		}
+		EMFUtils.loadAllResourcesInProjectToEditingDomain(project,"model");
 
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
 		modelRoot = resource.getContents().get(0);
@@ -281,7 +279,7 @@ public class FilterManager implements IFilterManager, IStartup,IResourceChangeLi
 			final Configuration filterConfigs = filterInstance
 					.getConfiguration();
 			
-			configureFilter(filterInstance.getName(), filterConfigs);
+			configureFilter(filterInstance.getName(), filterConfigs,dynamicConfigurations);
 			
 			if (instance.getName().equals("source")) // FIXME: remove hardcoded source filter name
 				instance.setLinkIn(sourceLink);
@@ -299,7 +297,7 @@ public class FilterManager implements IFilterManager, IStartup,IResourceChangeLi
 
 			// create links
 			final Link link = new Link();
-			link.setData(new int[640 * 480]);
+			link.setData(new int[frameData.getWidth()*frameData.getHeight()]);
 			dstFilter.setLinkIn(link);
 			srcFilter.setLinkOut(link);
 		}
@@ -307,10 +305,10 @@ public class FilterManager implements IFilterManager, IStartup,IResourceChangeLi
 		return true;
 	}
 	
-	private void configureFilter(String filterName, Configuration filterConfigs){
+	private void configureFilter(String filterName, Configuration filterConfigs, Map<String, Object> dynamicConfigurations){
 		VideoFilter filter = getActiveFilter(filterName);
 		if (filterConfigs != null)
-			filter.configure(EMapToHashMap(filterConfigs.getEntries()));
+			filter.configure(EMapToHashMap(filterConfigs.getEntries()), dynamicConfigurations);
 	}
 
 	@Override

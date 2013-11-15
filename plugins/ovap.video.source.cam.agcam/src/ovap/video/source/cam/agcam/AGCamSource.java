@@ -58,8 +58,7 @@ public class AGCamSource extends CamSource {
 	}
 
 	@Override
-	public boolean initialize(final FrameData frame,
-			final SourceConfiguration configs) {
+	public boolean initialize(final SourceConfiguration configs) {
 		// TODO Auto-generated method stub
 		return false;
 	}

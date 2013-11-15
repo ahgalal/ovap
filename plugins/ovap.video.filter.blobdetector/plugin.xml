@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="ovap.filter.videofilter">
+      <filter
+            class="ovap.video.filter.blobdetector.BlobDetector"
+            id="ovap.video.filter.blobdetector">
+         <out_parameter
+               id="ovap.video.filter.blobdetector.parameter.blobslocations"
+               name="blobsLocations">
+         </out_parameter>
+         <configuration_gui
+               class="ovap.video.filter.blobdetector.BlobDetectorConfigurationContributer">
+         </configuration_gui>
+      </filter>
+   </extension>
+</plugin>
