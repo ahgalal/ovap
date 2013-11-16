@@ -4,9 +4,9 @@
 package ovap.product.ui.perspective;
 
 import org.eclipse.debug.ui.IDebugUIConstants;
+import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
-import org.eclipse.ui.IPlaceholderFolderLayout;
 
 /**
  * @author Creative
@@ -34,14 +34,19 @@ public class OVAPPerspective implements IPerspectiveFactory {
 				0.24f, IPageLayout.ID_EDITOR_AREA);
 		layout.addView("org.eclipse.ui.navigator.ProjectExplorer",
 				IPageLayout.LEFT, 0.2f, IPageLayout.ID_EDITOR_AREA);
-		layout.addView("org.eclipse.ui.views.PropertySheet",
-				IPageLayout.BOTTOM, 0.68f, IPageLayout.ID_EDITOR_AREA);
+		{
+			IFolderLayout folderLayout = layout.createFolder("folder", IPageLayout.BOTTOM, 0.71f, IPageLayout.ID_EDITOR_AREA);
+			folderLayout.addView("org.eclipse.ui.views.PropertySheet");
+			folderLayout.addView("org.eclipse.ui.console.ConsoleView");
+		}
+		{
+			IFolderLayout folderLayout = layout.createFolder("folder_1", IPageLayout.RIGHT, 0.7f, IPageLayout.ID_EDITOR_AREA);
+			folderLayout.addView("org.eclipse.ui.cheatsheets.views.CheatSheetView");
+			folderLayout.addView("org.eclipse.ui.views.TaskList");
+		}
 		//layout.addView("ovap.video.filter.display.frame.view", IPageLayout.RIGHT, 0.57f, IPageLayout.ID_EDITOR_AREA);
 		layout.addView("org.eclipse.debug.ui.VariableView", IPageLayout.RIGHT,
 				0.5f, "org.eclipse.debug.ui.DebugView");
-		
-		IPlaceholderFolderLayout placeholderFolder = layout.createPlaceholderFolder("ovap.video.filter.display.frame.folder", IPageLayout.RIGHT, 0.57f, IPageLayout.ID_EDITOR_AREA);
-		placeholderFolder.addPlaceholder("ovap.video.filter.display.frame.view:*");
 		
 		//layout.addPlaceholder("ovap.video.filter.display.frame.view:*", IPageLayout.RIGHT, 0.57f, IPageLayout.ID_EDITOR_AREA);
 		

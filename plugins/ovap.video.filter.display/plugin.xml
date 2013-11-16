@@ -2,21 +2,20 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension
-         point="org.eclipse.ui.views">
-      <view
-            allowMultiple="true"
-            class="ovap.video.filter.display.FrameView"
-            id="ovap.video.filter.display.frame.view"
-            name="Frame Data"
-            restorable="true">
-      </view>
-   </extension>
-   <extension
          point="ovap.filter.videofilter">
       <filter
             class="ovap.video.filter.display.FrameDisplayFilter"
             id="ovap.video.filter.display">
       </filter>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="ovap.video.filter.display.editor.FrameViwerEditor"
+            default="false"
+            id="ovap.video.filter.display.editor"
+            name="Frame Viewer">
+      </editor>
    </extension>
 
 </plugin>

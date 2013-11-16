@@ -125,7 +125,7 @@ public abstract class VideoFilter {
 	protected abstract void handleConfigurationUpdates(
 			final HashMap<String, Object> updatedConfigurations);
 
-	public abstract VideoFilter newInstance(String name, String contextId);
+	public abstract VideoFilter newInstance(String name, String sessionName);
 
 	public abstract void process();
 

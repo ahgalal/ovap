@@ -2,27 +2,29 @@
  * 
  */
 package ovap.video.filter.display;
-
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.util.HashMap;
 
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.internal.part.NullEditorInput;
 
 import ovap.video.filter.VideoFilter;
+import ovap.video.filter.display.editor.FrameViwerEditor;
 
 /**
  * @author Creative
  */
 public class FrameDisplayFilter extends VideoFilter {
 
-	private static final String	DISPLAY_FRAME_VIEW_ID	= "ovap.video.filter.display.frame.view";
 	private BufferedImage		img;
 	private int[]				imgData;
-	private FrameView			view;
+	private FrameViwerEditor viewer;
 
 	public FrameDisplayFilter() {
 		super("", "");
@@ -59,17 +61,34 @@ public class FrameDisplayFilter extends VideoFilter {
 	public VideoFilter newInstance(final String name, final String contextId) {
 		Display.getDefault().syncExec(new Runnable() {
 
+			@SuppressWarnings("restriction")
 			@Override
 			public void run() {
 				try {
-					final String secondaryId = contextId + "." + name;
-					view = (FrameView) PlatformUI.getWorkbench()
-							.getWorkbenchWindows()[0].getActivePage().showView(
-							DISPLAY_FRAME_VIEW_ID, secondaryId,
-							IWorkbenchPage.VIEW_CREATE);
-					PlatformUI.getWorkbench().getWorkbenchWindows()[0]
-							.getActivePage().showView(DISPLAY_FRAME_VIEW_ID,
-									secondaryId, IWorkbenchPage.VIEW_ACTIVATE);
+					IWorkbenchPage activePage = PlatformUI.getWorkbench()
+							.getWorkbenchWindows()[0].getActivePage();
+
+					FrameViwerEditor editorToUse=null;
+					IEditorReference[] editorReferences = activePage.getEditorReferences();
+					for(IEditorReference editorReference:editorReferences){
+						IEditorPart editor = editorReference.getEditor(false);
+						if(editor instanceof FrameViwerEditor){
+							// check the session name
+							FrameViwerEditor viewer = (FrameViwerEditor) editor;
+							String sessionName = viewer.getSessionName();
+							if(sessionName.equals(contextId)){ // use editor instance
+								editorToUse=viewer;
+								break;
+							}
+						}
+					}
+					if(editorToUse==null){// create a new editor instance
+						editorToUse = (FrameViwerEditor) activePage.openEditor(new NullEditorInput(), Activator.EDITOR_ID, true);
+						editorToUse.setSessionName(contextId);
+					}
+					setViewer(editorToUse);
+					activePage.activate(editorToUse);
+
 				} catch (final PartInitException e) {
 					e.printStackTrace();
 				}
@@ -78,7 +97,7 @@ public class FrameDisplayFilter extends VideoFilter {
 
 		final FrameDisplayFilter frameDisplayFilter = new FrameDisplayFilter(
 				name, contextId);
-		frameDisplayFilter.setView(view);
+		frameDisplayFilter.setViewer(viewer);
 		return frameDisplayFilter;
 	}
 
@@ -95,13 +114,14 @@ public class FrameDisplayFilter extends VideoFilter {
 			System.arraycopy(linkIn.getData(), 0, imgData, 0,
 					linkIn.getData().length);
 
-			view.drawImage(img);
+			//view.drawImage(img);
+			viewer.drawImage(img);
 		} else
 			System.out.println("Skipping null frame");
 	}
 
-	public void setView(final FrameView view) {
-		this.view = view;
+	public void setViewer(final FrameViwerEditor viewer) {
+		this.viewer = viewer;
 	}
 
 }
