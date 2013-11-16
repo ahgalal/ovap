@@ -16,6 +16,9 @@ package ovap.video.utils;
 
 import java.awt.Point;
 import java.awt.image.BufferedImage;
+import java.awt.image.DirectColorModel;
+import java.awt.image.IndexColorModel;
+import java.awt.image.WritableRaster;
 import java.io.File;
 import java.util.Collection;
 import java.util.HashMap;
@@ -24,6 +27,9 @@ import java.util.Set;
 
 import javax.imageio.ImageIO;
 
+import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.graphics.PaletteData;
+
 /**
  * Collection of static methods to handle images and convert between different
  * representations (int rgb, byte rgb, int grayscale ..).
@@ -31,7 +37,6 @@ import javax.imageio.ImageIO;
  * @author Creative
  */
 public class ImageManipulator {
-
 	public static class Blob {
 		private Point	centroid	= new Point();
 		private int		maxX		= -1;
@@ -39,7 +44,7 @@ public class ImageManipulator {
 		private int		minX		= 10000;
 		private int		minY		= 10000;
 
-		public void addPoint(int x,int y) {
+		public void addPoint(final int x, final int y) {
 			if (x < minX)
 				minX = x;
 			if (x > maxX)
@@ -50,9 +55,10 @@ public class ImageManipulator {
 				maxY = y;
 			centroid.x = (maxX + minX) / 2;
 			centroid.y = (maxY + minY) / 2;
-			if(centroid.x > 640 || centroid.x <0 ||centroid.y > 480 || centroid.y <0 )
+			if ((centroid.x > 640) || (centroid.x < 0) || (centroid.y > 480)
+					|| (centroid.y < 0))
 				System.out.println("ssssssssss");
-			
+
 		}
 
 		public int getArea() {
@@ -98,50 +104,26 @@ public class ImageManipulator {
 					+ minY + " maxY:" + maxY;
 		}
 	}
-	
-	public static void negativeImage(int[] inImage,int[] outImage){
-		RGB pixelRGB = new RGB(0, 0, 0);
-		for(int i=0;i<inImage.length;i++){
-			int pixel = inImage[i];
-			intToRGB(pixel, pixelRGB);
-			int newR = (255- pixelRGB.getR()) & 0x000000FF;
-			int newG = (255- pixelRGB.getG()) & 0x000000FF;
-			int newB = (255- pixelRGB.getB()) & 0x000000FF;
-			pixelRGB.setR(newR);
-			pixelRGB.setG(newG);
-			pixelRGB.setB(newB);
-			int newPixel = rgbToInt(pixelRGB);
-			outImage[i] = newPixel;
-		}
-	}
-	
-	public static void intensirySlicing(int[] inImg,int[] outImg,RGB[] sliceColors,RGB[] sliceThresholds){
-		RGB pixelRGB=new RGB(0, 0, 0);
-		for(int pixelIndex =0;pixelIndex<inImg.length;pixelIndex++){
-			int pixel = inImg[pixelIndex];
-			intToRGB(pixel, pixelRGB);
-			outImg[pixelIndex] = 0x00;
-
-			for(int colorIndex=0;colorIndex<sliceColors.length;colorIndex++){
-				RGB color = sliceColors[colorIndex];
-				RGB threshold = sliceThresholds[colorIndex];
-				final int deltaR = Math.abs(pixelRGB.getR() - color.getR());
-				final int deltaG = Math.abs(pixelRGB.getG() - color.getG());
-				final int deltaB = Math.abs(pixelRGB.getB() - color.getB());
-				
-				
-				if(deltaR < threshold.getR()){
-					
-				}
-				if ((deltaR < threshold.getR()) && (deltaG < threshold.getG())
-						&& (deltaB < threshold.getB())) {
-					outImg[pixelIndex] = rgbToInt(color);
-				} 
-			}
-		}
-	}
 
 	public static class BlobFinder {
+
+		private final CentroidFinder	centroidFinder;
+
+		final int[][]					labelTable			= new int[200][200];	// FIXME:
+																					// maximum
+																					// of
+																					// 40
+
+		// labels only!, need to
+		// be dynamic
+		final int[]						labelTableIndices	= new int[200];
+
+		@SuppressWarnings("unused")
+		private int						width, height;
+
+		public BlobFinder() {
+			centroidFinder = new CentroidFinder();
+		}
 
 		private void addLabelToLabelTable(final int smallerLabel,
 				final int largerLabel) {
@@ -159,33 +141,9 @@ public class ImageManipulator {
 			// smallerLabel + " at idx: "+index);
 		}
 
-		private final CentroidFinder	centroidFinder;
-
-		@SuppressWarnings("unused")
-		private int						width, height;
-
-		public BlobFinder() {
-			centroidFinder = new CentroidFinder();
-		}
-		final int[][] labelTable = new int[200][200]; // FIXME: maximum of 40
-		// labels only!, need to
-		// be dynamic
-		final int[] labelTableIndices = new int[200];
-
-		private void resetLabelTable(){
-			for(int i=0;i<labelTable.length;i++){
-				for(int j=0;j<labelTable[i].length;j++)
-					labelTable[i][j]=0;
-				labelTableIndices[i]=0;
-			}
-		}
 		// FIXME: performance enhancement
-		public Collection<Blob> getBlobs(
-				final int[] image,
-				final int xStart,
-				final int xEnd,
-				final int yStart,
-				final int yEnd) {
+		public Collection<Blob> getBlobs(final int[] image, final int xStart,
+				final int xEnd, final int yStart, final int yEnd) {
 			final HashMap<Integer, Blob> blobs = new HashMap<Integer, Blob>();
 			final int[] labels = new int[image.length];
 			int labelCounter = 1;
@@ -197,8 +155,9 @@ public class ImageManipulator {
 				final int xPixel = i % width;
 				final int yPixel = i / width;
 
-				if ((xPixel-1 < xStart) || (xPixel+1 > xEnd-1) || (yPixel-1 < yStart)
-						|| (yPixel+1 > yEnd-1))
+				if (((xPixel - 1) < xStart) || ((xPixel + 1) > (xEnd - 1))
+						|| ((yPixel - 1) < yStart)
+						|| ((yPixel + 1) > (yEnd - 1)))
 					continue;
 
 				if (pixel == 0x00FFFFFF) { // pixel is foreground
@@ -212,9 +171,9 @@ public class ImageManipulator {
 								if (currentLabel == 0)
 									labels[i] = neighbourLabel;
 								else {// this pixel has been labeled before
-									//two blobs meeting
-									if (currentLabel != neighbourLabel) { 
-										 
+										// two blobs meeting
+									if (currentLabel != neighbourLabel) {
+
 										// System.out.println("Adj. Labels: " +
 										// currentLabel + " & " +
 										// neighbourLabel);
@@ -227,7 +186,8 @@ public class ImageManipulator {
 											smallerLabel = neighbourLabel;
 											largerLabel = currentLabel;
 										}
-										addLabelToLabelTable(smallerLabel, largerLabel);
+										addLabelToLabelTable(smallerLabel,
+												largerLabel);
 										labels[i] = smallerLabel;
 									}
 								}
@@ -252,14 +212,16 @@ public class ImageManipulator {
 				}
 			}
 
-//			for (int keyLabelIndex = labelCounter - 1; keyLabelIndex >= 1; keyLabelIndex--) {
-//				String adjLabels = "";
-//				for (int adjLabelIndex = 1; adjLabelIndex <= labelTableIndices[keyLabelIndex]; adjLabelIndex++) {
-//					final int adjLabel = labelTable[keyLabelIndex][adjLabelIndex];
-//					adjLabels += adjLabel + ",";
-//				}
-//				System.out.println(keyLabelIndex + ": "+ adjLabels);
-//			}
+			// for (int keyLabelIndex = labelCounter - 1; keyLabelIndex >= 1;
+			// keyLabelIndex--) {
+			// String adjLabels = "";
+			// for (int adjLabelIndex = 1; adjLabelIndex <=
+			// labelTableIndices[keyLabelIndex]; adjLabelIndex++) {
+			// final int adjLabel = labelTable[keyLabelIndex][adjLabelIndex];
+			// adjLabels += adjLabel + ",";
+			// }
+			// System.out.println(keyLabelIndex + ": "+ adjLabels);
+			// }
 
 			final Set<Integer> labelsToRemove = new HashSet<Integer>();
 			// merge blobs of adjacent labels
@@ -277,10 +239,8 @@ public class ImageManipulator {
 					final int adjLabel = labelTable[keyLabelIndex][adjLabelIndex];
 					final Blob adjBlob = blobs.get(adjLabel);
 
-					keyBlob.addPoint(adjBlob.getMaxX(), adjBlob
-							.getMaxY());
-					keyBlob.addPoint(adjBlob.getMinX(), adjBlob
-							.getMinY());
+					keyBlob.addPoint(adjBlob.getMaxX(), adjBlob.getMaxY());
+					keyBlob.addPoint(adjBlob.getMinX(), adjBlob.getMinY());
 					labelsToRemove.add(adjLabel);
 
 					// System.out.println("adj blob to be removed: " +adjLabel
@@ -297,6 +257,14 @@ public class ImageManipulator {
 			this.width = width;
 			this.height = height;
 			centroidFinder.initialize(width, height);
+		}
+
+		private void resetLabelTable() {
+			for (int i = 0; i < labelTable.length; i++) {
+				for (int j = 0; j < labelTable[i].length; j++)
+					labelTable[i][j] = 0;
+				labelTableIndices[i] = 0;
+			}
 		}
 
 		public void updateBlobsCentroids(final int[] image,
@@ -533,6 +501,31 @@ public class ImageManipulator {
 		return res;
 	}
 
+	public static void adjustBrightness(final int[] img, final double factor) {
+		final RGB rgb = new RGB(0, 0, 0);
+		final int nPixels = img.length;
+		for (int i = 0; i < nPixels; i++) {
+			intToRGB(img[i], rgb);
+
+			int r = rgb.getR();
+			int g = rgb.getG();
+			int b = rgb.getB();
+			r = (int) (r * factor);
+			g = (int) (g * factor);
+			b = (int) (b * factor);
+			if (r > 255)
+				r = 255;
+			if (g > 255)
+				g = 255;
+			if (b > 255)
+				b = 255;
+			rgb.setR(r);
+			rgb.setG(g);
+			rgb.setB(b);
+			img[i] = rgbToInt(rgb);
+		}
+	}
+
 	public static int[] bgrIntArray2rgbIntArray(final int[] in) {
 		int r, g, b;
 		final int[] res = new int[in.length];
@@ -548,6 +541,64 @@ public class ImageManipulator {
 			res[i] = b | (g << 8) | (r << 16);
 		}
 		return res;
+	}
+
+	public static ImageData bufferedImageToImageData(
+			final BufferedImage bufferedImage) {
+		if (bufferedImage.getColorModel() instanceof DirectColorModel) {
+			final DirectColorModel colorModel = (DirectColorModel) bufferedImage
+					.getColorModel();
+			final PaletteData palette = new PaletteData(
+					colorModel.getRedMask(), colorModel.getGreenMask(),
+					colorModel.getBlueMask());
+			final ImageData data = new ImageData(bufferedImage.getWidth(),
+					bufferedImage.getHeight(), colorModel.getPixelSize(),
+					palette);
+			for (int y = 0; y < data.height; y++) {
+				for (int x = 0; x < data.width; x++) {
+					final int rgb = bufferedImage.getRGB(x, y);
+					final int pixel = palette
+							.getPixel(new org.eclipse.swt.graphics.RGB(
+									(rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF,
+									rgb & 0xFF));
+					data.setPixel(x, y, pixel);
+					if (colorModel.hasAlpha()) {
+						data.setAlpha(x, y, (rgb >> 24) & 0xFF);
+					}
+				}
+			}
+			return data;
+		} else if (bufferedImage.getColorModel() instanceof IndexColorModel) {
+			final IndexColorModel colorModel = (IndexColorModel) bufferedImage
+					.getColorModel();
+			final int size = colorModel.getMapSize();
+			final byte[] reds = new byte[size];
+			final byte[] greens = new byte[size];
+			final byte[] blues = new byte[size];
+			colorModel.getReds(reds);
+			colorModel.getGreens(greens);
+			colorModel.getBlues(blues);
+			final org.eclipse.swt.graphics.RGB[] rgbs = new org.eclipse.swt.graphics.RGB[size];
+			for (int i = 0; i < rgbs.length; i++) {
+				rgbs[i] = new org.eclipse.swt.graphics.RGB(reds[i] & 0xFF,
+						greens[i] & 0xFF, blues[i] & 0xFF);
+			}
+			final PaletteData palette = new PaletteData(rgbs);
+			final ImageData data = new ImageData(bufferedImage.getWidth(),
+					bufferedImage.getHeight(), colorModel.getPixelSize(),
+					palette);
+			data.transparentPixel = colorModel.getTransparentPixel();
+			final WritableRaster raster = bufferedImage.getRaster();
+			final int[] pixelArray = new int[1];
+			for (int y = 0; y < data.height; y++) {
+				for (int x = 0; x < data.width; x++) {
+					raster.getPixel(x, y, pixelArray);
+					data.setPixel(x, y, pixelArray[0]);
+				}
+			}
+			return data;
+		}
+		return null;
 	}
 
 	/**
@@ -682,8 +733,8 @@ public class ImageManipulator {
 		final float slope = deltaY / (float) deltaX;
 		final float c = pt1.y - (slope * pt1.x);
 
-		Point pt1Applied = new Point(pt1);
-		Point pt2Applied = new Point(pt2);
+		final Point pt1Applied = new Point(pt1);
+		final Point pt2Applied = new Point(pt2);
 		if (extendLineRatio > 0) {
 			if (Math.abs(deltaY) > Math.abs(deltaX)) {
 				pt1Applied.y = (int) (pt1.y + (deltaY * extendLineRatio));
@@ -706,9 +757,7 @@ public class ImageManipulator {
 
 		final int numPts = Math.abs(deltaY) > Math.abs(deltaX) ? Math
 				.abs(deltaY) : Math.abs(deltaX);
-				
-				
-				
+
 		final Point[] pts = new Point[Math.abs(numPts) + 1];
 		int i = 0;
 		if (Math.abs(deltaY) > Math.abs(deltaX)) {
@@ -760,31 +809,6 @@ public class ImageManipulator {
 		}
 		return rgbarr;
 	}
-	
-	public static void adjustBrightness(int[] img,double factor){
-		final RGB rgb = new RGB(0, 0, 0);
-		final int nPixels = img.length;
-		for (int i = 0; i < nPixels; i++) {
-			intToRGB(img[i], rgb);
-
-			int r = rgb.getR();
-			int g = rgb.getG();
-			int b = rgb.getB();
-			r = (int) (r * (double) factor);
-			g = (int) (g * (double) factor);
-			b = (int) (b * (double) factor);
-			if (r > 255)
-				r = 255;
-			if (g > 255)
-				g = 255;
-			if (b > 255)
-				b = 255;
-			rgb.setR(r);
-			rgb.setG(g);
-			rgb.setB(b);
-			img[i] = rgbToInt(rgb);
-		}
-	}
 
 	// FIXME: not performance optimized
 	public static int[] histogramStetch(final int[] img) {
@@ -798,9 +822,9 @@ public class ImageManipulator {
 		for (int i = 0; i < nPixels; i++) {
 			intToRGB(img[i], rgb);
 
-			int r = rgb.getR();
-			int g = rgb.getG();
-			int b = rgb.getB();
+			final int r = rgb.getR();
+			final int g = rgb.getG();
+			final int b = rgb.getB();
 
 			histR[r]++;
 			histG[g]++;
@@ -861,6 +885,32 @@ public class ImageManipulator {
 		for (int i = 0; i < arr.length; i++)
 			res[i % width][i / width] = (byte) arr[i];
 		return res;
+	}
+
+	public static void intensirySlicing(final int[] inImg, final int[] outImg,
+			final RGB[] sliceColors, final RGB[] sliceThresholds) {
+		final RGB pixelRGB = new RGB(0, 0, 0);
+		for (int pixelIndex = 0; pixelIndex < inImg.length; pixelIndex++) {
+			final int pixel = inImg[pixelIndex];
+			intToRGB(pixel, pixelRGB);
+			outImg[pixelIndex] = 0x00;
+
+			for (int colorIndex = 0; colorIndex < sliceColors.length; colorIndex++) {
+				final RGB color = sliceColors[colorIndex];
+				final RGB threshold = sliceThresholds[colorIndex];
+				final int deltaR = Math.abs(pixelRGB.getR() - color.getR());
+				final int deltaG = Math.abs(pixelRGB.getG() - color.getG());
+				final int deltaB = Math.abs(pixelRGB.getB() - color.getB());
+
+				if (deltaR < threshold.getR()) {
+
+				}
+				if ((deltaR < threshold.getR()) && (deltaG < threshold.getG())
+						&& (deltaB < threshold.getB())) {
+					outImg[pixelIndex] = rgbToInt(color);
+				}
+			}
+		}
 	}
 
 	/**
@@ -961,6 +1011,22 @@ public class ImageManipulator {
 			e.printStackTrace();
 		}
 		return bimg;
+	}
+
+	public static void negativeImage(final int[] inImage, final int[] outImage) {
+		final RGB pixelRGB = new RGB(0, 0, 0);
+		for (int i = 0; i < inImage.length; i++) {
+			final int pixel = inImage[i];
+			intToRGB(pixel, pixelRGB);
+			final int newR = (255 - pixelRGB.getR()) & 0x000000FF;
+			final int newG = (255 - pixelRGB.getG()) & 0x000000FF;
+			final int newB = (255 - pixelRGB.getB()) & 0x000000FF;
+			pixelRGB.setR(newR);
+			pixelRGB.setG(newG);
+			pixelRGB.setB(newB);
+			final int newPixel = rgbToInt(pixelRGB);
+			outImage[i] = newPixel;
+		}
 	}
 
 	/**

@@ -3,8 +3,6 @@
  */
 package ovap.video.filter.source;
 
-import java.io.FilterInputStream;
-
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;

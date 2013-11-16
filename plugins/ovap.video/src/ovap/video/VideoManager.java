@@ -90,4 +90,9 @@ public class VideoManager implements IExecutableExtensionFactory{
 		session.resumeStream();
 		return true;
 	}
+	
+	public IFilterManager getFilterManager(String sessionId){
+		Session session = getSession(sessionId);
+		return session.getFilterManager();
+	}
 }

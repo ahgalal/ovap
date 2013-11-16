@@ -134,7 +134,7 @@ public class ConfigurationPropertySection extends AbstractPropertySection
 			// for first time loading configurations from EMF, they are null
 			//configuration = new HashMap<String, String>();
 		if(configurationContributer.getConfigurations()==null || !isIdenticalMap(inputConfiguration.getEntries(), configurationContributer.getConfigurations()))
-			configurationContributer.setConfigurations(configuration);
+			configurationContributer.setConfigurations(configuration,filterInstance.getName());
 	}
 
 	@Override

@@ -3,6 +3,8 @@
  */
 package ovap.video;
 
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.Map;
 
 /**
@@ -16,4 +18,5 @@ public interface IFilterManager {
 	boolean stopStream();
 	boolean pauseStream();
 	boolean resumeStream();
+	ArrayList<BufferedImage> getFilterInputs(String filterName);
 }

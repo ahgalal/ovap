@@ -25,6 +25,7 @@ public class BlobDetector extends VideoFilter {
 	private CrossMarker	crossMarker;
 	private int[]		outData;
 	private static final String PARAMETER_BLOBS = "blobsLocations";
+	public static final String BG_COLOR_CONFIG="background_color";
 
 	public BlobDetector() {
 		super("", "");
@@ -68,29 +69,35 @@ public class BlobDetector extends VideoFilter {
 		// copy in data to output buffer
 		System.arraycopy(inImage, 0, outData, 0, inImage.length);
 
-		// remove background FIXME: make background color adjustable through gui configurations
-		ImageManipulator.filterImageRGB(inImage, outData, new RGB(0, 0, 255),new RGB(50, 50, 25));
-		
-		// negate image
-		ImageManipulator.negativeImage(outData, outData);
-		
-		// find blobs
-		final Collection<Blob> blobs = blobFinder.getBlobs(outData, 0,
-				getFrameSize().x, 0, getFrameSize().y);
-		
-		// draw a marker on each blob
-		for (final Blob blob : blobs)
-			crossMarker.draw(outData, blob.getCentroid().x,
-					blob.getCentroid().y);
-		
-		// update parameters
-		blobsLocations.clear();
-		for (final Blob blob : blobs)
-			blobsLocations.add(blob.getCentroid());
-		getParameter(PARAMETER_BLOBS).setValue(blobsLocations);
-		
-		System.out.println("blobs:" + blobs.size());
-		
+		String backgroundColor = (String) getConfiguration().get(BG_COLOR_CONFIG);
+		if(backgroundColor!=null){ // we don't process the image if bg color is not set
+			String[] rgbStrArray = backgroundColor.split(",");
+			int red = Integer.parseInt(rgbStrArray[0]);
+			int green = Integer.parseInt(rgbStrArray[1]);
+			int blue = Integer.parseInt(rgbStrArray[2]);
+			// remove background FIXME: make background color adjustable through gui configurations
+			ImageManipulator.filterImageRGB(inImage, outData, new RGB(red, green, blue),new RGB(50, 50, 25));
+
+			// negate image
+			ImageManipulator.negativeImage(outData, outData);
+
+			// find blobs
+			final Collection<Blob> blobs = blobFinder.getBlobs(outData, 0,
+					getFrameSize().x, 0, getFrameSize().y);
+
+			// draw a marker on each blob
+			for (final Blob blob : blobs)
+				crossMarker.draw(outData, blob.getCentroid().x,
+						blob.getCentroid().y);
+
+			// update parameters
+			blobsLocations.clear();
+			for (final Blob blob : blobs)
+				blobsLocations.add(blob.getCentroid());
+			getParameter(PARAMETER_BLOBS).setValue(blobsLocations);
+
+			System.out.println("blobs:" + blobs.size());
+		}
 		getLinkOut().setData(outData);
 	}
 }

@@ -13,6 +13,8 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.debug.core.DebugPlugin;
+import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.emf.common.ui.dialogs.WorkspaceResourceDialog;
@@ -25,7 +27,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -37,6 +38,7 @@ import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Text;
 
 import ovap.emf.utils.EMFUtils;
+import ovap.video.VideoManager;
 import ovap.video.filter.FilterConfigurationChangeListener;
 import ovap.video.filter.FilterConfigurationContributer;
 import ovap.video.filter.FilterConfigurationManager;
@@ -153,7 +155,7 @@ public class FiltersLaunchConfigurationTab extends OVAPLaunchConfigurationTab im
 										}
 										if(configContributer!=null){
 											configContributer.getContainer().setParent(cmpstConfiguration);
-											configContributer.getContainer().setVisible(true);
+											configContributer.show();
 											configContributer.getContainer().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 											cmpstConfiguration.layout();
 										}
@@ -182,19 +184,20 @@ public class FiltersLaunchConfigurationTab extends OVAPLaunchConfigurationTab im
 				cmpstDummy.setLayoutData(gd_cmpstDummy);
 			}
 			cmpstDummy.setSize(0,0);
+			new Label(grpFilterConfigurations, SWT.NONE);
+			new Label(grpFilterConfigurations, SWT.NONE);
 			{
 				btnSaveFilters = new Button(grpFilterConfigurations, SWT.NONE);
 				btnSaveFilters.addSelectionListener(new SelectionAdapter() {
 					@Override
 					public void widgetSelected(SelectionEvent e) {
 						updateFilterConfigurations(filterInstanceToConfigContributer.keySet(), launchConfiguration);
+						btnSaveFilters.setEnabled(false);
 					}
 				});
 				btnSaveFilters.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 				btnSaveFilters.setText("Save Filters");
 			}
-			new Label(grpFilterConfigurations, SWT.NONE);
-			new Label(grpFilterConfigurations, SWT.NONE);
 		}
 
 	}
@@ -222,11 +225,10 @@ public class FiltersLaunchConfigurationTab extends OVAPLaunchConfigurationTab im
 					if(filterConfigContributer!=null){
 						try {
 							Map<String, String> filterConfigMap = convertToFilterConfigMap(filterInstance.getName(), launchConfiguration.getAttributes());
-							filterConfigContributer.setConfigurations(filterConfigMap);
+							filterConfigContributer.setConfigurations(filterConfigMap,filterInstance.getName());
 						} catch (CoreException e) {
 							e.printStackTrace();
 						}
-						
 					}
 					listActivetFilters.add(filterInstance.getName());
 				}
@@ -245,24 +247,24 @@ public class FiltersLaunchConfigurationTab extends OVAPLaunchConfigurationTab im
 		FilterConfigurationContributer configContributer = FilterConfigurationManager.getDefault().getContributerForFilter(filterInstance);
 		if(configContributer!=null){
 			configContributer.createControls(cmpstConfiguration);
-			configContributer.setConfigurations(EMFUtils.getHashMap(filterInstance.getConfiguration().getEntries()));
+			if(isLaunched())
+				configContributer.setFilterManager(VideoManager.getDefault().getFilterManager(launchConfiguration.getName()));
+			configContributer.setConfigurations(EMFUtils.getHashMap(filterInstance.getConfiguration().getEntries()),filterInstance.getName());
 			configContributer.addChangeListener(this);
-			//configContributer.getContainer().setLocation(0, 0);
-			//configContributer.getContainer().setSize(400,400);
-			configContributer.getContainer().setVisible(false);
-			//configContributer.getContainer().layout();
+			configContributer.hide();
 		}
 		return configContributer;
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#dispose()
-	 */
-	@Override
-	public void dispose() {
-		// TODO Auto-generated method stub
-
+	
+	private boolean isLaunched(){
+		ILaunch[] launches = DebugPlugin.getDefault().getLaunchManager().getLaunches();
+		for(ILaunch launch:launches){
+			if(launch.getLaunchConfiguration().getName().equals(launchConfiguration.getName())){
+				if(!launch.isTerminated())
+					return true;
+			}
+		}
+		return false;
 	}
 
 	/*
@@ -333,6 +335,7 @@ public class FiltersLaunchConfigurationTab extends OVAPLaunchConfigurationTab im
 			loadFilterInstances(selectedProject.getFile(filterGraph),configuration);
 			
 			updateLaunchConfiguration(filterInstanceToConfigContributer.keySet(), configuration);
+			btnSaveFilters.setEnabled(false);
 		} catch (final CoreException e) {
 			e.printStackTrace();
 		}
@@ -349,17 +352,27 @@ public class FiltersLaunchConfigurationTab extends OVAPLaunchConfigurationTab im
 	public void performApply(final ILaunchConfigurationWorkingCopy configuration) {
 		configuration.setAttribute(FilterLaunchConfigs.FILTER_GRAPH.toString(),
 				txtActiveGraph.getText());
-		
 		for(FilterConfigurationContributer contributer:filterInstanceToConfigContributer.values()){
 			if(contributer!=null){
 				Map<String, String> updatedFilterConfigMap = contributer.getConfigurations();
 				FilterInstance filterInstance = getFilterInstanceForConfigContrinuter(contributer);
 				Map<String, String> updatedLaunchConfigMap = convertToLaunchConfigMap(filterInstance.getName(), updatedFilterConfigMap);
 
+				boolean configurationChange=false;
 				// update launch config
 				for(String key:updatedLaunchConfigMap.keySet()){
-					configuration.setAttribute(key, updatedLaunchConfigMap.get(key));
+					// if config is changed, enable the "Save filters" button
+					try {
+						String newValue = updatedLaunchConfigMap.get(key);
+						if(!configuration.getAttribute(key, "").equals(newValue))
+							configurationChange=true;
+						configuration.setAttribute(key, newValue);
+					} catch (CoreException e) {
+						e.printStackTrace();
+					}
 				}
+				if(configurationChange)
+					btnSaveFilters.setEnabled(true);
 			}
 		}
 	}

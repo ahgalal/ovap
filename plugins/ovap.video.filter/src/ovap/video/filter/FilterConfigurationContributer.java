@@ -9,6 +9,7 @@ import java.util.Map;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.swt.widgets.Composite;
 
+import ovap.video.IFilterManager;
 import ovap.video.filter.setup.model.FilterInstance;
 
 /**
@@ -18,7 +19,8 @@ public abstract class FilterConfigurationContributer {
 	private final ArrayList<FilterConfigurationChangeListener>	changeListeners;
 	private Map<String, String>									configuration;
 	private Composite											container;
-
+	private IFilterManager filterManager;
+	private String filterName;
 	public FilterConfigurationContributer() {
 		changeListeners = new ArrayList<FilterConfigurationChangeListener>();
 	}
@@ -38,6 +40,14 @@ public abstract class FilterConfigurationContributer {
 	public Composite getContainer() {
 		return container;
 	}
+	
+	public void show(){
+		container.setVisible(true);
+	}
+	
+	public void hide(){
+		container.setVisible(false);
+	}
 
 	protected abstract void initializeGUI();
 
@@ -47,8 +57,9 @@ public abstract class FilterConfigurationContributer {
 		return false;
 	}
 
-	public void setConfigurations(final Map<String, String> filterConfigMap) {
+	public void setConfigurations(final Map<String, String> filterConfigMap,String filterName) {
 		this.configuration = filterConfigMap;
+		setFilterName(filterName);
 		initializeGUI();
 	}
 
@@ -59,6 +70,22 @@ public abstract class FilterConfigurationContributer {
 	protected void signalConfigurationChange() {
 		for (final FilterConfigurationChangeListener listener : changeListeners)
 			listener.signalConfigurationChange(this);
+	}
+
+	public IFilterManager getFilterManager() {
+		return filterManager;
+	}
+
+	public void setFilterManager(IFilterManager iFilterManager) {
+		this.filterManager = iFilterManager;
+	}
+
+	public String getFilterName() {
+		return filterName;
+	}
+
+	public void setFilterName(String filterName) {
+		this.filterName = filterName;
 	}
 
 }

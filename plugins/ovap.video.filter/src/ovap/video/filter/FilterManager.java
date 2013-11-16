@@ -4,6 +4,8 @@
 package ovap.video.filter;
 
 import java.awt.Point;
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -230,7 +232,7 @@ public class FilterManager implements IFilterManager, IStartup,IResourceChangeLi
 	public boolean initialize(final Map<String, Object> configAttributes,
 			final FrameData frameData) {
 		this.frameData = frameData;
-		sourceLink = new Link();
+		sourceLink = new Link(frameData.getWidth(),frameData.getHeight());
 
 		configuration = new FiltersLaunchConfigurations(configAttributes);
 		dynamicConfigurations.put(VideoFilter.FRAME_SIZE, new Point(frameData.getWidth(),frameData.getHeight()));
@@ -296,13 +298,31 @@ public class FilterManager implements IFilterManager, IStartup,IResourceChangeLi
 			final VideoFilter srcFilter = getActiveFilter(srcFilterName);
 
 			// create links
-			final Link link = new Link();
+			final Link link = new Link(frameData.getWidth(),frameData.getHeight());
 			link.setData(new int[frameData.getWidth()*frameData.getHeight()]);
 			dstFilter.setLinkIn(link);
 			srcFilter.setLinkOut(link);
 		}
 
 		return true;
+	}
+	
+	@Override
+	public ArrayList<BufferedImage> getFilterInputs(String filterName){
+		ArrayList<BufferedImage> inputs = new ArrayList<BufferedImage>();
+		VideoFilter filter = getActiveFilter(filterName);
+		
+		// TODO: support multiple inputs for a filter
+		int[] intArrayData = filter.getLinkIn().getData();
+		int frameWidth = filter.getLinkIn().getFrameSize().x;
+		int frameHeight = filter.getLinkIn().getFrameSize().y;
+		BufferedImage bufferedImage = new BufferedImage(frameWidth, frameHeight, BufferedImage.TYPE_INT_RGB);
+		int[] imgData = ((DataBufferInt) bufferedImage.getRaster().getDataBuffer())
+				.getData();
+		System.arraycopy(intArrayData, 0, imgData, 0, intArrayData.length);
+		
+		inputs.add(bufferedImage);
+		return inputs;
 	}
 	
 	private void configureFilter(String filterName, Configuration filterConfigs, Map<String, Object> dynamicConfigurations){

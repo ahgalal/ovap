@@ -128,4 +128,8 @@ public class Session implements IStreamEndListener{
 			e.printStackTrace();
 		}
 	}
+
+	public IFilterManager getFilterManager() {
+		return filterManager;
+	}
 }
