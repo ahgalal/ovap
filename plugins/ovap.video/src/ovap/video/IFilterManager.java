@@ -13,7 +13,6 @@ import java.util.Map;
  */
 public interface IFilterManager {
 	boolean initialize(Map<String, Object> launchConfigurations, FrameData frameData);
-	boolean deInitialize();
 	boolean startStream();
 	boolean stopStream();
 	boolean pauseStream();

@@ -51,10 +51,7 @@ public class AGVideoFileSource extends VideoFileSource {
 				 * SourceStatus.PAUSED; else status = SourceStatus.ERROR; }
 				 */
 
-				try {
-					Thread.sleep(30);
-				} catch (final InterruptedException e) {
-				}
+				Utils.sleep(30);
 				// System.out.println(l2-l1 + "\n");
 			}
 		}
@@ -203,10 +200,26 @@ public class AGVideoFileSource extends VideoFileSource {
 	 */
 	@Override
 	public boolean stopStream() {
-		stopStream = true;
-		paused = false;
-		thUpdateImage.interrupt();
-		vidLib.stop();
+		if(!stopStream){
+			stopStream = true;
+			paused = false;
+			try {
+				thUpdateImage.interrupt();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			try {
+				vidLib.stop();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			Utils.sleep(30);
+		}
 		return true;
+	}
+
+	@Override
+	public void deInitialize() {
+		stopStream();
 	}
 }

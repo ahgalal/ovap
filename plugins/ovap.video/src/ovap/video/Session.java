@@ -65,7 +65,8 @@ public class Session implements IStreamEndListener{
 	}
 	
 	public void deInitialize(){
-		filterManager.deInitialize();
+		if(getState()==StreamState.STREAMING || getState()==StreamState.PAUSED)
+			stopStream();
 	}
 
 	public boolean pauseStream() {

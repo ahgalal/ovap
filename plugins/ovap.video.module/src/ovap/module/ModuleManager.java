@@ -56,9 +56,4 @@ public class ModuleManager implements IModuleManager/*,
 		// TODO Auto-generated method stub
 		
 	}
-
-/*	@Override
-	public Object create() throws CoreException {
-		return getDefault();
-	}*/
 }

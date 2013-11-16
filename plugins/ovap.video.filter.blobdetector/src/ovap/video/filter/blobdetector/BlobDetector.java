@@ -96,7 +96,7 @@ public class BlobDetector extends VideoFilter {
 				blobsLocations.add(blob.getCentroid());
 			getParameter(PARAMETER_BLOBS).setValue(blobsLocations);
 
-			System.out.println("blobs:" + blobs.size());
+			//System.out.println("blobs:" + blobs.size());
 		}
 		getLinkOut().setData(outData);
 	}

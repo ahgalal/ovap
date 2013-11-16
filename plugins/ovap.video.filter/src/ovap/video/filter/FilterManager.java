@@ -357,17 +357,25 @@ public class FilterManager implements IFilterManager, IStartup,IResourceChangeLi
 
 	@Override
 	public boolean startStream() {
+		//System.out.println("FilterManager.startStream()1" + this);
 		enabled = true;
 		filtersThread = new Thread(new FiltersRunnable(), "Filters Thread");
 		filtersThread.start();
+		//System.out.println("FilterManager.startStream()2" + this);
 		return true;
 	}
 
 	@Override
 	public boolean stopStream() {
-		enabled = false;
-		paused = false;
-		filtersThread.interrupt();
+		//System.out.println("FilterManager.stopStream()1" + this);
+		if(enabled==true){
+			ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
+			enabled = false;
+			paused = false;
+			filtersThread.interrupt();
+			Utils.sleep(30);
+		}
+		//System.out.println("FilterManager.stopStream()2" + this);
 		return false;
 	}
 
@@ -380,11 +388,4 @@ public class FilterManager implements IFilterManager, IStartup,IResourceChangeLi
 			e.printStackTrace();
 		}
 	}
-
-	@Override
-	public boolean deInitialize() {
-		ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
-		return true;
-	}
-
 }
