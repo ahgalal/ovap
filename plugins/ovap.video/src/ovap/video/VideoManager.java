@@ -1,19 +1,20 @@
 package ovap.video;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IExecutableExtensionFactory;
 
 import ovap.video.launch.StreamTarget;
+import sys.utils.Utils;
 
 public class VideoManager implements IExecutableExtensionFactory{
 
 	public static final String	EP_OVAP_VIDEO_SOURCE_MANAGER	= "ovap.video.source.manager";
 	public static final String	EP_OVAP_VIDEO_MODULE_MANAGER	= "ovap.video.module.manager";
 	public static final String	EP_OVAP_VIDEO_FILTER_MANAGER	= "ovap.video.filter.manager";
-	private ArrayList<Session> sessions;
+	private Map<String,Session> sessions;
 	private static VideoManager self;
 	public static VideoManager getDefault(){
 		if(self ==null)
@@ -26,7 +27,7 @@ public class VideoManager implements IExecutableExtensionFactory{
 			return;
 		else
 			self = this;
-		sessions=new ArrayList<Session>();
+		sessions=new HashMap<String, Session>();
 	}
 
 	public boolean initializeSession(StreamTarget streamTarget){
@@ -34,7 +35,12 @@ public class VideoManager implements IExecutableExtensionFactory{
 		Session session =getSession(launchConfigName);
 		if(session==null){
 			session= new Session(streamTarget);
-			sessions.add(session);
+			sessions.put(session.getId(), session);
+		}else{
+			session.deInitialize();
+			//Utils.sleep(100);
+			session= new Session(streamTarget);
+			sessions.put(session.getId(), session);
 		}
 		session.setStreamTarget(streamTarget);
 		
@@ -59,7 +65,7 @@ public class VideoManager implements IExecutableExtensionFactory{
 	public void stopStream(String sessionId) {
 		Session session = getSession(sessionId);
 		session.stopStream();
-		session.deInitialize();
+		//session.deInitialize();
 	}
 
 	public StreamState getState(String sessionId) {
@@ -72,11 +78,7 @@ public class VideoManager implements IExecutableExtensionFactory{
 
 
 	private Session getSession(String sessionId) {
-		for(Session session:sessions){
-			if(session.getId().equals(sessionId))
-				return session;
-		}
-		return null;
+		return sessions.get(sessionId);
 	}
 
 

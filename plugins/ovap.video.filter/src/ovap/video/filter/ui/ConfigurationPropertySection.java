@@ -5,7 +5,6 @@ package ovap.video.filter.ui;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.common.util.EMap;

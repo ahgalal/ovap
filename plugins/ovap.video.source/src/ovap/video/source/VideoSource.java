@@ -75,4 +75,6 @@ public abstract class VideoSource {
 	public FrameData getFrameData() {
 		return frameData;
 	}
+
+	public abstract void deInitialize();
 }

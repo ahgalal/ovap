@@ -87,4 +87,10 @@ public class AGCamSource extends CamSource {
 		return false;
 	}
 
+	@Override
+	public void deInitialize() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
