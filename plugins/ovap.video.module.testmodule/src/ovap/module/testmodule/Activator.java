@@ -9,7 +9,7 @@ import org.osgi.framework.BundleContext;
 public class Activator extends AbstractUIPlugin {
 
 	// The plug-in ID
-	public static final String PLUGIN_ID = "ovap.module.testmodule"; //$NON-NLS-1$
+	public static String PLUGIN_ID;
 
 	// The shared instance
 	private static Activator plugin;
@@ -18,6 +18,7 @@ public class Activator extends AbstractUIPlugin {
 	 * The constructor
 	 */
 	public Activator() {
+		
 	}
 
 	/*
@@ -27,6 +28,7 @@ public class Activator extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
+		PLUGIN_ID=plugin.getBundle().getSymbolicName();
 	}
 
 	/*

@@ -7,7 +7,8 @@ Bundle-Activator: ovap.module.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  ovap.video;bundle-version="1.0.0",
- ovap.pde.utils;bundle-version="1.0.0"
+ ovap.pde.utils;bundle-version="1.0.0",
+ org.eclipse.ui.views;bundle-version="3.6.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: ovap.module

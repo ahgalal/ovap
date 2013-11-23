@@ -9,9 +9,9 @@
          point="org.eclipse.debug.core.launchConfigurationTypes">
       <launchConfigurationType
             delegate="ovap.video.launch.OVAPLaunchDelegate"
-            id="ovap.video.launch.stream"
+            id="ovap.video.launch.config"
             modes="run,debug"
-            name="OVAP Stream"
+            name="OVAP Launch"
             public="true">
       </launchConfigurationType>
    </extension>
@@ -19,8 +19,8 @@
          point="org.eclipse.debug.ui.launchConfigurationTabGroups">
       <launchConfigurationTabGroup
             class="ovap.video.launch.ui.LaunchStreamTabGroup"
-            id="ovap.video.launch.stream.tabgroup"
-            type="ovap.video.launch.stream">
+            id="ovap.video.launch.config.tabgroup"
+            type="ovap.video.launch.config">
       </launchConfigurationTabGroup>
    </extension>
    <extension

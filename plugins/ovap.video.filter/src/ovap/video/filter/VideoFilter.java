@@ -100,17 +100,17 @@ public abstract class VideoFilter {
 	public abstract String[] getOutPortIDs();
 
 	protected Parameter getParameter(final String name) {
-		return getParametersContainer().getParameter(name);
+		return getParametersContainer().getOutputParameter(name);
 	}
 
 	protected ArrayList<Parameter> getParameters() {
-		return getParametersContainer().getParameters();
+		return getParametersContainer().getOutputParameters();
 	}
 
 	private ParametersContainer getParametersContainer() {
 		if (paramsContainer == null)
 			paramsContainer = new ParametersContainer(getID(),
-					Activator.OVAP_FILTER_VIDEOFILTER_EP, OUTPUT_PARAM_ELEMENT,
+					Activator.OVAP_FILTER_VIDEOFILTER_EP,null, OUTPUT_PARAM_ELEMENT,
 					PARAM_ID, PARAM_NAME);
 		return paramsContainer;
 	}

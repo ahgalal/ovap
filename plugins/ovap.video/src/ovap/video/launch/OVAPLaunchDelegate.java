@@ -1,6 +1,4 @@
 package ovap.video.launch;
-import java.util.Map;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Status;
@@ -10,21 +8,21 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.model.ILaunchConfigurationDelegate2;
 
 import ovap.video.Activator;
-import ovap.video.VideoManager;
 
 
 public class OVAPLaunchDelegate implements ILaunchConfigurationDelegate2 {
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void launch(ILaunchConfiguration configuration, String mode,
 			ILaunch launch, IProgressMonitor monitor) throws CoreException {
 		
-		Map<String,Object> configurations = configuration.getAttributes();
-		
 		String configName = configuration.getName();
-		configurations.put(LaunchConfigs.LAUNCH_CONFIG_NAME.toString(), configName);
 		
+		assertNoPreviousLaunchInstance(configName);
+	}
+
+	private void assertNoPreviousLaunchInstance(String configName)
+			throws CoreException {
 		ILaunch[] launches = DebugPlugin.getDefault().getLaunchManager().getLaunches();
 		int instancesCount=0;
 		for(ILaunch launch2:launches){
@@ -35,12 +33,6 @@ public class OVAPLaunchDelegate implements ILaunchConfigurationDelegate2 {
 		}
 		if(instancesCount>1)
 			throw new CoreException(new Status(Status.ERROR, Activator.PLUGIN_ID, "Cannot run two sessions of the same type simultaneously"));
-		
-		StreamTarget streamTarget = new StreamTarget((OVAPLaunch) launch,"Stream");
-		launch.addDebugTarget(streamTarget);
-		
-		VideoManager.getDefault().initializeSession(streamTarget);
-		VideoManager.getDefault().startStream(configName,configurations);
 	}
 
 	@Override

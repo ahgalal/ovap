@@ -17,5 +17,6 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: ovap.video,
  ovap.video.exception,
  ovap.video.launch,
+ ovap.video.launch.analysis.wizard.page,
  ovap.video.launch.ui
 Bundle-ClassPath: .

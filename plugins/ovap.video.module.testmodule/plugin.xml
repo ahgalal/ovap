@@ -4,7 +4,24 @@
    <extension
          point="ovap.video.module">
       <module
-            class="ovap.module.testmodule.TestModule">
+            class="ovap.module.testmodule.TestModule"
+            id="ovap.video.module.testmodule">
+         <out_parameter
+               id="ovap.video.module.testmodule.out_parameter1"
+               name="out_parameter1">
+         </out_parameter>
+         <out_parameter
+               id="ovap.video.module.testmodule.out_parameter2"
+               name="out_parameter2">
+         </out_parameter>
+         <in_parameter
+               id="ovap.video.filter.blobdetector.parameter.blobslocations"
+               name="blobs">
+         </in_parameter>
+         <in_parameter
+               id="ovap.video.module.testmodule.in_parameter3"
+               name="in_parameter2">
+         </in_parameter>
       </module>
    </extension>
 

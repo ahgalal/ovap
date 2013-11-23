@@ -1,100 +1,191 @@
 package ovap.video;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IExecutableExtensionFactory;
+import org.eclipse.debug.core.DebugException;
+import org.eclipse.jface.dialogs.DialogSettings;
 
+import ovap.video.launch.AnalysisTarget;
 import ovap.video.launch.StreamTarget;
-import sys.utils.Utils;
 
-public class VideoManager implements IExecutableExtensionFactory{
+public class VideoManager implements IExecutableExtensionFactory {
 
-	public static final String	EP_OVAP_VIDEO_SOURCE_MANAGER	= "ovap.video.source.manager";
-	public static final String	EP_OVAP_VIDEO_MODULE_MANAGER	= "ovap.video.module.manager";
 	public static final String	EP_OVAP_VIDEO_FILTER_MANAGER	= "ovap.video.filter.manager";
-	private Map<String,Session> sessions;
-	private static VideoManager self;
-	public static VideoManager getDefault(){
-		if(self ==null)
-			self=new VideoManager();
+	public static final String	EP_OVAP_VIDEO_MODULE_MANAGER	= "ovap.video.module.manager";
+	public static final String	EP_OVAP_VIDEO_SOURCE_MANAGER	= "ovap.video.source.manager";
+	private static VideoManager	self;
+
+	public static VideoManager getDefault() {
+		if (self == null)
+			self = new VideoManager();
 		return self;
 	}
+
+	private Map<AnalysisSession, String>	analysisSessions;
+	private ArrayList<StreamSession>		streamSessions;
 
 	public VideoManager() {
 		if (self != null)
 			return;
 		else
 			self = this;
-		sessions=new HashMap<String, Session>();
+		streamSessions = new ArrayList<StreamSession>();
+		analysisSessions = new HashMap<AnalysisSession, String>();
 	}
-
-	public boolean initializeSession(StreamTarget streamTarget){
-		String launchConfigName = streamTarget.getLaunch().getLaunchConfiguration().getName();
-		Session session =getSession(launchConfigName);
-		if(session==null){
-			session= new Session(streamTarget);
-			sessions.put(session.getId(), session);
-		}else{
-			session.deInitialize();
-			//Utils.sleep(100);
-			session= new Session(streamTarget);
-			sessions.put(session.getId(), session);
-		}
-		session.setStreamTarget(streamTarget);
-		
-		return true;
-	}
-
-
-	public boolean startStream(String sessionId,Map<String, Object> configurations) {
-		Session session = getSession(sessionId);
-		session.initialize(configurations);
-		session.startStream();
-		return true;
-	}
-	
-	public boolean pauseStream(String sessionId) {
-		Session session = getSession(sessionId);
-		session.pauseStream();
-		return true;
-	}
-
-
-	public void stopStream(String sessionId) {
-		Session session = getSession(sessionId);
-		session.stopStream();
-		//session.deInitialize();
-	}
-
-	public StreamState getState(String sessionId) {
-		Session session = getSession(sessionId);
-		if(session==null) // session is not created yet
-			return StreamState.INITAIL;
-		StreamState state = session.getState();
-		return state;
-	}
-
-
-	private Session getSession(String sessionId) {
-		return sessions.get(sessionId);
-	}
-
 
 	@Override
 	public Object create() throws CoreException {
 		return getDefault();
 	}
 
-	public boolean resumeStream(String sessionId) {
-		Session session = getSession(sessionId);
-		session.resumeStream();
+	private AnalysisSession getAnalysisSession(final String sessionId) {
+		for (final AnalysisSession session : analysisSessions.keySet())
+			if (session.getId().equals(sessionId))
+				return session;
+		return null;
+	}
+
+	private ArrayList<AnalysisSession> getAnalysisSessions(
+			final String streamSessionId) {
+		final ArrayList<AnalysisSession> ret = new ArrayList<AnalysisSession>();
+		for (final AnalysisSession analysisSession : analysisSessions.keySet()) {
+			if (analysisSessions.get(analysisSession).equals(streamSessionId))
+				ret.add(analysisSession);
+		}
+		return ret;
+	}
+
+	public SessionState getAnalysisState(final String sessionId) {
+		final AbstractSession session = getAnalysisSession(sessionId);
+		if (session == null) // session is not created yet
+			return SessionState.INITAIL;
+		final SessionState state = session.getState();
+		return state;
+	}
+
+	public IFilterManager getFilterManager(final String sessionId) {
+		final StreamSession session = getStreamSession(sessionId);
+		return session.getFilterManager();
+	}
+
+	private StreamSession getStreamSession(final String sessionId) {
+		for (final StreamSession session : streamSessions)
+			if (session.getId().equals(sessionId))
+				return session;
+		return null;
+	}
+
+	public SessionState getStreamState(final String sessionId) {
+		final AbstractSession session = getStreamSession(sessionId);
+		if (session == null) // session is not created yet
+			return SessionState.INITAIL;
+		final SessionState state = session.getState();
+		return state;
+	}
+
+	public boolean initializeAnalysisSession(
+			final AnalysisTarget analysisTarget,
+			final DialogSettings analysisSettings, final String streamSessionId) {
+		final String launchConfigName = analysisTarget.getLaunch()
+				.getLaunchConfiguration().getName();
+		AnalysisSession session = getAnalysisSession(launchConfigName);
+		if (session != null) {
+			session.deInitialize();
+		}
+		session = new AnalysisSession();
+		analysisSessions.put(session, streamSessionId);
+		session.setTarget(analysisTarget);
+
+		session.initialize(analysisSettings);
+
+		final StreamSession streamSession = getStreamSession(streamSessionId);
+		final ArrayList<Parameter> filtersParameters = streamSession
+				.getParameters();
+		session.registerParameters(filtersParameters);
 		return true;
 	}
-	
-	public IFilterManager getFilterManager(String sessionId){
-		Session session = getSession(sessionId);
-		return session.getFilterManager();
+
+	public boolean initializeStreamSession(final StreamTarget streamTarget,
+			final Map<String, Object> configurations) {
+		final String launchConfigName = streamTarget.getLaunch()
+				.getLaunchConfiguration().getName();
+		StreamSession session = getStreamSession(launchConfigName);
+		if (session != null) {
+			session.deInitialize();
+			streamSessions.remove(session);
+		}
+		session = new StreamSession();
+		streamSessions.add(session);
+		session.setTarget(streamTarget);
+
+		session.initialize(configurations);
+
+		return true;
+	}
+
+	public boolean pauseAnalysis(final String sessionId) {
+		final AbstractSession session = getAnalysisSession(sessionId);
+		session.pause();
+		return true;
+	}
+
+	public boolean pauseStream(final String sessionId) {
+		final AbstractSession session = getStreamSession(sessionId);
+		session.pause();
+
+		final ArrayList<AnalysisSession> associatedAnalysisSessions = getAnalysisSessions(sessionId);
+		for (final AnalysisSession analysisSession : associatedAnalysisSessions)
+			try {
+				analysisSession.getTarget().suspend();
+			} catch (final DebugException e) {
+				e.printStackTrace();
+			}
+		return true;
+	}
+
+	public boolean resumeAnalysis(final String sessionId) {
+		final AbstractSession session = getAnalysisSession(sessionId);
+		session.resume();
+		return true;
+	}
+
+	public boolean resumeStream(final String sessionId) {
+		final AbstractSession session = getStreamSession(sessionId);
+		session.resume();
+		return true;
+	}
+
+	public boolean startAnalysis(final String sessionId) {
+		final AbstractSession session = getAnalysisSession(sessionId);
+		session.start();
+		return true;
+	}
+
+	public boolean startStream(final String sessionId) {
+		final AbstractSession session = getStreamSession(sessionId);
+		session.start();
+		return true;
+	}
+
+	public void stopAnalysis(final String sessionId) {
+		final AbstractSession session = getAnalysisSession(sessionId);
+		session.stop();
+	}
+
+	public void stopStream(final String sessionId) {
+		final AbstractSession session = getStreamSession(sessionId);
+		session.stop();
+
+		final ArrayList<AnalysisSession> associatedSessions = getAnalysisSessions(sessionId);
+		for (final AnalysisSession analysisSession : associatedSessions)
+			try {
+				analysisSession.getTarget().terminate();
+			} catch (final DebugException e) {
+				e.printStackTrace();
+			}
 	}
 }

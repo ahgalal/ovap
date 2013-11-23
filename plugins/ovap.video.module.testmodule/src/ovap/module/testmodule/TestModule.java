@@ -3,48 +3,31 @@
  */
 package ovap.module.testmodule;
 
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.osgi.service.prefs.BackingStoreException;
+import java.awt.Point;
+import java.util.ArrayList;
 
 import ovap.module.Module;
+import ovap.video.Parameter;
 
 /**
  * @author Creative
- *
  */
 public class TestModule extends Module {
-private static int a=0;
-	/**
-	 * 
-	 */
-	public TestModule() {
-
-	}
-
-	@Override
-	public String toString() {
-		
-		
-		// TODO Auto-generated constructor stub
-		IEclipsePreferences prefs =
-		    //Platform.getPreferencesService().getRootNode().node(Plugin.PLUGIN_PREFEERENCES_SCOPE).node(MY_PLUGIN_ID);
-		    new InstanceScope().getNode(Activator.PLUGIN_ID); // does all the above behind the scenes
-
-		  prefs.put("X", ""+a++);
-		  IPath path = Activator.getDefault().getStateLocation();
-		    try {
-				prefs.flush();
-			} catch (BackingStoreException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		return this.getClass().toString();
-	}
-
 	@Override
 	public String getID() {
 		return Activator.PLUGIN_ID;
+	}
+
+	@Override
+	public void process() {
+		ArrayList<Point> blobsLocations = getBlobsLocations();
+		System.out.println(blobsLocations.size());
+	}
+
+	@SuppressWarnings("unchecked")
+	private ArrayList<Point> getBlobsLocations() {
+		Parameter blobsLocationsParam = getInputParameter("blobs");
+		ArrayList<Point> blobsLocations = (ArrayList<Point>)blobsLocationsParam.getValue();
+		return blobsLocations;
 	}
 }

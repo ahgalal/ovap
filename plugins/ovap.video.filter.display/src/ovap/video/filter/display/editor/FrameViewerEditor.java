@@ -21,22 +21,14 @@ import org.eclipse.ui.part.EditorPart;
 /**
  * @author Creative
  */
-public class FrameViwerEditor extends EditorPart {
+public class FrameViewerEditor extends EditorPart {
+	public FrameViewerEditor() {
+	}
 
 	private Composite						compositeAWT;
-
 	private Frame							frame;
-
 	private String							sessionName;
-
 	private org.eclipse.swt.graphics.Point	viewDimensions;
-
-	/**
-	 * 
-	 */
-	public FrameViwerEditor() {
-		// TODO Auto-generated constructor stub
-	}
 
 	/*
 	 * (non-Javadoc)
@@ -111,6 +103,7 @@ public class FrameViwerEditor extends EditorPart {
 			throws PartInitException {
 		setSite(site);
 		setInput(input);
+		setSessionName(input.getName());
 	}
 
 	/*

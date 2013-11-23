@@ -63,7 +63,7 @@ public class FiltersLaunchConfigurationTab extends OVAPLaunchConfigurationTab im
 	private Label lblSs;
 	private Composite cmpstConfiguration;
 	private Composite cmpstDummy;
-	private HashMap<FilterInstance,FilterConfigurationContributer> filterInstanceToConfigContributer;
+	private HashMap<FilterInstance,FilterConfigurationContributer> filterInstanceToConfigContributer = new HashMap<FilterInstance, FilterConfigurationContributer>();
 	private ILaunchConfiguration	launchConfiguration;
 	private Button btnSaveFilters;
 
@@ -323,7 +323,7 @@ public class FiltersLaunchConfigurationTab extends OVAPLaunchConfigurationTab im
 				ArrayList<IFile> files = FileUtils.getFiles(selectedProject, "fg");
 				if(files.size()>0)
 					detectedFilterGraph=files.get(0).getProjectRelativePath().toString();
-			}
+			
 			String filterGraph = configuration.getAttribute(
 					FilterLaunchConfigs.FILTER_GRAPH.toString(), detectedFilterGraph);
 			if(filterGraph.equals(""))
@@ -336,6 +336,7 @@ public class FiltersLaunchConfigurationTab extends OVAPLaunchConfigurationTab im
 			
 			updateLaunchConfiguration(filterInstanceToConfigContributer.keySet(), configuration);
 			btnSaveFilters.setEnabled(false);
+			}
 		} catch (final CoreException e) {
 			e.printStackTrace();
 		}

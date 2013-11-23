@@ -7,8 +7,8 @@ package ovap.video;
  * @author Creative
  *
  */
-public enum StreamState {
-	STREAMING,
+public enum SessionState {
+	RUNNING,
 	PAUSED,
 	STOPPED,
 	INITAIL

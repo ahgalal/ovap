@@ -11,7 +11,7 @@
    <extension
          point="org.eclipse.ui.editors">
       <editor
-            class="ovap.video.filter.display.editor.FrameViwerEditor"
+            class="ovap.video.filter.display.editor.FrameViewerEditor"
             default="false"
             id="ovap.video.filter.display.editor"
             name="Frame Viewer">

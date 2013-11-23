@@ -13,7 +13,7 @@
          point="org.eclipse.debug.ui.launchConfigurationTabs">
       <tab
             class="ovap.video.filter.ui.FiltersLaunchConfigurationTab"
-            group="ovap.video.launch.stream.tabgroup"
+            group="ovap.video.launch.config.tabgroup"
             id="ovap.video.filter.launch.filterstab"
             name="Filters Configuration">
       </tab>

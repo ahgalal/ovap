@@ -8,5 +8,11 @@
             class="ovap.module.ModuleManager">
       </module_manager>
    </extension>
+   <extension
+         point="ovap.video.analysis.wizard.page">
+      <wizardpage
+            class="ovap.module.analysis.wizard.page.ModuleSetupPage">
+      </wizardpage>
+   </extension>
 
 </plugin>

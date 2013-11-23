@@ -6,39 +6,50 @@ import ovap.video.Parameter;
 import ovap.video.ParametersContainer;
 
 public abstract class Module {
-	private static final String		INPUT_PARAM_ELEMENT	= "in_parameter";
-	private static final String		PARAM_ID			= "id";
-	private static final String		PARAM_NAME			= "name";
-	private ParametersContainer inParametersContainer;
-	private ParametersContainer outParametersContainer;
+	private String				name;
+	private ParametersContainer	parametersContainer;
+
 	public abstract String getID();
-	
+
 	protected Parameter getInputParameter(final String name) {
-		return getInParametersContainer().getParameter(name);
+		return getParametersContainer().getInputParameter(name);
 	}
 
-	protected ArrayList<Parameter> getInputParameters() {
-		return getInParametersContainer().getParameters();
+	public ArrayList<Parameter> getInputParameters() {
+		return (ArrayList<Parameter>) getParametersContainer()
+				.getDefinedInputParameters();
 	}
-	
+
+	public String getName() {
+		return name;
+	}
+
 	protected Parameter getOutputParameter(final String name) {
-		return getOutParametersContainer().getParameter(name);
+		return getParametersContainer().getOutputParameter(name);
 	}
 
-	protected ArrayList<Parameter> getOutputParameters() {
-		return getOutParametersContainer().getParameters();
+	public ArrayList<Parameter> getOutputParameters() {
+		return getParametersContainer().getOutputParameters();
 	}
 
-	public ParametersContainer getInParametersContainer() {
-		if(inParametersContainer==null)
-			inParametersContainer=new ParametersContainer(getID(), Activator.OVAP_VIDEO_MODULE_EP, INPUT_PARAM_ELEMENT, PARAM_ID, PARAM_NAME);
-		return inParametersContainer;
+	protected ParametersContainer getParametersContainer() {
+		if (parametersContainer == null)
+			parametersContainer = new ParametersContainer(getID(),
+					Activator.OVAP_VIDEO_MODULE_EP,
+					Activator.INPUT_PARAM_ELEMENT,
+					Activator.OUTPUT_PARAM_ELEMENT, Activator.PARAM_ID,
+					Activator.PARAM_NAME);
+		return parametersContainer;
+	}
+
+	public void registerInputParameter(final Parameter parameter) {
+		getParametersContainer().registerInputParameter(parameter);
 	}
 	
-	public ParametersContainer getOutParametersContainer() {
-		if(outParametersContainer==null)
-			outParametersContainer=new ParametersContainer(getID(), Activator.OVAP_VIDEO_MODULE_EP, INPUT_PARAM_ELEMENT, PARAM_ID, PARAM_NAME);
-		return outParametersContainer;
+	public abstract void process(); 
+
+	public void setName(final String name) {
+		this.name = name;
 	}
 
 }

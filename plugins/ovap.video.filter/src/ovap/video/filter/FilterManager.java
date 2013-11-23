@@ -51,43 +51,15 @@ import utils.PDEUtils;
 /**
  * @author Creative
  */
-public class FilterManager implements IFilterManager, IStartup,IResourceChangeListener {
-	
+public class FilterManager implements IFilterManager, IStartup,
+		IResourceChangeListener {
 
-	private class ResourceDeltaVisitor implements IResourceDeltaVisitor{
-
-		@Override
-		public boolean visit(IResourceDelta delta) throws CoreException {
-			if(configuration!=null){
-				IResource resource = delta.getResource();
-				if(resource.getFullPath().toString().endsWith(configuration.getFilterGraphResourcePath())){
-					// file has changed
-					
-					// reload file
-					Resource emfResource = EMFUtils.getEMFResource(resource);
-					emfResource.unload();
-					try {
-						emfResource.load(null);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-					
-					configureFiltersFromActiveGraph();
-
-					return false;
-				}
-			}
-			return true;
-		}
-
-	}
 	private class FiltersRunnable implements Runnable {
 
 		@Override
 		public void run() {
-			while (enabled) {
+			while (started) {
 				Utils.sleep(30);
-
 				synchronized (this) {
 					while (paused) {
 						try {
@@ -98,29 +70,44 @@ public class FilterManager implements IFilterManager, IStartup,IResourceChangeLi
 						}
 					}
 				}
-
 				sourceLink.setData(frameData.getFrameData());
 				for (final VideoFilter filter : activeFilters)
 					filter.process();
 			}
 		}
+	}
+
+	private class ResourceDeltaVisitor implements IResourceDeltaVisitor {
+
+		@Override
+		public boolean visit(final IResourceDelta delta) throws CoreException {
+			if (configuration != null) {
+				final IResource resource = delta.getResource();
+				if (resource.getFullPath().toString()
+						.endsWith(configuration.getFilterGraphResourcePath())) {
+					// file has changed
+
+					// reload file
+					final Resource emfResource = EMFUtils
+							.getEMFResource(resource);
+					emfResource.unload();
+					try {
+						emfResource.load(null);
+					} catch (final IOException e) {
+						e.printStackTrace();
+					}
+
+					configureFiltersFromActiveGraph();
+
+					return false;
+				}
+			}
+			return true;
+		}
 
 	}
 
-	private final ArrayList<VideoFilter>	activeFilters;
-	private FiltersLaunchConfigurations		configuration;
-	private Map<String,Object> dynamicConfigurations;
-	private boolean							enabled	= false;
-	private Thread							filtersThread;
-	private FrameData						frameData;
 	private static ArrayList<VideoFilter>	installedFilters;
-	private boolean							paused	= false;
-	private Link							sourceLink;
-
-	public FilterManager() {
-		activeFilters = new ArrayList<VideoFilter>();
-		dynamicConfigurations=new HashMap<String, Object>();
-	}
 
 	private static void createInstalledFiltersEMFModel() {
 		final FilterModel filterModel = ModelFactory.eINSTANCE
@@ -179,6 +166,49 @@ public class FilterManager implements IFilterManager, IStartup,IResourceChangeLi
 		}
 	}
 
+	private final ArrayList<VideoFilter>	activeFilters;
+	private FiltersLaunchConfigurations		configuration;
+	private final Map<String, Object>		dynamicConfigurations;
+	private boolean							started	= false;
+	private Thread							filtersThread;
+	private FrameData						frameData;
+	private boolean							paused	= false;
+
+	private Link							sourceLink;
+
+	public FilterManager() {
+		activeFilters = new ArrayList<VideoFilter>();
+		dynamicConfigurations = new HashMap<String, Object>();
+	}
+
+	private void configureFilter(final String filterName,
+			final Configuration filterConfigs,
+			final Map<String, Object> dynamicConfigurations) {
+		final VideoFilter filter = getActiveFilter(filterName);
+		if (filterConfigs != null)
+			filter.configure(EMapToHashMap(filterConfigs.getEntries()),
+					dynamicConfigurations);
+	}
+
+	private void configureFiltersFromActiveGraph() {
+		final IProject project = configuration.getProject();
+		final String activeGraphFile = configuration
+				.getFilterGraphResourcePath();
+		final IFile file = project.getFile(activeGraphFile);
+		final Resource resource = EMFUtils.getEMFResource(file);
+		final EObject modelRoot = resource.getContents().get(0);
+		final FiltersSetup filtersSetup = (FiltersSetup) modelRoot;
+
+		for (final FilterInstance filterInstance : filtersSetup
+				.getFilterInstances()) {
+			// configure filter according to EMF saved configuration
+			final Configuration filterConfigs = filterInstance
+					.getConfiguration();
+			configureFilter(filterInstance.getName(), filterConfigs,
+					dynamicConfigurations);
+		}
+	}
+
 	@Override
 	public void earlyStartup() {
 		installedFilters = new ArrayList<VideoFilter>();
@@ -189,7 +219,7 @@ public class FilterManager implements IFilterManager, IStartup,IResourceChangeLi
 					VideoFilter.class, e);
 			installedFilters.add(videoFilter);
 		}
-		
+
 		createInstalledFiltersEMFModel();
 	}
 
@@ -209,41 +239,54 @@ public class FilterManager implements IFilterManager, IStartup,IResourceChangeLi
 		}
 		return null;
 	}
-	
-	private void configureFiltersFromActiveGraph(){
-		final IProject project = configuration.getProject();
-		final String activeGraphFile = configuration
-				.getFilterGraphResourcePath();
-		final IFile file = project.getFile(activeGraphFile);
-		final Resource resource = EMFUtils.getEMFResource(file);
-		EObject modelRoot = resource.getContents().get(0);
-		FiltersSetup filtersSetup = (FiltersSetup) modelRoot;
-		
-		for (final FilterInstance filterInstance : filtersSetup
-				.getFilterInstances()) {
-			// configure filter according to EMF saved configuration
-			final Configuration filterConfigs = filterInstance
-					.getConfiguration();
-			configureFilter(filterInstance.getName(), filterConfigs,dynamicConfigurations);
+
+	@Override
+	public ArrayList<BufferedImage> getFilterInputs(final String filterName) {
+		final ArrayList<BufferedImage> inputs = new ArrayList<BufferedImage>();
+		final VideoFilter filter = getActiveFilter(filterName);
+
+		// TODO: support multiple inputs for a filter
+		final int[] intArrayData = filter.getLinkIn().getData();
+		final int frameWidth = filter.getLinkIn().getFrameSize().x;
+		final int frameHeight = filter.getLinkIn().getFrameSize().y;
+		final BufferedImage bufferedImage = new BufferedImage(frameWidth,
+				frameHeight, BufferedImage.TYPE_INT_RGB);
+		final int[] imgData = ((DataBufferInt) bufferedImage.getRaster()
+				.getDataBuffer()).getData();
+		System.arraycopy(intArrayData, 0, imgData, 0, intArrayData.length);
+
+		inputs.add(bufferedImage);
+		return inputs;
+	}
+
+	@Override
+	public ArrayList<Parameter> getParameters() {
+		final ArrayList<Parameter> activeParameters = new ArrayList<Parameter>();
+		for (final VideoFilter filter : activeFilters) {
+			activeParameters.addAll(filter.getParameters());
 		}
+		return activeParameters;
 	}
 
 	@Override
 	public boolean initialize(final Map<String, Object> configAttributes,
 			final FrameData frameData) {
 		this.frameData = frameData;
-		sourceLink = new Link(frameData.getWidth(),frameData.getHeight());
+		sourceLink = new Link(frameData.getWidth(), frameData.getHeight());
 
 		configuration = new FiltersLaunchConfigurations(configAttributes);
-		dynamicConfigurations.put(VideoFilter.FRAME_SIZE, new Point(frameData.getWidth(),frameData.getHeight()));
+		dynamicConfigurations.put(VideoFilter.FRAME_SIZE,
+				new Point(frameData.getWidth(), frameData.getHeight()));
 
 		// load filters
-		final TransactionalEditingDomain editingDomain = EMFUtils.getEditingDomain(configuration.getProject());
+		final TransactionalEditingDomain editingDomain = EMFUtils
+				.getEditingDomain(configuration.getProject());
 		final IProject project = configuration.getProject();
-		final String activeGraphFile = configuration.getFilterGraphResourcePath();
-		
+		final String activeGraphFile = configuration
+				.getFilterGraphResourcePath();
+
 		final IFile file = project.getFile(activeGraphFile);
-		
+
 		final ResourceSet resourceSet = editingDomain.getResourceSet();
 		EObject modelRoot;
 		FiltersSetup filtersSetup = null;
@@ -253,7 +296,7 @@ public class FilterManager implements IFilterManager, IStartup,IResourceChangeLi
 
 		// Loading all available model resources into the editing domain, in
 		// order to access installed filters EObjects
-		EMFUtils.loadAllResourcesInProjectToEditingDomain(project,"model");
+		EMFUtils.loadAllResourcesInProjectToEditingDomain(project, "model");
 
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
 		modelRoot = resource.getContents().get(0);
@@ -276,14 +319,16 @@ public class FilterManager implements IFilterManager, IStartup,IResourceChangeLi
 			final VideoFilter instance = filter.newInstance(
 					filterInstance.getName(), configuration.getConfigName());
 			activeFilters.add(instance);
-			
+
 			// configure filter according to EMF saved configuration
 			final Configuration filterConfigs = filterInstance
 					.getConfiguration();
-			
-			configureFilter(filterInstance.getName(), filterConfigs,dynamicConfigurations);
-			
-			if (instance.getName().equals("source")) // FIXME: remove hardcoded source filter name
+
+			configureFilter(filterInstance.getName(), filterConfigs,
+					dynamicConfigurations);
+
+			if (instance.getName().equals("source")) // FIXME: remove hardcoded
+														// source filter name
 				instance.setLinkIn(sourceLink);
 		}
 
@@ -298,43 +343,30 @@ public class FilterManager implements IFilterManager, IStartup,IResourceChangeLi
 			final VideoFilter srcFilter = getActiveFilter(srcFilterName);
 
 			// create links
-			final Link link = new Link(frameData.getWidth(),frameData.getHeight());
-			link.setData(new int[frameData.getWidth()*frameData.getHeight()]);
+			final Link link = new Link(frameData.getWidth(),
+					frameData.getHeight());
+			link.setData(new int[frameData.getWidth() * frameData.getHeight()]);
 			dstFilter.setLinkIn(link);
 			srcFilter.setLinkOut(link);
 		}
 
 		return true;
 	}
-	
-	@Override
-	public ArrayList<BufferedImage> getFilterInputs(String filterName){
-		ArrayList<BufferedImage> inputs = new ArrayList<BufferedImage>();
-		VideoFilter filter = getActiveFilter(filterName);
-		
-		// TODO: support multiple inputs for a filter
-		int[] intArrayData = filter.getLinkIn().getData();
-		int frameWidth = filter.getLinkIn().getFrameSize().x;
-		int frameHeight = filter.getLinkIn().getFrameSize().y;
-		BufferedImage bufferedImage = new BufferedImage(frameWidth, frameHeight, BufferedImage.TYPE_INT_RGB);
-		int[] imgData = ((DataBufferInt) bufferedImage.getRaster().getDataBuffer())
-				.getData();
-		System.arraycopy(intArrayData, 0, imgData, 0, intArrayData.length);
-		
-		inputs.add(bufferedImage);
-		return inputs;
-	}
-	
-	private void configureFilter(String filterName, Configuration filterConfigs, Map<String, Object> dynamicConfigurations){
-		VideoFilter filter = getActiveFilter(filterName);
-		if (filterConfigs != null)
-			filter.configure(EMapToHashMap(filterConfigs.getEntries()), dynamicConfigurations);
-	}
 
 	@Override
 	public boolean pauseStream() {
 		paused = true;
 		return true;
+	}
+
+	@Override
+	public void resourceChanged(final IResourceChangeEvent event) {
+		final ResourceDeltaVisitor deltaVisitor = new ResourceDeltaVisitor();
+		try {
+			event.getDelta().accept(deltaVisitor);
+		} catch (final CoreException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -346,46 +378,28 @@ public class FilterManager implements IFilterManager, IStartup,IResourceChangeLi
 		}
 		return true;
 	}
-	
-	public ArrayList<Parameter> getParameters(){
-		ArrayList<Parameter> activeParameters = new ArrayList<Parameter>();
-		for(VideoFilter filter:activeFilters){
-			activeParameters.addAll(filter.getParameters());
-		}
-		return activeParameters;
-	}
 
 	@Override
 	public boolean startStream() {
-		//System.out.println("FilterManager.startStream()1" + this);
-		enabled = true;
-		filtersThread = new Thread(new FiltersRunnable(), "Filters Thread");
+		// System.out.println("FilterManager.startStream()1" + this);
+		started = true;
+		filtersThread = new Thread(new FiltersRunnable(), "Filters process");
 		filtersThread.start();
-		//System.out.println("FilterManager.startStream()2" + this);
+		// System.out.println("FilterManager.startStream()2" + this);
 		return true;
 	}
 
 	@Override
 	public boolean stopStream() {
-		//System.out.println("FilterManager.stopStream()1" + this);
-		if(enabled==true){
+		// System.out.println("FilterManager.stopStream()1" + this);
+		if (started == true) {
 			ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
-			enabled = false;
+			started = false;
 			paused = false;
 			filtersThread.interrupt();
 			Utils.sleep(30);
 		}
-		//System.out.println("FilterManager.stopStream()2" + this);
+		// System.out.println("FilterManager.stopStream()2" + this);
 		return false;
-	}
-
-	@Override
-	public void resourceChanged(IResourceChangeEvent event) {
-		ResourceDeltaVisitor deltaVisitor = new ResourceDeltaVisitor();
-		try {
-			event.getDelta().accept(deltaVisitor);
-		} catch (CoreException e) {
-			e.printStackTrace();
-		}
 	}
 }

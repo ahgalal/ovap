@@ -12,10 +12,10 @@ import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.internal.part.NullEditorInput;
 
 import ovap.video.filter.VideoFilter;
-import ovap.video.filter.display.editor.FrameViwerEditor;
+import ovap.video.filter.display.editor.FrameViewerEditor;
+import ovap.video.filter.display.editor.LaunchEditorInput;
 
 /**
  * @author Creative
@@ -24,7 +24,7 @@ public class FrameDisplayFilter extends VideoFilter {
 
 	private BufferedImage		img;
 	private int[]				imgData;
-	private FrameViwerEditor viewer;
+	private FrameViewerEditor viewer;
 
 	public FrameDisplayFilter() {
 		super("", "");
@@ -61,20 +61,19 @@ public class FrameDisplayFilter extends VideoFilter {
 	public VideoFilter newInstance(final String name, final String contextId) {
 		Display.getDefault().syncExec(new Runnable() {
 
-			@SuppressWarnings("restriction")
 			@Override
 			public void run() {
 				try {
 					IWorkbenchPage activePage = PlatformUI.getWorkbench()
 							.getWorkbenchWindows()[0].getActivePage();
 
-					FrameViwerEditor editorToUse=null;
+					FrameViewerEditor editorToUse=null;
 					IEditorReference[] editorReferences = activePage.getEditorReferences();
 					for(IEditorReference editorReference:editorReferences){
 						IEditorPart editor = editorReference.getEditor(false);
-						if(editor instanceof FrameViwerEditor){
+						if(editor instanceof FrameViewerEditor){
 							// check the session name
-							FrameViwerEditor viewer = (FrameViwerEditor) editor;
+							FrameViewerEditor viewer = (FrameViewerEditor) editor;
 							String sessionName = viewer.getSessionName();
 							if(sessionName.equals(contextId)){ // use editor instance
 								editorToUse=viewer;
@@ -83,11 +82,11 @@ public class FrameDisplayFilter extends VideoFilter {
 						}
 					}
 					if(editorToUse==null){// create a new editor instance
-						editorToUse = (FrameViwerEditor) activePage.openEditor(new NullEditorInput(), Activator.EDITOR_ID, true);
-						editorToUse.setSessionName(contextId);
+						editorToUse = (FrameViewerEditor) activePage.openEditor(new LaunchEditorInput(contextId), Activator.EDITOR_ID, true);
 					}
 					setViewer(editorToUse);
 					activePage.activate(editorToUse);
+					editorToUse.setSessionName(contextId);
 
 				} catch (final PartInitException e) {
 					e.printStackTrace();
@@ -120,7 +119,7 @@ public class FrameDisplayFilter extends VideoFilter {
 			System.out.println("Skipping null frame");
 	}
 
-	public void setViewer(final FrameViwerEditor viewer) {
+	public void setViewer(final FrameViewerEditor viewer) {
 		this.viewer = viewer;
 	}
 

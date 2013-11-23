@@ -14,7 +14,7 @@
          point="org.eclipse.debug.ui.launchConfigurationTabs">
       <tab
             class="ovap.video.source.ui.SourceLaunchConfigurationTab"
-            group="ovap.video.launch.stream.tabgroup"
+            group="ovap.video.launch.config.tabgroup"
             id="ovap.video.source.maintab"
             name="Source">
       </tab>

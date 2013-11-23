@@ -6,6 +6,7 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: ovap.module.testmodule.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- ovap.video.module
+ ovap.video.module,
+ ovap.video;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

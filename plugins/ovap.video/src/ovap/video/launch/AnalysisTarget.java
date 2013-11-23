@@ -1,6 +1,3 @@
-/**
- * 
- */
 package ovap.video.launch;
 
 import org.eclipse.debug.core.DebugEvent;
@@ -9,17 +6,15 @@ import org.eclipse.debug.core.DebugException;
 import ovap.video.SessionState;
 import ovap.video.VideoManager;
 
-/**
- * @author Creative
- */
-public class StreamTarget extends OVAPTarget {
-	public StreamTarget(final OVAPLaunch streamLaunch, final String name) {
-		super(streamLaunch, name);
+public class AnalysisTarget extends OVAPTarget {
+
+	public AnalysisTarget(OVAPLaunch launch, String name) {
+		super(launch, name);
 	}
 
 	@Override
 	public boolean canResume() {
-		final SessionState state = VideoManager.getDefault().getStreamState(
+		final SessionState state = VideoManager.getDefault().getAnalysisState(
 				getLaunch().getLaunchConfiguration().getName());
 		if (state == SessionState.PAUSED)
 			return true;
@@ -29,7 +24,7 @@ public class StreamTarget extends OVAPTarget {
 
 	@Override
 	public boolean canSuspend() {
-		final SessionState state = VideoManager.getDefault().getStreamState(
+		final SessionState state = VideoManager.getDefault().getAnalysisState(
 				getLaunch().getLaunchConfiguration().getName());
 		if (state == SessionState.RUNNING)
 			return true;
@@ -39,7 +34,7 @@ public class StreamTarget extends OVAPTarget {
 
 	@Override
 	public boolean canTerminate() {
-		final SessionState state = VideoManager.getDefault().getStreamState(
+		final SessionState state = VideoManager.getDefault().getAnalysisState(
 				getLaunch().getLaunchConfiguration().getName());
 		if ((state == SessionState.RUNNING) || (state == SessionState.PAUSED))
 			return true;
@@ -49,7 +44,7 @@ public class StreamTarget extends OVAPTarget {
 
 	@Override
 	public boolean isSuspended() {
-		final SessionState state = VideoManager.getDefault().getStreamState(
+		final SessionState state = VideoManager.getDefault().getAnalysisState(
 				getLaunch().getLaunchConfiguration().getName());
 		if (state == SessionState.PAUSED)
 			return true;
@@ -59,14 +54,14 @@ public class StreamTarget extends OVAPTarget {
 
 	@Override
 	public void resume() throws DebugException {
-		VideoManager.getDefault().resumeStream(
+		VideoManager.getDefault().resumeAnalysis(
 				getLaunch().getLaunchConfiguration().getName());
 		fireEvent(DebugEvent.RESUME);
 	}
 
 	@Override
 	public void suspend() throws DebugException {
-		VideoManager.getDefault().pauseStream(
+		VideoManager.getDefault().pauseAnalysis(
 				getLaunch().getLaunchConfiguration().getName());
 
 		fireEvent(DebugEvent.SUSPEND);
@@ -74,18 +69,10 @@ public class StreamTarget extends OVAPTarget {
 
 	@Override
 	public void terminate() throws DebugException {
-		VideoManager.getDefault().stopStream(
+		VideoManager.getDefault().stopAnalysis(
 				getLaunch().getLaunchConfiguration().getName());
 		setTerminated(true);
 		fireEvent(DebugEvent.TERMINATE);
 	}
 
-	/*
-	 * public void launchConfigurationChanged(ILaunchConfiguration
-	 * configuration) { Map<String, Object> attributes = null; try { attributes
-	 * = configuration.getAttributes(); } catch (CoreException e) {
-	 * e.printStackTrace(); }
-	 * VideoManager.getDefault().launchConfigurationChanged
-	 * (attributes,configuration.getName()); }
-	 */
 }
