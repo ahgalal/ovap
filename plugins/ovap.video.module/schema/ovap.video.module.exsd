@@ -52,6 +52,9 @@
          <choice>
             <element ref="in_parameter" minOccurs="0" maxOccurs="unbounded"/>
             <element ref="out_parameter" minOccurs="0" maxOccurs="unbounded"/>
+            <choice>
+               <element ref="configuration_gui" minOccurs="0" maxOccurs="1"/>
+            </choice>
          </choice>
          <attribute name="class" type="string" use="required">
             <annotation>
@@ -106,6 +109,21 @@
                <documentation>
                   Name of the output parameter.
                </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="configuration_gui">
+      <complexType>
+         <attribute name="class" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn="ovap.module.ModuleConfigurationContributer:"/>
+               </appinfo>
             </annotation>
          </attribute>
       </complexType>

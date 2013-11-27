@@ -73,7 +73,7 @@ public class ModuleManager implements IModuleManager {
 		activeModules = new ArrayList<Module>();
 		final String[] moduleNames = settings
 				.getArray(Activator.SETTINGS_SELECTED_MODULES_NAMES);
-		for (final String moduleName : moduleNames) {
+		for (final String moduleName : moduleNames) { // TODO: check for NPE and throw exception
 			final String moduleId = settings.get(moduleName
 					+ Activator.SETTINGS_ID_POST_FIX);
 			final Module module = newModuleInstance(moduleId, moduleName);

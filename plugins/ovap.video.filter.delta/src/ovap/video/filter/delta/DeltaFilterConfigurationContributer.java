@@ -66,7 +66,7 @@ public class DeltaFilterConfigurationContributer extends
 	}
 
 	public boolean isAcceptableElement(EObject eObject) {
-		return super.isAcceptableElement(eObject) && ((FilterInstance)eObject).getType().getName().equals(Activator.PLUGIN_ID);
+		return /*super.isAcceptableElement(eObject) && */((FilterInstance)eObject).getType().getName().equals(Activator.PLUGIN_ID);
 	};
 	/* (non-Javadoc)
 	 * @see ovap.video.filter.FilterConfigurationContributer#initializeGUI()

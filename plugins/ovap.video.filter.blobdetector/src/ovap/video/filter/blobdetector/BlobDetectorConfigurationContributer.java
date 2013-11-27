@@ -138,7 +138,7 @@ public class BlobDetectorConfigurationContributer extends
 					canvasSize.y / 2);
 		} else { // session is started
 			final ArrayList<BufferedImage> filterInputImages = getFilterManager()
-					.getFilterInputs(getFilterName());
+					.getFilterInputs(getConfigurableName());
 			BufferedImage bufferedImage = filterInputImages.get(0);
 			final ImageData imageData = ImageManipulator
 					.bufferedImageToImageData(bufferedImage);
@@ -153,5 +153,4 @@ public class BlobDetectorConfigurationContributer extends
 		super.show();
 		refreshCanvas();
 	}
-
 }

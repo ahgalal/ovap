@@ -27,7 +27,8 @@ import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
 import ovap.emf.utils.EMFUtils;
-import ovap.video.filter.FilterConfigurationChangeListener;
+import ovap.video.ConfigurationChangeListener;
+import ovap.video.ConfigurationContributer;
 import ovap.video.filter.FilterConfigurationContributer;
 import ovap.video.filter.FilterConfigurationManager;
 import ovap.video.filter.setup.model.Configuration;
@@ -37,7 +38,7 @@ import ovap.video.filter.setup.model.FilterInstance;
  * @author Creative
  */
 public class ConfigurationPropertySection extends AbstractPropertySection
-		implements IPropertySourceProvider, FilterConfigurationChangeListener, ResourceSetListener {
+		implements IPropertySourceProvider, ConfigurationChangeListener, ResourceSetListener {
 	private Composite						composite;
 	private FilterConfigurationContributer	configurationContributer;
 	private EObject							prevSelection;
@@ -138,8 +139,8 @@ public class ConfigurationPropertySection extends AbstractPropertySection
 
 	@Override
 	public void signalConfigurationChange(
-			final FilterConfigurationContributer contributer) {
-		applyConfigurationUpdates(contributer);
+			final ConfigurationContributer contributer) {
+		applyConfigurationUpdates((FilterConfigurationContributer) contributer);
 	}
 
 	@Override

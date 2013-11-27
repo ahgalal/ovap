@@ -122,6 +122,7 @@ public class ModuleSetupPage extends AnalysisWizardPage {
 	private Table										tblParams;
 
 	private TableViewer									tblViewerModuleInstances;
+	private Composite cmpstConfigs;
 
 	public ModuleSetupPage() {
 		this("");
@@ -163,8 +164,12 @@ public class ModuleSetupPage extends AnalysisWizardPage {
 				tblModuleInstances = tblViewerModuleInstances.getTable();
 				tblModuleInstances.setLinesVisible(true);
 				tblModuleInstances.setHeaderVisible(true);
-				tblModuleInstances.setLayoutData(new GridData(SWT.FILL,
-						SWT.FILL, true, true, 2, 1));
+				{
+					GridData gd_tblModuleInstances = new GridData(SWT.FILL,
+							SWT.FILL, true, true, 2, 2);
+					gd_tblModuleInstances.heightHint = 213;
+					tblModuleInstances.setLayoutData(gd_tblModuleInstances);
+				}
 				{
 					tableViewerColumn = new TableViewerColumn(
 							tblViewerModuleInstances, SWT.NONE);
@@ -241,8 +246,12 @@ public class ModuleSetupPage extends AnalysisWizardPage {
 				tblParams = checkboxTableViewer.getTable();
 				tblParams.setLinesVisible(true);
 				tblParams.setHeaderVisible(true);
-				tblParams.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
-						true, 1, 1));
+				{
+					GridData gd_tblParams = new GridData(SWT.FILL, SWT.FILL, true,
+							true, 1, 1);
+					gd_tblParams.heightHint = 110;
+					tblParams.setLayoutData(gd_tblParams);
+				}
 				{
 					tableViewerColumn_2 = new TableViewerColumn(
 							checkboxTableViewer, SWT.NONE);
@@ -263,6 +272,16 @@ public class ModuleSetupPage extends AnalysisWizardPage {
 				}
 				checkboxTableViewer
 						.setContentProvider(new ArrayContentProvider());
+			}
+			new Label(grpModulesAndParameters, SWT.NONE);
+			{
+				cmpstConfigs = new Composite(grpModulesAndParameters, SWT.NONE);
+				{
+					GridData gd_cmpstConfigs = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
+					gd_cmpstConfigs.heightHint = 267;
+					gd_cmpstConfigs.widthHint = 420;
+					cmpstConfigs.setLayoutData(gd_cmpstConfigs);
+				}
 			}
 			{
 				btnAdd = new Button(grpModulesAndParameters, SWT.NONE);
@@ -291,7 +310,7 @@ public class ModuleSetupPage extends AnalysisWizardPage {
 				});
 				{
 					final GridData gd_btnAdd = new GridData(SWT.RIGHT,
-							SWT.CENTER, true, false, 1, 1);
+							SWT.CENTER, false, false, 1, 1);
 					gd_btnAdd.widthHint = 84;
 					btnAdd.setLayoutData(gd_btnAdd);
 				}
@@ -316,7 +335,7 @@ public class ModuleSetupPage extends AnalysisWizardPage {
 				});
 				{
 					final GridData gd_btnRemove = new GridData(SWT.LEFT,
-							SWT.CENTER, true, false, 1, 1);
+							SWT.CENTER, false, false, 1, 1);
 					gd_btnRemove.widthHint = 82;
 					btnRemove.setLayoutData(gd_btnRemove);
 				}

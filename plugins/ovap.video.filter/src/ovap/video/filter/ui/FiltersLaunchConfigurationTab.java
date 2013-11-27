@@ -38,8 +38,9 @@ import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Text;
 
 import ovap.emf.utils.EMFUtils;
+import ovap.video.ConfigurationChangeListener;
+import ovap.video.ConfigurationContributer;
 import ovap.video.VideoManager;
-import ovap.video.filter.FilterConfigurationChangeListener;
 import ovap.video.filter.FilterConfigurationContributer;
 import ovap.video.filter.FilterConfigurationManager;
 import ovap.video.filter.FilterLaunchConfigs;
@@ -52,7 +53,7 @@ import utils.FileUtils;
 /**
  * @author Creative
  */
-public class FiltersLaunchConfigurationTab extends OVAPLaunchConfigurationTab implements FilterConfigurationChangeListener {
+public class FiltersLaunchConfigurationTab extends OVAPLaunchConfigurationTab implements ConfigurationChangeListener {
 	private Button		btnBrowseActiveGraph;
 	protected Composite	container;
 	private Group		grpFilterGraph;
@@ -412,7 +413,7 @@ public class FiltersLaunchConfigurationTab extends OVAPLaunchConfigurationTab im
 
 	@Override
 	public void signalConfigurationChange(
-			FilterConfigurationContributer contributer) {
+			ConfigurationContributer contributer) {
 		updateLaunchConfigurationDialog();
 	}
 	
