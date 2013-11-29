@@ -4,15 +4,21 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import org.eclipse.debug.core.model.IDebugTarget;
-import org.eclipse.jface.dialogs.DialogSettings;
 
 public abstract class AbstractSession {
 	private SessionState	streamState	= SessionState.STOPPED;
 	private IDebugTarget	target;
+	private String id;
+	
+	public AbstractSession(String id) {
+		this.id=id;
+	}
 
 	public abstract void deInitialize();
 
-	public abstract String getId();
+	public String getId(){
+		return id;
+	}
 
 	public SessionState getState() {
 		return streamState;
@@ -24,8 +30,7 @@ public abstract class AbstractSession {
 	
 	public abstract ArrayList<Parameter> getParameters();
 
-	public abstract void initialize(final Map<String, Object> attributes);
-	public abstract void initialize(final DialogSettings settings);
+	public abstract void initialize(final Map<String, String> attributes);
 
 	public abstract boolean pause();
 

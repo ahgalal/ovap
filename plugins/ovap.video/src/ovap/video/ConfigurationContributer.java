@@ -8,12 +8,14 @@ import org.eclipse.swt.widgets.Composite;
 public abstract class ConfigurationContributer {
 
 	protected ArrayList<ConfigurationChangeListener>	changeListeners;
-	private Map<String, String>	configuration;
-	private Composite	container;
-	private String	configurableName;
+	private String										configurableName;
+
+	private Map<String, String>							configuration;
+
+	private Composite									container;
 
 	public ConfigurationContributer() {
-		super();
+		changeListeners = new ArrayList<ConfigurationChangeListener>();
 	}
 
 	public void addChangeListener(final ConfigurationChangeListener listener) {
@@ -23,6 +25,10 @@ public abstract class ConfigurationContributer {
 
 	public abstract void createControls(final Composite parent);
 
+	public String getConfigurableName() {
+		return configurableName;
+	}
+
 	public Map<String, String> getConfigurations() {
 		return configuration;
 	}
@@ -31,19 +37,24 @@ public abstract class ConfigurationContributer {
 		return container;
 	}
 
-	public void show() {
-		container.setVisible(true);
-	}
-
 	public void hide() {
 		container.setVisible(false);
 	}
 
+	/**
+	 * Initialized GUI controls with input configurations.<br>
+	 * Called by the framework when configurations are set.
+	 */
 	protected abstract void initializeGUI();
 
-	//public abstract boolean isAcceptableElement(final EObject eObject);
+	// public abstract boolean isAcceptableElement(final EObject eObject);
 
-	public void setConfigurations(final Map<String, String> configMap, String configurableName) {
+	public void setConfigurableName(final String configurableName) {
+		this.configurableName = configurableName;
+	}
+
+	public void setConfigurations(final Map<String, String> configMap,
+			final String configurableName) {
 		this.configuration = configMap;
 		setConfigurableName(configurableName);
 		initializeGUI();
@@ -53,17 +64,13 @@ public abstract class ConfigurationContributer {
 		this.container = container;
 	}
 
+	public void show() {
+		container.setVisible(true);
+	}
+
 	protected void signalConfigurationChange() {
 		for (final ConfigurationChangeListener listener : changeListeners)
 			listener.signalConfigurationChange(this);
-	}
-
-	public String getConfigurableName() {
-		return configurableName;
-	}
-
-	public void setConfigurableName(String configurableName) {
-		this.configurableName = configurableName;
 	}
 
 }

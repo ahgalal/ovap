@@ -1,11 +1,7 @@
 package ovap.video;
 
 import java.util.ArrayList;
-/**
- * 
- */
-
-import org.eclipse.jface.dialogs.DialogSettings;
+import java.util.HashMap;
 
 /**
  * @author Creative
@@ -23,6 +19,6 @@ public interface IModuleManager {
 
 	void registerParameters(ArrayList<Parameter> parameters);
 
-	void initialize(DialogSettings settings);
+	void initialize(HashMap<String, Object> settings);
 
 }

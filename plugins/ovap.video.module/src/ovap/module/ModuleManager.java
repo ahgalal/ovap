@@ -4,14 +4,16 @@
 package ovap.module;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.jface.dialogs.DialogSettings;
 
 import ovap.video.IModuleManager;
 import ovap.video.Parameter;
 import sys.utils.Utils;
 import utils.PDEUtils;
+import utils.StringUtils;
 
 /**
  * @author Creative
@@ -69,15 +71,22 @@ public class ModuleManager implements IModuleManager {
 	}
 
 	@Override
-	public void initialize(final DialogSettings settings) {
+	public void initialize(HashMap<String, Object> settings) {
 		activeModules = new ArrayList<Module>();
-		final String[] moduleNames = settings
-				.getArray(Activator.SETTINGS_SELECTED_MODULES_NAMES);
+		final String moduleNamesStr = (String) settings
+				.get(Activator.SETTINGS_SELECTED_MODULES_NAMES);
+		String[] moduleNames = moduleNamesStr.split(Activator.DELIM_SETTINGS_REGEX);
 		for (final String moduleName : moduleNames) { // TODO: check for NPE and throw exception
-			final String moduleId = settings.get(moduleName
+			final String moduleId = (String) settings.get(moduleName
 					+ Activator.SETTINGS_ID_POST_FIX);
 			final Module module = newModuleInstance(moduleId, moduleName);
 			activeModules.add(module);
+		}
+		
+		// configure modules
+		for(Module module:activeModules){
+			Map encodedConfigsMap = StringUtils.convertToInstanceConfigMap(module.getName(), settings,true);
+			module.configure((HashMap<String, Object>) encodedConfigsMap);
 		}
 	}
 

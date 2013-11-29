@@ -7,7 +7,7 @@ import org.osgi.framework.BundleContext;
  * The activator class controls the plug-in life cycle
  */
 public class Activator extends AbstractUIPlugin {
-
+	public static final String	SETTING_PRINT_CONSOLE	= "print_console";
 	// The plug-in ID
 	public static String PLUGIN_ID;
 

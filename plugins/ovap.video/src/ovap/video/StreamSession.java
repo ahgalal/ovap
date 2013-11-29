@@ -5,11 +5,11 @@ package ovap.video;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.debug.core.DebugException;
-import org.eclipse.jface.dialogs.DialogSettings;
 
 import utils.PDEUtils;
 
@@ -21,7 +21,8 @@ public class StreamSession extends AbstractSession implements
 	private final IFilterManager	filterManager;
 	private final ISourceManager	sourceManager;
 
-	public StreamSession() {
+	public StreamSession(String id) {
+		super(id);
 		// Filter Manager
 		final IConfigurationElement[] filterManagerExtensions = PDEUtils
 				.getExtensions(VideoManager.EP_OVAP_VIDEO_FILTER_MANAGER);
@@ -56,23 +57,9 @@ public class StreamSession extends AbstractSession implements
 		return filterManager;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see ovap.video.ISession#getId()
-	 */
-	@Override
-	public String getId() {
-		return getTarget().getLaunch().getLaunchConfiguration().getName();
-	}
-
 	@Override
 	public ArrayList<Parameter> getParameters() {
 		return filterManager.getParameters();
-	}
-
-	@Override
-	public void initialize(final DialogSettings settings) {
-		throw new UnsupportedOperationException("method is not implemented");
 	}
 
 	/*
@@ -80,11 +67,13 @@ public class StreamSession extends AbstractSession implements
 	 * @see ovap.video.ISession#initialize(java.util.Map)
 	 */
 	@Override
-	public void initialize(final Map<String, Object> attributes) {
-		sourceManager.initialize(attributes);
+	public void initialize(final Map<String, String> configurations) {
+		HashMap<String, Object> settings = new HashMap<String, Object>();
+		settings.putAll(configurations);
+		sourceManager.initialize(settings);
 		sourceManager.addStreamEndListener(this);
 		final FrameData frameData = sourceManager.getFrameData();
-		filterManager.initialize(attributes, frameData);
+		filterManager.initialize(settings, frameData);
 	}
 
 	/*

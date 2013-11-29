@@ -4,10 +4,10 @@
 package ovap.video;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.jface.dialogs.DialogSettings;
 
 import utils.PDEUtils;
 
@@ -17,12 +17,14 @@ import utils.PDEUtils;
 public class AnalysisSession extends AbstractSession {
 	private final IModuleManager	moduleManager;
 
-	public AnalysisSession() {
+	public AnalysisSession(String analysisSessionId) {
+		super(analysisSessionId);
 		// Module Manager
 		final IConfigurationElement[] moduleManagerExtensions = PDEUtils
 				.getExtensions(VideoManager.EP_OVAP_VIDEO_MODULE_MANAGER);
 		moduleManager = PDEUtils.instantiateExtension(IModuleManager.class,
 				moduleManagerExtensions[0]);
+		
 	}
 
 	@Override
@@ -32,24 +34,16 @@ public class AnalysisSession extends AbstractSession {
 	}
 
 	@Override
-	public String getId() {
-		return getTarget().getLaunch().getLaunchConfiguration().getName();
-	}
-
-	@Override
 	public ArrayList<Parameter> getParameters() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void initialize(final DialogSettings settings) {
+	public void initialize(final Map<String, String> analysisSettings) {
+		HashMap<String, Object> settings = new HashMap<String, Object>();
+		settings.putAll(analysisSettings);
 		moduleManager.initialize(settings);
-	}
-
-	@Override
-	public void initialize(final Map<String, Object> attributes) {
-		throw new UnsupportedOperationException("method is not implemented");
 	}
 
 	@Override

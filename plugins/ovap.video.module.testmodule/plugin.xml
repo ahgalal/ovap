@@ -22,6 +22,9 @@
                id="ovap.video.module.testmodule.in_parameter3"
                name="in_parameter2">
          </in_parameter>
+         <configuration_gui
+               class="ovap.module.testmodule.TestModuleConfigurationContributer">
+         </configuration_gui>
       </module>
    </extension>
 

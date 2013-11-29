@@ -8,11 +8,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.jface.dialogs.DialogSettings;
+import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTableViewer;
-import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -28,6 +29,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
@@ -36,96 +38,126 @@ import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 
 import ovap.module.Activator;
 import ovap.module.Module;
+import ovap.module.ModuleConfigurationContributer;
 import ovap.module.ModuleManager;
+import ovap.module.analysis.wizard.page.provider.ModuleData;
+import ovap.module.analysis.wizard.page.provider.ModuleDataIdColumnLabelProvider;
+import ovap.module.analysis.wizard.page.provider.ModuleDataNameColumnLabelProvider;
+import ovap.module.analysis.wizard.page.provider.ModuleIdColumnLabelProvider;
+import ovap.module.analysis.wizard.page.provider.ParameterIdColumnLabelProvider;
+import ovap.module.analysis.wizard.page.provider.ParameterNameColumnLabelProvider;
+import ovap.video.ConfigurationChangeListener;
+import ovap.video.ConfigurationContributer;
 import ovap.video.Parameter;
+import ovap.video.launch.DialogSettings2;
 import ovap.video.launch.analysis.wizard.page.AnalysisWizardPage;
+import utils.PDEUtils;
+import utils.StringUtils;
 
 /**
  * @author Creative
  */
-public class ModuleSetupPage extends AnalysisWizardPage {
-
-	private class ModuleData {
-		public String	id;
-		public String	name;
-
-		public ModuleData(final String name, final String id) {
-			super();
-			this.name = name;
-			this.id = id;
-		}
-
+public class ModuleSetupPage extends AnalysisWizardPage implements
+		ConfigurationChangeListener {
+	private final class AddModuleInstanceHandler extends SelectionAdapter {
 		@Override
-		public boolean equals(final Object obj) {
-			final ModuleData otherObj = (ModuleData) obj;
-			if (!name.equals(otherObj.name) || !id.equals(otherObj.id))
-				return false;
+		public void widgetSelected(final SelectionEvent e) {
+			final ElementListSelectionDialog dialog = new ElementListSelectionDialog(
+					getShell(), new ModuleIdColumnLabelProvider());
+			dialog.setElements(ModuleManager.getInstalledModules().toArray(
+					new Module[0]));
+			if (dialog.open() == Window.OK) {
+				final Object[] result = dialog.getResult();
+				final Module module = (Module) result[0];
+				final InputDialog inputDialog = new InputDialog(getShell(),
+						"Module instance name",
+						"Please enter the name of the new module instance",
+						"Module" + moduleInstanceCount++, null);
+				if (inputDialog.open() == Window.OK) {
+					final String moduleInstanceName = inputDialog.getValue();
+					final ModuleData moduleData = new ModuleData(
+							moduleInstanceName, module.getID());
 
-			return true;
-		}
-	}
+					final ArrayList<Parameter> outputParameters = module
+							.getOutputParameters();
+					final Map<Parameter, Boolean> map = new HashMap<Parameter, Boolean>();
+					for (final Parameter parameter : outputParameters)
+						map.put(parameter, true);
+					selectionData.put(moduleData, map);
+					updateModuleInstancesTable();
+				}
 
-	private class ModuleDataIdColumnLabelProvider extends ColumnLabelProvider {
-		@Override
-		public String getText(final Object element) {
-			return ((ModuleData) element).id;
-		}
-	}
-
-	private class ModuleDataNameColumnLabelProvider extends ColumnLabelProvider {
-		@Override
-		public String getText(final Object element) {
-			return ((ModuleData) element).name;
+			}
 		}
 	}
 
-	private class ModuleIdColumnLabelProvider extends ColumnLabelProvider {
+	private final class ModuleTableSelectionListener implements
+			ISelectionChangedListener {
 		@Override
-		public String getText(final Object element) {
-			return ((Module) element).getID();
-		}
-	}
+		public void selectionChanged(final SelectionChangedEvent event) {
+			final ModuleData moduleData = getSelectedModule();
+			if (moduleData != null) {
+				final Map<Parameter, Boolean> paramsList = selectionData
+						.get(moduleData);
+				final Set<Parameter> params = paramsList.keySet();
+				checkboxTableViewer.setInput(params.toArray());
+				for (final Parameter parameter : params) {
+					checkboxTableViewer.setChecked(parameter,
+							paramsList.get(parameter));
+				}
 
-	private class ParameterIdColumnLabelProvider extends ColumnLabelProvider {
-		@Override
-		public String getText(final Object element) {
-			return ((Parameter) element).getId();
-		}
-	}
+				// show configuration contributer
+				final ModuleConfigurationContributer configurationContributer = getConfigurationContributer(moduleData);
 
-	private class ParameterNameColumnLabelProvider extends ColumnLabelProvider {
-		@Override
-		public String getText(final Object element) {
-			return ((Parameter) element).getName();
+				for (final Control child : cmpstConfigs.getChildren()) {
+					child.setVisible(false);
+					child.setParent(cmpstDummy);
+				}
+				if (configurationContributer != null) {
+					configurationContributer.getContainer().setParent(
+							cmpstConfigs);
+					configurationContributer.show();
+					configurationContributer.getContainer().setLayoutData(
+							new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+					cmpstConfigs.layout();
+				}
+
+			} else
+				checkboxTableViewer.setInput(new Object[0]);
 		}
 	}
 
 	private Button										btnAdd;
+
 	private Button										btnRemove;
 	private CheckboxTableViewer							checkboxTableViewer;
+	private Composite									cmpstConfigs;
+	private Composite									cmpstDummy;
+	private Map<String, ModuleConfigurationContributer>	configurationContributers;
 	private Group										grpModulesAndParameters;
 	private Label										label;
+	private int											moduleInstanceCount	= 0;
 	private Map<ModuleData, Map<Parameter, Boolean>>	selectionData;
 	private TableViewerColumn							tableViewerColumn;
+
 	private TableViewerColumn							tableViewerColumn_1;
 	private TableViewerColumn							tableViewerColumn_2;
 	private TableViewerColumn							tableViewerColumn_3;
 
 	private TableColumn									tblclmnId;
+
 	private TableColumn									tblclmnName;
+
 	private TableColumn									tblclmnName_1;
 
 	private TableColumn									tblclmnType;
-
 	private Table										tblModuleInstances;
-
 	private Table										tblParams;
-
 	private TableViewer									tblViewerModuleInstances;
-	private Composite cmpstConfigs;
 
 	public ModuleSetupPage() {
 		this("");
+		configurationContributers = new HashMap<String, ModuleConfigurationContributer>();
 	}
 
 	/**
@@ -151,6 +183,7 @@ public class ModuleSetupPage extends AnalysisWizardPage {
 
 		setControl(container);
 		container.setLayout(new GridLayout(1, false));
+		new Label(container, SWT.NONE);
 		{
 			grpModulesAndParameters = new Group(container, SWT.NONE);
 			grpModulesAndParameters.setLayoutData(new GridData(SWT.FILL,
@@ -165,8 +198,8 @@ public class ModuleSetupPage extends AnalysisWizardPage {
 				tblModuleInstances.setLinesVisible(true);
 				tblModuleInstances.setHeaderVisible(true);
 				{
-					GridData gd_tblModuleInstances = new GridData(SWT.FILL,
-							SWT.FILL, true, true, 2, 2);
+					final GridData gd_tblModuleInstances = new GridData(
+							SWT.FILL, SWT.FILL, true, true, 2, 2);
 					gd_tblModuleInstances.heightHint = 213;
 					tblModuleInstances.setLayoutData(gd_tblModuleInstances);
 				}
@@ -191,27 +224,7 @@ public class ModuleSetupPage extends AnalysisWizardPage {
 				tblViewerModuleInstances
 						.setContentProvider(new ArrayContentProvider());
 				tblViewerModuleInstances
-						.addSelectionChangedListener(new ISelectionChangedListener() {
-							@Override
-							public void selectionChanged(
-									final SelectionChangedEvent event) {
-								final ModuleData moduleData = getSelectedModule();
-								if (moduleData != null) {
-									final Map<Parameter, Boolean> paramsList = selectionData
-											.get(moduleData);
-									final Set<Parameter> params = paramsList
-											.keySet();
-									checkboxTableViewer.setInput(params
-											.toArray());
-									for (final Parameter parameter : params) {
-										checkboxTableViewer.setChecked(
-												parameter,
-												paramsList.get(parameter));
-									}
-								} else
-									checkboxTableViewer.setInput(new Object[0]);
-							}
-						});
+						.addSelectionChangedListener(new ModuleTableSelectionListener());
 			}
 			{
 				label = new Label(grpModulesAndParameters, SWT.SEPARATOR
@@ -240,15 +253,15 @@ public class ModuleSetupPage extends AnalysisWizardPage {
 									else
 										map.put((Parameter) parameter, false);
 								}
-								saveToSettings();
+								updateSettingsFromGUI();
 							}
 						});
 				tblParams = checkboxTableViewer.getTable();
 				tblParams.setLinesVisible(true);
 				tblParams.setHeaderVisible(true);
 				{
-					GridData gd_tblParams = new GridData(SWT.FILL, SWT.FILL, true,
-							true, 1, 1);
+					final GridData gd_tblParams = new GridData(SWT.FILL,
+							SWT.FILL, true, true, 1, 1);
 					gd_tblParams.heightHint = 110;
 					tblParams.setLayoutData(gd_tblParams);
 				}
@@ -276,8 +289,10 @@ public class ModuleSetupPage extends AnalysisWizardPage {
 			new Label(grpModulesAndParameters, SWT.NONE);
 			{
 				cmpstConfigs = new Composite(grpModulesAndParameters, SWT.NONE);
+				cmpstConfigs.setLayout(new GridLayout(1, false));
 				{
-					GridData gd_cmpstConfigs = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
+					final GridData gd_cmpstConfigs = new GridData(SWT.FILL,
+							SWT.FILL, true, true, 1, 1);
 					gd_cmpstConfigs.heightHint = 267;
 					gd_cmpstConfigs.widthHint = 420;
 					cmpstConfigs.setLayoutData(gd_cmpstConfigs);
@@ -285,29 +300,7 @@ public class ModuleSetupPage extends AnalysisWizardPage {
 			}
 			{
 				btnAdd = new Button(grpModulesAndParameters, SWT.NONE);
-				btnAdd.addSelectionListener(new SelectionAdapter() {
-					@Override
-					public void widgetSelected(final SelectionEvent e) {
-						final ElementListSelectionDialog dialog = new ElementListSelectionDialog(
-								getShell(), new ModuleIdColumnLabelProvider());
-						dialog.setElements(ModuleManager.getInstalledModules()
-								.toArray(new Module[0]));
-						if (dialog.open() == Window.OK) {
-							final Object[] result = dialog.getResult();
-							final Module module = (Module) result[0];
-							final ModuleData moduleData = new ModuleData(module
-									.getName(), module.getID());
-
-							final ArrayList<Parameter> outputParameters = module
-									.getOutputParameters();
-							final Map<Parameter, Boolean> map = new HashMap<Parameter, Boolean>();
-							for (final Parameter parameter : outputParameters)
-								map.put(parameter, true);
-							selectionData.put(moduleData, map);
-							updateModuleInstancesTable();
-						}
-					}
-				});
+				btnAdd.addSelectionListener(new AddModuleInstanceHandler());
 				{
 					final GridData gd_btnAdd = new GridData(SWT.RIGHT,
 							SWT.CENTER, false, false, 1, 1);
@@ -329,6 +322,7 @@ public class ModuleSetupPage extends AnalysisWizardPage {
 									.getFirstElement();
 							final ModuleData module = (ModuleData) firstElement;
 							selectionData.remove(module);
+							removeConfigurationContributer(module);
 							updateModuleInstancesTable();
 						}
 					}
@@ -344,6 +338,52 @@ public class ModuleSetupPage extends AnalysisWizardPage {
 			new Label(grpModulesAndParameters, SWT.NONE);
 			new Label(grpModulesAndParameters, SWT.NONE);
 		}
+		{
+			cmpstDummy = new Composite(container, SWT.NONE);
+			{
+				final GridData gd_cmpstDummy = new GridData(SWT.LEFT,
+						SWT.CENTER, false, false, 1, 1);
+				gd_cmpstDummy.heightHint = 0;
+				gd_cmpstDummy.widthHint = 0;
+				cmpstDummy.setLayoutData(gd_cmpstDummy);
+			}
+		}
+	}
+
+	private ModuleConfigurationContributer getConfigurationContributer(
+			final ModuleData moduleData) {
+		final String moduleName = moduleData.name;
+		ModuleConfigurationContributer ret = configurationContributers
+				.get(moduleName);
+		if (ret != null)
+			return ret;
+
+		final IConfigurationElement[] extensions = PDEUtils
+				.getExtensions(Activator.OVAP_VIDEO_MODULE_EP);
+		for (final IConfigurationElement element : extensions) {
+			for (final IConfigurationElement childElement : element
+					.getChildren()) {
+				if (childElement.getName().equals(
+						Activator.OVAP_VIDEO_MODULE_EP_ELEMENT_CONFIG_GUI_ID)) {
+					final ModuleConfigurationContributer configContributer = PDEUtils
+							.instantiateExtension(
+									ModuleConfigurationContributer.class,
+									childElement);
+					configurationContributers
+							.put(moduleName, configContributer);
+					configContributer.createControls(cmpstConfigs);
+					Map<String, String> attributes = getSettings()
+							.getAttributes();
+					Map<String, String> configMap = StringUtils.convertToInstanceConfigMap(moduleName, attributes);
+					configContributer.setConfigurations(configMap, moduleName);
+					configContributer.addChangeListener(this);
+					configContributer.hide();
+					ret = configContributer;
+					break;
+				}
+			}
+		}
+		return ret;
 	}
 
 	private ModuleData getSelectedModule() {
@@ -354,17 +394,22 @@ public class ModuleSetupPage extends AnalysisWizardPage {
 	}
 
 	private void loadSelectionData() {
-		final DialogSettings settings = getSettings();
-		final String[] moduleNames = settings.getArray(Activator.SETTINGS_SELECTED_MODULES_NAMES);
-		if (moduleNames != null) {
-			final ArrayList<ModuleData> modulesData = new ArrayList<ModuleSetupPage.ModuleData>();
+		final DialogSettings2 settings = getSettings();
+		final String moduleNamesStr = settings
+				.get(Activator.SETTINGS_SELECTED_MODULES_NAMES);
+
+		if (moduleNamesStr != null) {
+			final String[] moduleNames = moduleNamesStr
+					.split(Activator.DELIM_SETTINGS_REGEX);
+			final ArrayList<ModuleData> modulesData = new ArrayList<ModuleData>();
 			for (final String moduleName : moduleNames) {
-				final String id = settings.get(moduleName + Activator.SETTINGS_ID_POST_FIX);
+				final String id = settings.get(moduleName
+						+ Activator.SETTINGS_ID_POST_FIX);
 				final ModuleData moduleData = new ModuleData(moduleName, id);
 				modulesData.add(moduleData);
 			}
 
-			selectionData = new HashMap<ModuleSetupPage.ModuleData, Map<Parameter, Boolean>>();
+			selectionData = new HashMap<ModuleData, Map<Parameter, Boolean>>();
 			final ArrayList<Module> installedModules = ModuleManager
 					.getInstalledModules();
 
@@ -379,61 +424,105 @@ public class ModuleSetupPage extends AnalysisWizardPage {
 
 				final ArrayList<Parameter> outputParameters = module
 						.getOutputParameters();
-				final String[] selectedParamsId = settings
-						.getArray(moduleData.name + Activator.SETTINGS_PARAMS_POST_FIX);
+				String selectedParamsIdStr = settings.get(moduleData.name
+						+ Activator.SETTINGS_PARAMS_POST_FIX);
 				final HashMap<Parameter, Boolean> params = new HashMap<Parameter, Boolean>();
-				for (final Parameter tmpParameter : outputParameters) {
-					params.put(tmpParameter, false);
-					for (final String paramId : selectedParamsId) {
-						if (tmpParameter.getId().equals(paramId)) {
-							params.put(tmpParameter, true);
-							break;
+				if(selectedParamsIdStr==null)
+					selectedParamsIdStr="";
+					final String[] selectedParamsId = selectedParamsIdStr
+							.split(Activator.DELIM_SETTINGS_REGEX);
+
+					for (final Parameter tmpParameter : outputParameters) {
+						params.put(tmpParameter, false);
+						for (final String paramId : selectedParamsId) {
+							if (tmpParameter.getId().equals(paramId)) {
+								params.put(tmpParameter, true);
+								break;
+							}
 						}
 					}
-				}
-
+				
 				selectionData.put(moduleData, params);
 			}
 		}
 	}
 
-	private void saveToSettings() {
-		final DialogSettings settings = getSettings();
-
-		final ArrayList<String> moduleNames = new ArrayList<String>();
-		for (final ModuleData moduleData : selectionData.keySet()) {
-			moduleNames.add(moduleData.name);
-		}
-
-		settings.put(Activator.SETTINGS_SELECTED_MODULES_NAMES, moduleNames.toArray(new String[0]));
-
-		for (final ModuleData moduleData : selectionData.keySet()) {
-			settings.put(moduleData.name + Activator.SETTINGS_ID_POST_FIX, moduleData.id);
-			final Map<Parameter, Boolean> params = selectionData
-					.get(moduleData);
-			final ArrayList<String> paramsIds = new ArrayList<String>();
-			for (final Parameter parameter : params.keySet())
-				if (params.get(parameter) == true)
-					paramsIds.add(parameter.getId());
-			settings.put(moduleData.name + Activator.SETTINGS_PARAMS_POST_FIX,
-					paramsIds.toArray(new String[0]));
-		}
-
+	private void removeConfigurationContributer(final ModuleData moduleData) {
+		final String moduleName = moduleData.name;
+		final ModuleConfigurationContributer configurationContributer = configurationContributers
+				.get(moduleName);
+		configurationContributer.hide();
+		// FIXME: is this enough to unload instance from memory? do we need SWT
+		// dispose?
+		configurationContributers.remove(moduleName);
 	}
 
 	@Override
-	public void setSettings(final DialogSettings settings) {
+	public void setSettings(final DialogSettings2 settings) {
 		super.setSettings(settings);
 
 		loadSelectionData();
 		updateModuleInstancesTable();
 	}
 
+	@Override
+	public void signalConfigurationChange(
+			final ConfigurationContributer contributer) {
+/*		final Map<String, String> configurations = contributer
+				.getConfigurations();
+
+		// loop on all keys in dialog settings and update them from the
+		// contributer's configs
+		for (final String key : configurations.keySet()) {
+			getSettings().put(key, configurations.get(key));
+		}*/
+		updateSettingsFromGUI();
+	}
+
 	private void updateModuleInstancesTable() {
 		if (tblViewerModuleInstances != null) {
 			tblViewerModuleInstances.setInput(selectionData.keySet().toArray());
-			saveToSettings();
+			updateSettingsFromGUI();
 		}
+	}
+
+	private void updateSettingsFromGUI() {
+		final DialogSettings settings = getSettings();
+
+		final ArrayList<String> moduleNames = new ArrayList<String>();
+		for (final ModuleData moduleData : selectionData.keySet()) {
+			moduleNames.add(moduleData.name);
+		}
+		final String moduleNamesStr = StringUtils.join(
+				Activator.DELIM_SETTINGS, moduleNames.toArray(new String[0]));
+		settings.put(Activator.SETTINGS_SELECTED_MODULES_NAMES, moduleNamesStr);
+
+		for (final ModuleData moduleData : selectionData.keySet()) {
+			settings.put(moduleData.name + Activator.SETTINGS_ID_POST_FIX,
+					moduleData.id);
+			final Map<Parameter, Boolean> params = selectionData
+					.get(moduleData);
+			final ArrayList<String> paramsIds = new ArrayList<String>();
+			for (final Parameter parameter : params.keySet())
+				if (params.get(parameter) == true)
+					paramsIds.add(parameter.getId());
+			final String paramsStr = StringUtils.join(Activator.DELIM_SETTINGS,
+					paramsIds.toArray(new String[0]));
+			settings.put(moduleData.name + Activator.SETTINGS_PARAMS_POST_FIX,
+					paramsStr);
+			
+			// update configs
+			ModuleConfigurationContributer configContributer = getConfigurationContributer(moduleData);
+			if(configContributer!=null){
+				/* configurations data ex: setting1=5*/
+				Map<String, String> configurations = configContributer.getConfigurations();
+				/* flatMap data ex: moduleA__setting1=5*/
+				Map<String, String> flatMap = StringUtils.convertToFlatConfigMap(moduleData.name, configurations);
+				for(String key:flatMap.keySet())
+					getSettings().put(key, flatMap.get(key));
+			}
+		}
+
 	}
 
 }

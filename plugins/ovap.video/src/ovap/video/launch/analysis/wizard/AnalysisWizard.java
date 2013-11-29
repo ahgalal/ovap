@@ -16,6 +16,7 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardPage;
 
 import ovap.video.Activator;
+import ovap.video.launch.DialogSettings2;
 import ovap.video.launch.LaunchConfigs;
 import ovap.video.launch.OVAPLaunch;
 import ovap.video.launch.analysis.wizard.page.AnalysisSessionInfoPage;
@@ -25,7 +26,7 @@ import utils.PDEUtils;
 
 public class AnalysisWizard extends Wizard {
 	private AnalysisSessionInfoPage	basicInfoPage;
-	private final DialogSettings	dialogSettings;
+	private final DialogSettings2	dialogSettings;
 
 	private final OVAPLaunch		launch;
 	private SaveSettingsPage		saveSettingsPage;
@@ -33,7 +34,7 @@ public class AnalysisWizard extends Wizard {
 	public AnalysisWizard(final OVAPLaunch launch) {
 		this.launch = launch;
 		setWindowTitle("New Wizard");
-		dialogSettings = new DialogSettings("ovap.video.analysis.wizard");
+		dialogSettings = new DialogSettings2("ovap.video.analysis.wizard");
 	}
 
 	@Override
@@ -92,7 +93,7 @@ public class AnalysisWizard extends Wizard {
 			saveSettings(file);
 		}
 
-		launch.startAnalysisTarget(dialogSettings);
+		launch.startAnalysisTarget(dialogSettings.getAttributes());
 		return true;
 	}
 

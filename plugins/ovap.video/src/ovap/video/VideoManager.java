@@ -7,7 +7,7 @@ import java.util.Map;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IExecutableExtensionFactory;
 import org.eclipse.debug.core.DebugException;
-import org.eclipse.jface.dialogs.DialogSettings;
+import org.eclipse.debug.core.model.IDebugTarget;
 
 import ovap.video.launch.AnalysisTarget;
 import ovap.video.launch.StreamTarget;
@@ -42,9 +42,9 @@ public class VideoManager implements IExecutableExtensionFactory {
 		return getDefault();
 	}
 
-	private AnalysisSession getAnalysisSession(final String sessionId) {
+	private AnalysisSession getAnalysisSession(final String analysisSessionId) {
 		for (final AnalysisSession session : analysisSessions.keySet())
-			if (session.getId().equals(sessionId))
+			if (session.getId().equals(analysisSessionId))
 				return session;
 		return null;
 	}
@@ -89,19 +89,19 @@ public class VideoManager implements IExecutableExtensionFactory {
 
 	public boolean initializeAnalysisSession(
 			final AnalysisTarget analysisTarget,
-			final DialogSettings analysisSettings, final String streamSessionId) {
-		final String launchConfigName = analysisTarget.getLaunch()
-				.getLaunchConfiguration().getName();
-		AnalysisSession session = getAnalysisSession(launchConfigName);
+			final Map<String, String> analysisSettings) {
+		String analysisSessionId = analysisTarget.getSessionId();
+		String streamSessionId = analysisTarget.getLaunch().getLaunchConfiguration().getName();
+		AnalysisSession session = getAnalysisSession(analysisSessionId);
 		if (session != null) {
 			session.deInitialize();
 		}
-		session = new AnalysisSession();
+		session = new AnalysisSession(analysisSessionId);
 		analysisSessions.put(session, streamSessionId);
 		session.setTarget(analysisTarget);
 
 		session.initialize(analysisSettings);
-
+		
 		final StreamSession streamSession = getStreamSession(streamSessionId);
 		final ArrayList<Parameter> filtersParameters = streamSession
 				.getParameters();
@@ -118,11 +118,23 @@ public class VideoManager implements IExecutableExtensionFactory {
 			session.deInitialize();
 			streamSessions.remove(session);
 		}
-		session = new StreamSession();
+		session = new StreamSession(launchConfigName);
 		streamSessions.add(session);
 		session.setTarget(streamTarget);
 
-		session.initialize(configurations);
+		HashMap<String, String> settings = new HashMap<String, String>();
+		for(String key: configurations.keySet())
+		settings.put(key,configurations.get(key).toString());
+		session.initialize(settings);
+		
+/*		ArrayList<AnalysisSession> analysisSessionsToRemove = new ArrayList<AnalysisSession>();
+		// remove old analysis sessions associated with this stream session
+		for(AnalysisSession analysisSession:analysisSessions.keySet()){
+			if(analysisSessions.get(analysisSession).equals(session.getId()))
+				analysisSessionsToRemove.add(analysisSession);
+		}
+		for(AnalysisSession analysisSession:analysisSessionsToRemove)
+			analysisSessions.remove(analysisSession);*/
 
 		return true;
 	}
@@ -187,5 +199,15 @@ public class VideoManager implements IExecutableExtensionFactory {
 			} catch (final DebugException e) {
 				e.printStackTrace();
 			}
+	}
+
+	public void removeSession(IDebugTarget target) {
+		AnalysisSession analysisSession=null;
+		for(AnalysisSession tmpAnalysisSession: analysisSessions.keySet())
+			if(tmpAnalysisSession.getTarget().equals(target)){
+				analysisSession = tmpAnalysisSession;
+				break;
+			}
+		analysisSessions.remove(analysisSession);
 	}
 }

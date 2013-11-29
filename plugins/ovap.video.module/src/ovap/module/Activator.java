@@ -7,9 +7,11 @@ import org.osgi.framework.BundleContext;
  * The activator class controls the plug-in life cycle
  */
 public class Activator extends AbstractUIPlugin {
-
+	public static final String	DELIM_SETTINGS	= "|";
+	public static final String	DELIM_SETTINGS_REGEX	= "\\|";
 	public static final String	OVAP_VIDEO_MODULE_EP			= "ovap.video.module";
 	public static final String	OVAP_VIDEO_MODULE_EP_ATTR_ID	= "id";
+	public static final String	OVAP_VIDEO_MODULE_EP_ELEMENT_CONFIG_GUI_ID	= "configuration_gui";
 	// The shared instance
 	private static Activator	plugin;
 	// The plug-in ID

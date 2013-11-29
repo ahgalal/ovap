@@ -49,6 +49,7 @@ import ovap.video.filter.setup.model.FilterInstance;
 import ovap.video.launch.LaunchConfigs;
 import ovap.video.launch.ui.OVAPLaunchConfigurationTab;
 import utils.FileUtils;
+import utils.StringUtils;
 
 /**
  * @author Creative
@@ -225,7 +226,7 @@ public class FiltersLaunchConfigurationTab extends OVAPLaunchConfigurationTab im
 					filterInstanceToConfigContributer.put(filterInstance, filterConfigContributer);
 					if(filterConfigContributer!=null){
 						try {
-							Map<String, String> filterConfigMap = convertToFilterConfigMap(filterInstance.getName(), launchConfiguration.getAttributes());
+							Map<String, String> filterConfigMap = StringUtils.convertToInstanceConfigMap(filterInstance.getName(), launchConfiguration.getAttributes());
 							filterConfigContributer.setConfigurations(filterConfigMap,filterInstance.getName());
 						} catch (CoreException e) {
 							e.printStackTrace();
@@ -358,7 +359,7 @@ public class FiltersLaunchConfigurationTab extends OVAPLaunchConfigurationTab im
 			if(contributer!=null){
 				Map<String, String> updatedFilterConfigMap = contributer.getConfigurations();
 				FilterInstance filterInstance = getFilterInstanceForConfigContrinuter(contributer);
-				Map<String, String> updatedLaunchConfigMap = convertToLaunchConfigMap(filterInstance.getName(), updatedFilterConfigMap);
+				Map<String, String> updatedLaunchConfigMap = StringUtils.convertToFlatConfigMap(filterInstance.getName(), updatedFilterConfigMap);
 
 				boolean configurationChange=false;
 				// update launch config
@@ -431,7 +432,7 @@ public class FiltersLaunchConfigurationTab extends OVAPLaunchConfigurationTab im
 		for(FilterInstance filterInstance:filterInstances){
 			Configuration configuration = filterInstance.getConfiguration();
 			Map<String, String> filterConfigMap = EMFUtils.getHashMap(configuration.getEntries());
-			Map<String, String> launchConfigMap = convertToLaunchConfigMap(filterInstance.getName(), filterConfigMap);
+			Map<String, String> launchConfigMap = StringUtils.convertToFlatConfigMap(filterInstance.getName(), filterConfigMap);
 			
 			for(String key: launchConfigMap.keySet())
 				workingCopy.setAttribute(key,launchConfigMap.get(key));
@@ -444,29 +445,6 @@ public class FiltersLaunchConfigurationTab extends OVAPLaunchConfigurationTab im
 		}
 	}
 	
-	public static Map<String, String> convertToLaunchConfigMap(String filterName,Map<String, String> filterConfigMap){
-		Map<String, String> launchConfigMap= new HashMap<String, String>();
-		
-		for(String key:filterConfigMap.keySet()){
-			launchConfigMap.put(filterName+"__"+key,filterConfigMap.get(key));
-		}
-		return launchConfigMap;
-	}
-	
-	public static Map<String, String> convertToFilterConfigMap(String filterName,Map<String, String> attributes){
-		Map<String, String> filterConfigMap= new HashMap<String, String>();
-		
-		for(String key:attributes.keySet()){
-			if(key.startsWith(filterName+"__")){
-				String filterCfgKey = key.substring(key.indexOf("__")+2);
-				String filterCfgValue = attributes.get(key);
-				
-				filterConfigMap.put(filterCfgKey, filterCfgValue);
-			}
-		}
-		return filterConfigMap;
-	}
-	
 	@SuppressWarnings("unchecked")
 	public static void updateFilterConfigurations(Collection<FilterInstance> filterInstances,ILaunchConfiguration launchConfiguration){
 		try {
@@ -474,7 +452,7 @@ public class FiltersLaunchConfigurationTab extends OVAPLaunchConfigurationTab im
 			// fill map of each filter instance with configs read from the launch configs 
 			Map<String, String> attributes = launchConfiguration.getAttributes();
 			for(FilterInstance filterInstance:filterInstances){
-				Map<String, String> filterConfigMap = convertToFilterConfigMap(filterInstance.getName(), attributes);
+				Map<String, String> filterConfigMap = StringUtils.convertToInstanceConfigMap(filterInstance.getName(), attributes);
 				filterInstanceToConfig.put(filterInstance, filterConfigMap);
 			}
 			

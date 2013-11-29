@@ -9,8 +9,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.Launch;
+import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.ISourceLocator;
-import org.eclipse.jface.dialogs.DialogSettings;
 
 import ovap.video.VideoManager;
 
@@ -23,7 +23,7 @@ public class OVAPLaunch extends Launch {
 			final String mode, final ISourceLocator locator) {
 		super(launchConfiguration, mode, locator);
 	}
-
+	
 	@SuppressWarnings("unchecked")
 	private Map<String, Object> getLaunchConfigAttributes() {
 		Map<String, Object> configurations = null;
@@ -41,21 +41,33 @@ public class OVAPLaunch extends Launch {
 	public void launchAdded(final ILaunch launch) {
 		super.launchAdded(launch);
 
+		// clear all targets
+		IDebugTarget[] debugTargets = getDebugTargets();
+		for(IDebugTarget target:debugTargets)
+			removeDebugTarget(target);
+		
 		startStreamTarget();
 	}
+	
+	private int analysisSessionCount=0;
 
-	public void startAnalysisTarget(final DialogSettings analysisSettings) {
-		final AnalysisTarget target = new AnalysisTarget(this, "Analysis");
+	public void startAnalysisTarget(final Map<String, String> analysisSettings) {
+		final AnalysisTarget target = new AnalysisTarget(this, "Analysis"+analysisSessionCount++);
 		addDebugTarget(target);
 
 		final Map<String, Object> configurations = getLaunchConfigAttributes();
 		for (final String key : configurations.keySet()) {
 			analysisSettings.put(key, (String) configurations.get(key));
 		}
-		final String launchConfigName = getLaunchConfiguration().getName();
 		VideoManager.getDefault().initializeAnalysisSession(target,
-				analysisSettings, launchConfigName);
-		VideoManager.getDefault().startAnalysis(launchConfigName);
+				analysisSettings);
+		VideoManager.getDefault().startAnalysis(target.getSessionId());
+	}
+	
+	@Override
+	public void removeDebugTarget(IDebugTarget target) {
+		super.removeDebugTarget(target);
+		VideoManager.getDefault().removeSession(target);
 	}
 
 	private void startStreamTarget() {

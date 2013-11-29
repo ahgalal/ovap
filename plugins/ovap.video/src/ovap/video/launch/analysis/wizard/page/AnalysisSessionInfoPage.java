@@ -150,9 +150,11 @@ public class AnalysisSessionInfoPage extends WizardPage {
 								dialog.setInput(project);
 								if(dialog.open()==Window.OK){
 									Object[] result = dialog.getResult();
-									IFile file = (IFile)result[0];
-									txtSettingsFile.setText(file.getProjectRelativePath().toString());
-									((AnalysisWizard)getWizard()).loadSettings(new File(file.getLocation().toOSString()));
+									if(result.length>0){
+										IFile file = (IFile)result[0];
+										txtSettingsFile.setText(file.getProjectRelativePath().toString());
+										((AnalysisWizard)getWizard()).loadSettings(new File(file.getLocation().toOSString()));
+									}
 								}
 							}
 						});

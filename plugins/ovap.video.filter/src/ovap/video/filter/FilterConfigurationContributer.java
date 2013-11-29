@@ -3,10 +3,6 @@
  */
 package ovap.video.filter;
 
-import java.util.ArrayList;
-
-
-import ovap.video.ConfigurationChangeListener;
 import ovap.video.ConfigurationContributer;
 import ovap.video.IFilterManager;
 
@@ -15,9 +11,6 @@ import ovap.video.IFilterManager;
  */
 public abstract class FilterConfigurationContributer extends ConfigurationContributer {
 	private IFilterManager filterManager;
-	public FilterConfigurationContributer() {
-		changeListeners = new ArrayList<ConfigurationChangeListener>();
-	}
 
 	public IFilterManager getFilterManager() {
 		return filterManager;
