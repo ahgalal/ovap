@@ -1,13 +1,18 @@
 package ovap.video.launch.analysis.wizard.page;
 
 import java.io.File;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.window.Window;
-import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -21,9 +26,12 @@ import org.eclipse.ui.dialogs.ListDialog;
 import org.eclipse.ui.model.BaseWorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 
+import ovap.video.Activator;
+import ovap.video.launch.DialogSettings2;
 import ovap.video.launch.analysis.wizard.AnalysisWizard;
 
-public class AnalysisSessionInfoPage extends WizardPage {
+public class AnalysisSessionInfoPage extends AnalysisWizardPage {
+	
 	private Button	btnBrowseSettingsFile;
 	private Group	grpAnalysisSettings;
 	private Group	grpBasicInformation;
@@ -70,6 +78,12 @@ public class AnalysisSessionInfoPage extends WizardPage {
 				txtTitle = new Text(grpBasicInformation, SWT.BORDER);
 				txtTitle.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
 						false, 1, 1));
+				txtTitle.addModifyListener(new ModifyListener() {
+					@Override
+					public void modifyText(ModifyEvent e) {
+						getWizard().getContainer().updateButtons();
+					}
+				});
 			}
 			{
 				lblDate = new Label(grpBasicInformation, SWT.NONE);
@@ -80,6 +94,9 @@ public class AnalysisSessionInfoPage extends WizardPage {
 				txtDate.setEditable(false);
 				txtDate.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
 						false, 1, 1));
+				Date time = Calendar.getInstance().getTime();
+				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH-mm");
+				txtDate.setText(dateFormat.format(time));
 			}
 			{
 				lblComments = new Label(grpBasicInformation, SWT.NONE);
@@ -112,7 +129,7 @@ public class AnalysisSessionInfoPage extends WizardPage {
 			}
 			{
 				txtSettingsFile = new Text(grpAnalysisSettings, SWT.BORDER);
-				txtSettingsFile.setText("blobs.as");
+				txtSettingsFile.setText("");
 				txtSettingsFile.setEditable(false);
 				txtSettingsFile.setLayoutData(new GridData(SWT.FILL,
 						SWT.CENTER, true, false, 1, 1));
@@ -133,7 +150,9 @@ public class AnalysisSessionInfoPage extends WizardPage {
 										final ArrayList<Object> ret = new ArrayList<Object>();
 										for (final Object o : children)
 											if (o instanceof IFile)
-												if(((IFile) o).getFileExtension().equals("as"))
+												if (((IFile) o)
+														.getFileExtension()
+														.equals(Activator.FILE_EXT_ANALYSIS_SETTINGS))
 													ret.add(o);
 										return ret.toArray();
 									}
@@ -148,12 +167,17 @@ public class AnalysisSessionInfoPage extends WizardPage {
 								dialog.setTitle("Load Settings");
 								dialog.setMessage("Please select analysis settings file");
 								dialog.setInput(project);
-								if(dialog.open()==Window.OK){
-									Object[] result = dialog.getResult();
-									if(result.length>0){
-										IFile file = (IFile)result[0];
-										txtSettingsFile.setText(file.getProjectRelativePath().toString());
-										((AnalysisWizard)getWizard()).loadSettings(new File(file.getLocation().toOSString()));
+								if (dialog.open() == Window.OK) {
+									final Object[] result = dialog.getResult();
+									if (result.length > 0) {
+										final IFile file = (IFile) result[0];
+										txtSettingsFile.setText(file
+												.getProjectRelativePath()
+												.toString());
+										((AnalysisWizard) getWizard())
+												.loadSettings(new File(file
+														.getLocation()
+														.toOSString()));
 									}
 								}
 							}
@@ -161,5 +185,22 @@ public class AnalysisSessionInfoPage extends WizardPage {
 				btnBrowseSettingsFile.setText("...");
 			}
 		}
+	}
+	
+	@Override
+	public void updateSettingsFromGUI() {
+		final DialogSettings2 settings = getSettings();
+		settings.put(AnalysisWizard.SETTING_SESSION_NAME, txtTitle.getText());
+		settings.put(AnalysisWizard.SETTING_SESSION_DESCRIPTION, txtComment.getText());
+		settings.put(AnalysisWizard.SETTING_SESSION_DATE, txtDate.getText());
+	}
+
+	@Override
+	public String validateInput() {
+		String errorMessage = null;
+		if(txtTitle.getText().isEmpty()){
+			errorMessage="Session Title cannot be blank";
+		}		
+		return errorMessage;
 	}
 }

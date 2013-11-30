@@ -10,7 +10,6 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.jface.dialogs.DialogSettings;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardPage;
@@ -21,15 +20,21 @@ import ovap.video.launch.LaunchConfigs;
 import ovap.video.launch.OVAPLaunch;
 import ovap.video.launch.analysis.wizard.page.AnalysisSessionInfoPage;
 import ovap.video.launch.analysis.wizard.page.AnalysisWizardPage;
-import ovap.video.launch.analysis.wizard.page.SaveSettingsPage;
+import ovap.video.launch.analysis.wizard.page.SaveFilesPage;
 import utils.PDEUtils;
 
 public class AnalysisWizard extends Wizard {
+	public static final String		SETTING_SESSION_DATE		= "session_date";
+	public static final String		SETTING_SESSION_DESCRIPTION	= "session_description";
+
+	public static final String		SETTING_SESSION_NAME		= "session_name";
 	private AnalysisSessionInfoPage	basicInfoPage;
+
 	private final DialogSettings2	dialogSettings;
 
 	private final OVAPLaunch		launch;
-	private SaveSettingsPage		saveSettingsPage;
+
+	private SaveFilesPage		saveSettingsPage;
 
 	public AnalysisWizard(final OVAPLaunch launch) {
 		this.launch = launch;
@@ -50,10 +55,32 @@ public class AnalysisWizard extends Wizard {
 			addPage(page);
 		}
 
-		saveSettingsPage = new SaveSettingsPage();
+		saveSettingsPage = new SaveFilesPage();
 		addPage(saveSettingsPage);
-		
+
 		notifyPageSettings();
+	}
+
+	@Override
+	public IWizardPage getNextPage(final IWizardPage page) {
+		if (page instanceof AnalysisWizardPage) {
+			final AnalysisWizardPage analysisWizardPage = (AnalysisWizardPage) page;
+			analysisWizardPage.updateSettingsFromGUI();
+		}
+		return super.getNextPage(page);
+	}
+
+	public IProject getProject() {
+		String projectName = null;
+		try {
+			projectName = launch.getLaunchConfiguration().getAttribute(
+					LaunchConfigs.PROJECT_NAME.toString(), "");
+		} catch (final CoreException e) {
+			e.printStackTrace();
+		}
+		final IProject project = ResourcesPlugin.getWorkspace().getRoot()
+				.getProject(projectName);
+		return project;
 	}
 
 	public void loadSettings(final File file) {
@@ -95,19 +122,6 @@ public class AnalysisWizard extends Wizard {
 
 		launch.startAnalysisTarget(dialogSettings.getAttributes());
 		return true;
-	}
-
-	public IProject getProject() {
-		String projectName = null;
-		try {
-			projectName = launch.getLaunchConfiguration().getAttribute(
-					LaunchConfigs.PROJECT_NAME.toString(), "");
-		} catch (final CoreException e) {
-			e.printStackTrace();
-		}
-		final IProject project = ResourcesPlugin.getWorkspace().getRoot()
-				.getProject(projectName);
-		return project;
 	}
 
 	public void saveSettings(final File file) {

@@ -253,7 +253,7 @@ public class ModuleSetupPage extends AnalysisWizardPage implements
 									else
 										map.put((Parameter) parameter, false);
 								}
-								updateSettingsFromGUI();
+								updateModuleInstancesTable();
 							}
 						});
 				tblParams = checkboxTableViewer.getTable();
@@ -372,9 +372,10 @@ public class ModuleSetupPage extends AnalysisWizardPage implements
 					configurationContributers
 							.put(moduleName, configContributer);
 					configContributer.createControls(cmpstConfigs);
-					Map<String, String> attributes = getSettings()
+					final Map<String, String> attributes = getSettings()
 							.getAttributes();
-					Map<String, String> configMap = StringUtils.convertToInstanceConfigMap(moduleName, attributes);
+					final Map<String, String> configMap = StringUtils
+							.convertToInstanceConfigMap(moduleName, attributes);
 					configContributer.setConfigurations(configMap, moduleName);
 					configContributer.addChangeListener(this);
 					configContributer.hide();
@@ -427,21 +428,21 @@ public class ModuleSetupPage extends AnalysisWizardPage implements
 				String selectedParamsIdStr = settings.get(moduleData.name
 						+ Activator.SETTINGS_PARAMS_POST_FIX);
 				final HashMap<Parameter, Boolean> params = new HashMap<Parameter, Boolean>();
-				if(selectedParamsIdStr==null)
-					selectedParamsIdStr="";
-					final String[] selectedParamsId = selectedParamsIdStr
-							.split(Activator.DELIM_SETTINGS_REGEX);
+				if (selectedParamsIdStr == null)
+					selectedParamsIdStr = "";
+				final String[] selectedParamsId = selectedParamsIdStr
+						.split(Activator.DELIM_SETTINGS_REGEX);
 
-					for (final Parameter tmpParameter : outputParameters) {
-						params.put(tmpParameter, false);
-						for (final String paramId : selectedParamsId) {
-							if (tmpParameter.getId().equals(paramId)) {
-								params.put(tmpParameter, true);
-								break;
-							}
+				for (final Parameter tmpParameter : outputParameters) {
+					params.put(tmpParameter, false);
+					for (final String paramId : selectedParamsId) {
+						if (tmpParameter.getId().equals(paramId)) {
+							params.put(tmpParameter, true);
+							break;
 						}
 					}
-				
+				}
+
 				selectionData.put(moduleData, params);
 			}
 		}
@@ -468,25 +469,18 @@ public class ModuleSetupPage extends AnalysisWizardPage implements
 	@Override
 	public void signalConfigurationChange(
 			final ConfigurationContributer contributer) {
-/*		final Map<String, String> configurations = contributer
-				.getConfigurations();
-
-		// loop on all keys in dialog settings and update them from the
-		// contributer's configs
-		for (final String key : configurations.keySet()) {
-			getSettings().put(key, configurations.get(key));
-		}*/
 		updateSettingsFromGUI();
 	}
 
 	private void updateModuleInstancesTable() {
 		if (tblViewerModuleInstances != null) {
 			tblViewerModuleInstances.setInput(selectionData.keySet().toArray());
-			updateSettingsFromGUI();
+			getWizard().getContainer().updateButtons();
 		}
 	}
 
-	private void updateSettingsFromGUI() {
+	@Override
+	public void updateSettingsFromGUI() {
 		final DialogSettings settings = getSettings();
 
 		final ArrayList<String> moduleNames = new ArrayList<String>();
@@ -510,19 +504,31 @@ public class ModuleSetupPage extends AnalysisWizardPage implements
 					paramsIds.toArray(new String[0]));
 			settings.put(moduleData.name + Activator.SETTINGS_PARAMS_POST_FIX,
 					paramsStr);
-			
+
 			// update configs
-			ModuleConfigurationContributer configContributer = getConfigurationContributer(moduleData);
-			if(configContributer!=null){
-				/* configurations data ex: setting1=5*/
-				Map<String, String> configurations = configContributer.getConfigurations();
-				/* flatMap data ex: moduleA__setting1=5*/
-				Map<String, String> flatMap = StringUtils.convertToFlatConfigMap(moduleData.name, configurations);
-				for(String key:flatMap.keySet())
+			final ModuleConfigurationContributer configContributer = getConfigurationContributer(moduleData);
+			if (configContributer != null) {
+				/* configurations data ex: setting1=5 */
+				final Map<String, String> configurations = configContributer
+						.getConfigurations();
+				/* flatMap data ex: moduleA__setting1=5 */
+				final Map<String, String> flatMap = StringUtils
+						.convertToFlatConfigMap(moduleData.name, configurations);
+				for (final String key : flatMap.keySet())
 					getSettings().put(key, flatMap.get(key));
 			}
 		}
 
+	}
+
+	@Override
+	public String validateInput() {
+		if (selectionData.size() == 0) {
+			return "Please add at least one module instance";
+		}
+		// FIXME: handle module configuration errors, accepting feedback from
+		// config contributers
+		return null;
 	}
 
 }

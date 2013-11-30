@@ -21,7 +21,20 @@ public abstract class AnalysisWizardPage extends WizardPage {
 		this.settings = settings;
 	}
 	
-	protected DialogSettings2 getSettings(){
+	public DialogSettings2 getSettings(){
 		return settings;
 	}
+	@Override
+	public boolean isPageComplete() {
+		String validateInputResultStr = validateInput();
+		if(validateInputResultStr!=null){
+			setErrorMessage(validateInputResultStr);
+			return false;
+		}else
+			setErrorMessage(null);
+		return super.isPageComplete();
+	}
+	public abstract String validateInput();
+	
+	public abstract void updateSettingsFromGUI();
 }
