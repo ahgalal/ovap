@@ -25,7 +25,7 @@ public class VideoManager implements IExecutableExtensionFactory {
 		return self;
 	}
 
-	private Map<AnalysisSession, String>	analysisSessions;
+	private Map<AnalysisSession, String>	analysisSessionsToStreamSessionId;
 	private ArrayList<StreamSession>		streamSessions;
 
 	public VideoManager() {
@@ -34,7 +34,7 @@ public class VideoManager implements IExecutableExtensionFactory {
 		else
 			self = this;
 		streamSessions = new ArrayList<StreamSession>();
-		analysisSessions = new HashMap<AnalysisSession, String>();
+		analysisSessionsToStreamSessionId = new HashMap<AnalysisSession, String>();
 	}
 
 	@Override
@@ -43,7 +43,7 @@ public class VideoManager implements IExecutableExtensionFactory {
 	}
 
 	private AnalysisSession getAnalysisSession(final String analysisSessionId) {
-		for (final AnalysisSession session : analysisSessions.keySet())
+		for (final AnalysisSession session : analysisSessionsToStreamSessionId.keySet())
 			if (session.getId().equals(analysisSessionId))
 				return session;
 		return null;
@@ -52,8 +52,8 @@ public class VideoManager implements IExecutableExtensionFactory {
 	private ArrayList<AnalysisSession> getAnalysisSessions(
 			final String streamSessionId) {
 		final ArrayList<AnalysisSession> ret = new ArrayList<AnalysisSession>();
-		for (final AnalysisSession analysisSession : analysisSessions.keySet()) {
-			if (analysisSessions.get(analysisSession).equals(streamSessionId))
+		for (final AnalysisSession analysisSession : analysisSessionsToStreamSessionId.keySet()) {
+			if (analysisSessionsToStreamSessionId.get(analysisSession).equals(streamSessionId))
 				ret.add(analysisSession);
 		}
 		return ret;
@@ -97,7 +97,7 @@ public class VideoManager implements IExecutableExtensionFactory {
 			session.deInitialize();
 		}
 		session = new AnalysisSession(analysisSessionId);
-		analysisSessions.put(session, streamSessionId);
+		analysisSessionsToStreamSessionId.put(session, streamSessionId);
 		session.setTarget(analysisTarget);
 
 		session.initialize(analysisSettings);
@@ -149,6 +149,11 @@ public class VideoManager implements IExecutableExtensionFactory {
 		final AbstractSession session = getStreamSession(sessionId);
 		session.pause();
 
+		suspendAssociatedAnalysisSessions(sessionId);
+		return true;
+	}
+
+	private void suspendAssociatedAnalysisSessions(final String sessionId) {
 		final ArrayList<AnalysisSession> associatedAnalysisSessions = getAnalysisSessions(sessionId);
 		for (final AnalysisSession analysisSession : associatedAnalysisSessions)
 			try {
@@ -156,7 +161,6 @@ public class VideoManager implements IExecutableExtensionFactory {
 			} catch (final DebugException e) {
 				e.printStackTrace();
 			}
-		return true;
 	}
 
 	public boolean resumeAnalysis(final String sessionId) {
@@ -174,6 +178,16 @@ public class VideoManager implements IExecutableExtensionFactory {
 	public boolean startAnalysis(final String sessionId) {
 		final AbstractSession session = getAnalysisSession(sessionId);
 		session.start();
+		
+		// handle the case when analysis is started while streaming is paused
+		String streamSessionId = analysisSessionsToStreamSessionId.get(session);
+		if(getStreamState(streamSessionId)==SessionState.PAUSED)
+			try {
+				session.getTarget().suspend();
+			} catch (DebugException e) {
+				e.printStackTrace();
+			}
+		
 		return true;
 	}
 
@@ -201,13 +215,18 @@ public class VideoManager implements IExecutableExtensionFactory {
 			}
 	}
 
-	public void removeSession(IDebugTarget target) {
+	public void removeAnalysisSession(IDebugTarget target) {
 		AnalysisSession analysisSession=null;
-		for(AnalysisSession tmpAnalysisSession: analysisSessions.keySet())
+		for(AnalysisSession tmpAnalysisSession: analysisSessionsToStreamSessionId.keySet())
 			if(tmpAnalysisSession.getTarget().equals(target)){
 				analysisSession = tmpAnalysisSession;
 				break;
 			}
-		analysisSessions.remove(analysisSession);
+		analysisSessionsToStreamSessionId.remove(analysisSession);
+	}
+
+	public ArrayList<Parameter> getParameters(String sessionId) {
+		AnalysisSession session = getAnalysisSession(sessionId);
+		return session.getParameters();
 	}
 }

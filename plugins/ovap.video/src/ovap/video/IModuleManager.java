@@ -21,4 +21,6 @@ public interface IModuleManager {
 
 	void initialize(HashMap<String, Object> settings);
 
+	ArrayList<Parameter> getOutputParameters();
+
 }

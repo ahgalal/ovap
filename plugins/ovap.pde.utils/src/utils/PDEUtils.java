@@ -10,8 +10,12 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IScopeContext;
+import org.eclipse.debug.internal.ui.views.variables.VariablesView;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.ISelectionService;
+import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IViewReference;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.osgi.service.prefs.BackingStoreException;
 
@@ -19,12 +23,32 @@ import org.osgi.service.prefs.BackingStoreException;
  * @author Creative
  * 
  */
+@SuppressWarnings("restriction")
 public class PDEUtils {
 
 	public static IConfigurationElement[] getExtensions(final String epID) {
 		final IConfigurationElement[] configs = Platform.getExtensionRegistry()
 				.getConfigurationElementsFor(epID);
 		return configs;
+	}
+	
+	private static VariablesView variablesView;
+	public static VariablesView getVariablesView() {
+		if(variablesView!=null)
+			return variablesView;
+		
+		IWorkbenchPage activePage = PlatformUI.getWorkbench().getWorkbenchWindows()[0].getActivePage();
+		
+		IViewPart view =null;
+		IViewReference[] viewReferences = activePage.getViewReferences();
+		for(IViewReference viewReference:viewReferences){
+			if(viewReference.getTitle().equals("Variables")) {
+				view = viewReference.getView(false);
+				break;
+			}
+		}
+		variablesView =(VariablesView) view;
+		return variablesView;
 	}
 
 	@SuppressWarnings("unchecked")

@@ -7,12 +7,17 @@ import org.eclipse.core.resources.IMarkerDelta;
 import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
+import org.eclipse.debug.core.IDebugEventSetListener;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IMemoryBlock;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IThread;
+import org.eclipse.debug.internal.ui.DebugUIPlugin;
+import org.eclipse.debug.ui.DebugUITools;
+import org.eclipse.debug.ui.actions.DebugAction;
+import org.eclipse.osgi.framework.debug.Debug;
 
 import ovap.video.Activator;
 
@@ -29,7 +34,7 @@ public abstract class OVAPTarget implements IDebugTarget {
 		this.launch = launch;
 		this.name = name;
 	}
-
+	
 	@Override
 	public void breakpointAdded(final IBreakpoint breakpoint) {
 	}
@@ -55,6 +60,12 @@ public abstract class OVAPTarget implements IDebugTarget {
 
 	protected void fireEvent(final int eventId) {
 		final DebugEvent debugEvent = new DebugEvent(this, eventId);
+		DebugPlugin.getDefault().fireDebugEventSet(
+				new DebugEvent[] { debugEvent });
+	}
+	
+	protected void fireEvent(final int eventId,int detail) {
+		final DebugEvent debugEvent = new DebugEvent(this, eventId,detail);
 		DebugPlugin.getDefault().fireDebugEventSet(
 				new DebugEvent[] { debugEvent });
 	}

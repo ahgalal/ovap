@@ -1,15 +1,72 @@
 package ovap.video.launch;
 
+import java.util.ArrayList;
+
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.debug.core.DebugException;
+import org.eclipse.debug.core.DebugPlugin;
+import org.eclipse.debug.core.model.IVariable;
+import org.eclipse.debug.ui.IDebugUIConstants;
+import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.progress.UIJob;
 
+import ovap.video.Activator;
+import ovap.video.Parameter;
 import ovap.video.SessionState;
 import ovap.video.VideoManager;
+import sys.utils.Utils;
+import utils.PDEUtils;
 
 public class AnalysisTarget extends OVAPTarget {
 
+	private class UpdateVariablesRunnable implements Runnable {
+		@Override
+		public void run() {
+			while (!isTerminated()) {
+				Utils.sleep(500);
+				final ArrayList<Parameter> parameters = VideoManager
+						.getDefault().getParameters(getSessionId());
+				setParameters(parameters);
+			}
+		}
+	}
+
+	private class UpdateVariableUIJob extends UIJob {
+
+		public UpdateVariableUIJob() {
+			super(Display.getDefault(), "Update OVAP variables");
+		}
+
+		@SuppressWarnings("restriction")
+		@Override
+		public IStatus runInUIThread(final IProgressMonitor monitor) {
+			for (final IVariable variable : getVariables()) {
+				final PropertyChangeEvent propertyChangeEvent = new PropertyChangeEvent(
+						variable,
+						IDebugUIConstants.PREF_CHANGED_VALUE_BACKGROUND, null,
+						null);
+				PDEUtils.getVariablesView().propertyChange(propertyChangeEvent);
+			}
+			return new Status(0, Activator.PLUGIN_ID, "Ok");
+		}
+	}
+
+	private final Thread				thUpdateVariables;
+	private final ArrayList<IVariable>	variables;
+
+	private final UpdateVariableUIJob	variableUIJob;
+
 	public AnalysisTarget(final OVAPLaunch launch, final String name) {
 		super(launch, name);
+		variables = new ArrayList<IVariable>();
+		thUpdateVariables = new Thread(new UpdateVariablesRunnable());
+		thUpdateVariables.start();
+		variableUIJob = new UpdateVariableUIJob();
 	}
 
 	@Override
@@ -44,11 +101,29 @@ public class AnalysisTarget extends OVAPTarget {
 
 	public String getSessionId() {
 		try {
-			return getLaunch().getLaunchConfiguration().getName()+"."+getName();
-		} catch (DebugException e) {
+			return getLaunch().getLaunchConfiguration().getName() + "."
+					+ getName();
+		} catch (final DebugException e) {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	private IVariable getVariable(final String name) {
+		for (final IVariable variable : variables)
+			try {
+				if (variable.getName().equals(name))
+					return variable;
+			} catch (final DebugException e) {
+				e.printStackTrace();
+			}
+		final OVAPVariable ovapVariable = new OVAPVariable(name,this);
+		variables.add(ovapVariable);
+		return ovapVariable;
+	}
+
+	public IVariable[] getVariables() {
+		return variables.toArray(new IVariable[0]);
 	}
 
 	@Override
@@ -65,6 +140,44 @@ public class AnalysisTarget extends OVAPTarget {
 	public void resume() throws DebugException {
 		VideoManager.getDefault().resumeAnalysis(getSessionId());
 		fireEvent(DebugEvent.RESUME);
+	}
+
+	public void setParameters(final ArrayList<Parameter> parameters) {
+		// DebugContextEvent event = new
+		// DebugContextEvent(provider,structuredSelection ,
+		// DebugContextEvent.ACTIVATED);
+		// variablesView.debugContextChanged(event );
+		for (final Parameter parameter : parameters) {
+			final String name = parameter.getName();
+			Object valueObj = parameter.getValue();
+			if (valueObj == null)
+				valueObj = "null";
+			final String value = valueObj.toString();
+
+			final IVariable variable = getVariable(name);
+			try {
+				variable.setValue(value);
+
+				/*
+				 * final DebugEvent debugEvent = new DebugEvent(variable,
+				 * DebugEvent.CHANGE,DebugEvent.STATE | DebugEvent.CONTENT);
+				 * DebugPlugin.getDefault().fireDebugEventSet( new DebugEvent[]
+				 * { debugEvent });
+				 */
+
+			} catch (final DebugException e) {
+				e.printStackTrace();
+			}
+		}
+
+		if (variableUIJob.getState() != Job.RUNNING)
+			variableUIJob.schedule();
+
+		// fireEvent(DebugEvent.SUSPEND/*,DebugEvent.STATE | DebugEvent.CONTENT
+		// | DebugEvent.s*/);
+		// IElementContentProvider
+		// contentProvider=(IElementContentProvider)getAdapter(IElementContentProvider.class);
+		// contentProvider.update(new Child)
 	}
 
 	@Override

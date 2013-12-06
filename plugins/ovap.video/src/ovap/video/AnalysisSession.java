@@ -35,8 +35,7 @@ public class AnalysisSession extends AbstractSession {
 
 	@Override
 	public ArrayList<Parameter> getParameters() {
-		// TODO Auto-generated method stub
-		return null;
+		return moduleManager.getOutputParameters();
 	}
 
 	@Override

@@ -48,4 +48,30 @@
             commandId="ovap.video.command.analysis">
       </handler>
    </extension>
+   <extension
+         point="org.eclipse.core.runtime.adapters">
+      <factory
+            adaptableType="ovap.video.launch.OVAPLaunch"
+            class="ovap.video.launch.OVAPLaunchAdapterFactory">
+         <adapter
+               type="org.eclipse.debug.internal.ui.viewers.model.provisional.IElementContentProvider">
+         </adapter>
+         <adapter
+               type="org.eclipse.debug.internal.ui.viewers.model.provisional.IColumnPresentationFactory">
+         </adapter>
+      </factory>
+      <factory
+            adaptableType="ovap.video.launch.AnalysisTarget"
+            class="ovap.video.AnalysisTargetAdapterFactory">
+         <adapter
+               type="org.eclipse.debug.internal.ui.viewers.model.provisional.IElementContentProvider">
+         </adapter>
+      </factory>
+   </extension>
+   <extension
+         point="org.eclipse.ui.startup">
+      <startup
+            class="ovap.video.Startup">
+      </startup>
+   </extension>
 </plugin>

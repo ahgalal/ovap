@@ -67,7 +67,7 @@ public class OVAPLaunch extends Launch {
 	@Override
 	public void removeDebugTarget(IDebugTarget target) {
 		super.removeDebugTarget(target);
-		VideoManager.getDefault().removeSession(target);
+		VideoManager.getDefault().removeAnalysisSession(target);
 	}
 
 	private void startStreamTarget() {

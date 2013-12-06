@@ -151,4 +151,14 @@ public class ModuleManager implements IModuleManager {
 			Utils.sleep(30);
 		}
 	}
+
+	@Override
+	public ArrayList<Parameter> getOutputParameters() {
+		ArrayList<Parameter> outputParameters =new ArrayList<Parameter>();
+		for (final Module module : activeModules) {
+			ArrayList<Parameter> moduleOutParams = module.getOutputParameters();
+			outputParameters.addAll(moduleOutParams);
+		}
+		return outputParameters;
+	}
 }

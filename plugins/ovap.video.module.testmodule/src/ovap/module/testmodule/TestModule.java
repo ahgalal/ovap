@@ -22,7 +22,10 @@ public class TestModule extends Module {
 	@Override
 	public void process() {
 		ArrayList<Point> blobsLocations = getBlobsLocations();
-		System.out.println(blobsLocations.size() + " " + getConfiguration().get(Activator.SETTING_PRINT_CONSOLE));
+		int size = blobsLocations.size();
+		//System.out.println(size + " " + getConfiguration().get(Activator.SETTING_PRINT_CONSOLE));
+		Parameter outputParameter1 = getParametersContainer().getOutputParameter("out_parameter1");
+		outputParameter1.setValue(size);
 	}
 
 	@SuppressWarnings("unchecked")
