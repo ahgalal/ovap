@@ -17,7 +17,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 import ovap.video.Activator;
-import ovap.video.launch.analysis.wizard.AnalysisWizard;
 
 /**
  * @author Creative
@@ -99,15 +98,15 @@ public class SaveFilesPage extends AnalysisWizardPage {
 				btnBrowseResults.addSelectionListener(new SelectionAdapter() {
 					@Override
 					public void widgetSelected(SelectionEvent e) {
-						String sessionTitle = getSettings().get(AnalysisWizard.SETTING_SESSION_NAME);
-						String sessionDate = getSettings().get(AnalysisWizard.SETTING_SESSION_DATE);
+						String sessionTitle = getSettings().get(Activator.SETTING_SESSION_NAME);
+						String sessionDate = getSettings().get(Activator.SETTING_SESSION_DATE);
 						String defaultFileName = sessionTitle+"_"+sessionDate+"."+Activator.FILE_EXT_ANALYSIS_RESULT;
 						InputDialog dialog = new InputDialog(getShell(), "File name", "Please select file name to save results to", defaultFileName, null);
 						
 						if(dialog.open()==Window.OK){
 							String value = dialog.getValue();
 							if(value!=null && !value.isEmpty()){
-								txtSettingsFile.setText(value);
+								txtResultsFile.setText(value);
 							}
 						}
 					}
@@ -117,7 +116,11 @@ public class SaveFilesPage extends AnalysisWizardPage {
 		}
 	}
 	
-	public String getSaveFilePath(){
+	public String getResultsSaveFilePath(){
+		return txtResultsFile.getText();
+	}
+	
+	public String getSettingsSaveFilePath(){
 		return txtSettingsFile.getText();
 	}
 

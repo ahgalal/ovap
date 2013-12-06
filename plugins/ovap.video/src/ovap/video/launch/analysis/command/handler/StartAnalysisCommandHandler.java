@@ -12,9 +12,9 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
 
-import ovap.video.launch.OVAPLaunch;
-import ovap.video.launch.StreamTarget;
 import ovap.video.launch.analysis.wizard.AnalysisWizard;
+import ovap.video.launch.model.OVAPLaunch;
+import ovap.video.launch.model.StreamTarget;
 
 /**
  * @author Creative

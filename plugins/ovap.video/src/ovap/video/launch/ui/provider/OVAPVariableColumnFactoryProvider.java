@@ -6,7 +6,7 @@ import org.eclipse.debug.internal.ui.viewers.model.provisional.IColumnPresentati
 import org.eclipse.debug.internal.ui.viewers.model.provisional.IPresentationContext;
 import org.eclipse.debug.ui.IDebugUIConstants;
 
-import ovap.video.launch.OVAPLaunch;
+import ovap.video.launch.model.OVAPLaunch;
 
 @SuppressWarnings("restriction")
 public final class OVAPVariableColumnFactoryProvider extends

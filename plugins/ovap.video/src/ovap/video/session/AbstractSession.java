@@ -1,9 +1,12 @@
-package ovap.video;
+package ovap.video.session;
 
 import java.util.ArrayList;
 import java.util.Map;
 
 import org.eclipse.debug.core.model.IDebugTarget;
+
+import ovap.video.Parameter;
+import ovap.video.SessionState;
 
 public abstract class AbstractSession {
 	private SessionState	streamState	= SessionState.STOPPED;

@@ -38,6 +38,7 @@ import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Text;
 
 import ovap.emf.utils.EMFUtils;
+import ovap.video.Activator;
 import ovap.video.ConfigurationChangeListener;
 import ovap.video.ConfigurationContributer;
 import ovap.video.VideoManager;
@@ -46,7 +47,6 @@ import ovap.video.filter.FilterConfigurationManager;
 import ovap.video.filter.FilterLaunchConfigs;
 import ovap.video.filter.setup.model.Configuration;
 import ovap.video.filter.setup.model.FilterInstance;
-import ovap.video.launch.LaunchConfigs;
 import ovap.video.launch.ui.OVAPLaunchConfigurationTab;
 import utils.FileUtils;
 import utils.StringUtils;
@@ -317,7 +317,7 @@ public class FiltersLaunchConfigurationTab extends OVAPLaunchConfigurationTab im
 		this.launchConfiguration=configuration;
 		try {
 			String detectedFilterGraph="";
-			String projectName = configuration.getAttribute(LaunchConfigs.PROJECT_NAME.toString(), "");
+			String projectName = configuration.getAttribute(Activator.SETTING_PROJECT_NAME, "");
 			IProject selectedProject=null;
 			if(!projectName.equals(""))
 				selectedProject = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);

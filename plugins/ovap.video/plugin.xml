@@ -8,7 +8,7 @@
    <extension
          point="org.eclipse.debug.core.launchConfigurationTypes">
       <launchConfigurationType
-            delegate="ovap.video.launch.OVAPLaunchDelegate"
+            delegate="ovap.video.launch.model.OVAPLaunchDelegate"
             id="ovap.video.launch.config"
             modes="run,debug"
             name="OVAP Launch"
@@ -51,8 +51,8 @@
    <extension
          point="org.eclipse.core.runtime.adapters">
       <factory
-            adaptableType="ovap.video.launch.OVAPLaunch"
-            class="ovap.video.launch.OVAPLaunchAdapterFactory">
+            adaptableType="ovap.video.launch.model.OVAPLaunch"
+            class="ovap.video.launch.model.OVAPLaunchAdapterFactory">
          <adapter
                type="org.eclipse.debug.internal.ui.viewers.model.provisional.IElementContentProvider">
          </adapter>
@@ -61,8 +61,8 @@
          </adapter>
       </factory>
       <factory
-            adaptableType="ovap.video.launch.AnalysisTarget"
-            class="ovap.video.AnalysisTargetAdapterFactory">
+            adaptableType="ovap.video.launch.model.AnalysisTarget"
+            class="ovap.video.launch.model.AnalysisTargetAdapterFactory">
          <adapter
                type="org.eclipse.debug.internal.ui.viewers.model.provisional.IElementContentProvider">
          </adapter>

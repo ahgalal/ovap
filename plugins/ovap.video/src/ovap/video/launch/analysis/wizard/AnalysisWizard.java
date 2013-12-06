@@ -1,6 +1,5 @@
 package ovap.video.launch.analysis.wizard;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 
@@ -9,25 +8,20 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardPage;
 
 import ovap.video.Activator;
 import ovap.video.launch.DialogSettings2;
-import ovap.video.launch.LaunchConfigs;
-import ovap.video.launch.OVAPLaunch;
 import ovap.video.launch.analysis.wizard.page.AnalysisSessionInfoPage;
 import ovap.video.launch.analysis.wizard.page.AnalysisWizardPage;
 import ovap.video.launch.analysis.wizard.page.SaveFilesPage;
+import ovap.video.launch.model.OVAPLaunch;
+import utils.FileUtils;
 import utils.PDEUtils;
 
 public class AnalysisWizard extends Wizard {
-	public static final String		SETTING_SESSION_DATE		= "session_date";
-	public static final String		SETTING_SESSION_DESCRIPTION	= "session_description";
-
-	public static final String		SETTING_SESSION_NAME		= "session_name";
 	private AnalysisSessionInfoPage	basicInfoPage;
 
 	private final DialogSettings2	dialogSettings;
@@ -74,7 +68,7 @@ public class AnalysisWizard extends Wizard {
 		String projectName = null;
 		try {
 			projectName = launch.getLaunchConfiguration().getAttribute(
-					LaunchConfigs.PROJECT_NAME.toString(), "");
+					Activator.SETTING_PROJECT_NAME, "");
 		} catch (final CoreException e) {
 			e.printStackTrace();
 		}
@@ -103,17 +97,16 @@ public class AnalysisWizard extends Wizard {
 
 	@Override
 	public boolean performFinish() {
-		final String saveFilePath = saveSettingsPage.getSaveFilePath();
+		// store session's results file to settings
+		String resultsSaveFilePath = saveSettingsPage.getResultsSaveFilePath();
+		dialogSettings.put(Activator.SETTING_SESSION_RESULTS_FILE, resultsSaveFilePath);
+		
+		final String saveFilePath = saveSettingsPage.getSettingsSaveFilePath();
 		if (!saveFilePath.isEmpty()) {
 			final IProject project = getProject();
 			final IFile iFile = project.getFile(saveFilePath);
 			if (!iFile.exists())
-				try {
-					iFile.create(new ByteArrayInputStream(new byte[0]), true,
-							new NullProgressMonitor());
-				} catch (final CoreException e) {
-					e.printStackTrace();
-				}
+				FileUtils.createFile(iFile);
 
 			final String fileAbsPath = iFile.getLocation().toOSString();
 			final File file = new File(fileAbsPath);

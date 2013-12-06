@@ -1,4 +1,4 @@
-package ovap.video.launch;
+package ovap.video.launch.model;
 
 import java.util.ArrayList;
 
@@ -8,7 +8,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.debug.core.DebugException;
-import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.model.IVariable;
 import org.eclipse.debug.ui.IDebugUIConstants;
 import org.eclipse.jface.util.PropertyChangeEvent;
@@ -36,9 +35,9 @@ public class AnalysisTarget extends OVAPTarget {
 		}
 	}
 
-	private class UpdateVariableUIJob extends UIJob {
+	private class UpdateVariablesViewUIJob extends UIJob {
 
-		public UpdateVariableUIJob() {
+		public UpdateVariablesViewUIJob() {
 			super(Display.getDefault(), "Update OVAP variables");
 		}
 
@@ -59,14 +58,14 @@ public class AnalysisTarget extends OVAPTarget {
 	private final Thread				thUpdateVariables;
 	private final ArrayList<IVariable>	variables;
 
-	private final UpdateVariableUIJob	variableUIJob;
+	private final UpdateVariablesViewUIJob	variableUIJob;
 
 	public AnalysisTarget(final OVAPLaunch launch, final String name) {
 		super(launch, name);
 		variables = new ArrayList<IVariable>();
 		thUpdateVariables = new Thread(new UpdateVariablesRunnable());
 		thUpdateVariables.start();
-		variableUIJob = new UpdateVariableUIJob();
+		variableUIJob = new UpdateVariablesViewUIJob();
 	}
 
 	@Override

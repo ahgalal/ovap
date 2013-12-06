@@ -1,12 +1,11 @@
 /**
  * 
  */
-package ovap.video;
+package ovap.video.launch.model;
 
 import org.eclipse.core.runtime.IAdapterFactory;
 import org.eclipse.debug.internal.ui.viewers.model.provisional.IElementContentProvider;
 
-import ovap.video.launch.AnalysisTarget;
 
 /**
  * @author Creative

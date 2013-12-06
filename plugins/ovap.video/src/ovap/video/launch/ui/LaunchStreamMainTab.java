@@ -29,7 +29,7 @@ import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.views.navigator.ResourceComparator;
 
-import ovap.video.launch.LaunchConfigs;
+import ovap.video.Activator;
 
 /**
  * @author Creative
@@ -190,7 +190,7 @@ public class LaunchStreamMainTab extends OVAPLaunchConfigurationTab {
 	public void initializeFrom(final ILaunchConfiguration configuration) {
 		try {
 			txtProjectName.setText(configuration.getAttribute(
-					LaunchConfigs.PROJECT_NAME.toString(), "none"));
+					Activator.SETTING_PROJECT_NAME, "none"));
 		} catch (final CoreException e) {
 			e.printStackTrace();
 		}
@@ -216,7 +216,7 @@ public class LaunchStreamMainTab extends OVAPLaunchConfigurationTab {
 	 */
 	@Override
 	public void performApply(final ILaunchConfigurationWorkingCopy configuration) {
-		configuration.setAttribute(LaunchConfigs.PROJECT_NAME.toString(),
+		configuration.setAttribute(Activator.SETTING_PROJECT_NAME,
 				txtProjectName.getText());
 	}
 

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package ovap.video.launch;
+package ovap.video.launch.model;
 
 import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.debug.core.DebugException;

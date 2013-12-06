@@ -2,6 +2,7 @@ package ovap.video;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Creative
@@ -22,5 +23,6 @@ public interface IModuleManager {
 	void initialize(HashMap<String, Object> settings);
 
 	ArrayList<Parameter> getOutputParameters();
+	Map<Parameter,String> getOutputParametersToModuleInstanceMap();
 
 }

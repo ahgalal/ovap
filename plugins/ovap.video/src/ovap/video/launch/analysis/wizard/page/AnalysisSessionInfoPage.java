@@ -190,9 +190,9 @@ public class AnalysisSessionInfoPage extends AnalysisWizardPage {
 	@Override
 	public void updateSettingsFromGUI() {
 		final DialogSettings2 settings = getSettings();
-		settings.put(AnalysisWizard.SETTING_SESSION_NAME, txtTitle.getText());
-		settings.put(AnalysisWizard.SETTING_SESSION_DESCRIPTION, txtComment.getText());
-		settings.put(AnalysisWizard.SETTING_SESSION_DATE, txtDate.getText());
+		settings.put(Activator.SETTING_SESSION_NAME, txtTitle.getText());
+		settings.put(Activator.SETTING_SESSION_DESCRIPTION, txtComment.getText());
+		settings.put(Activator.SETTING_SESSION_DATE, txtDate.getText());
 	}
 
 	@Override

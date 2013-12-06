@@ -13,6 +13,13 @@ public class Activator extends AbstractUIPlugin {
 	public static final String ANALYSIS_WIZARD_PAGE_EP= "ovap.video.analysis.wizard.page";
 	public static final String	FILE_EXT_ANALYSIS_RESULT	= "oar";
 	public static final String	FILE_EXT_ANALYSIS_SETTINGS	= "oas";
+	public static final String		SETTING_LAUNCH_CONFG_NAME		= "launch_config_name";
+	public static final String		SETTING_PROJECT_NAME = "project_name";
+	public static final String		SETTING_SESSION_DATE		= "session_date";
+	public static final String		SETTING_SESSION_DESCRIPTION	= "session_description";
+	public static final String		SETTING_SESSION_NAME		= "session_name";
+	public static final String		SETTING_SESSION_RESULTS_FILE		= "session_results_file";
+	
 	// The shared instance
 	private static Activator plugin;
 	

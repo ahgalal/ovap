@@ -5,13 +5,15 @@ import java.util.Map;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 
+import ovap.video.Activator;
+
 public class LaunchConfigurations {
 	protected String configName;
 	protected IProject project;
 	
 	public LaunchConfigurations(Map<String, Object> configurations) {
-		setConfigName((String) configurations.get(LaunchConfigs.LAUNCH_CONFIG_NAME.toString()));
-		String projectName = (String) configurations.get(LaunchConfigs.PROJECT_NAME.toString());
+		setConfigName((String) configurations.get(Activator.SETTING_LAUNCH_CONFG_NAME));
+		String projectName = (String) configurations.get(Activator.SETTING_PROJECT_NAME);
 		setProject(ResourcesPlugin.getWorkspace().getRoot().getProject(projectName));
 	}
 	

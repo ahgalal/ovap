@@ -1,4 +1,4 @@
-package ovap.video.launch;
+package ovap.video.launch.model;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Status;

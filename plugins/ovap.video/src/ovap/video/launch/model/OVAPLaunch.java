@@ -1,7 +1,7 @@
 /**
  * 
  */
-package ovap.video.launch;
+package ovap.video.launch.model;
 
 import java.util.Map;
 
@@ -12,6 +12,7 @@ import org.eclipse.debug.core.Launch;
 import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.ISourceLocator;
 
+import ovap.video.Activator;
 import ovap.video.VideoManager;
 
 /**
@@ -32,7 +33,7 @@ public class OVAPLaunch extends Launch {
 		} catch (final CoreException e) {
 			e.printStackTrace();
 		}
-		configurations.put(LaunchConfigs.LAUNCH_CONFIG_NAME.toString(),
+		configurations.put(Activator.SETTING_LAUNCH_CONFG_NAME,
 				getLaunchConfiguration().getName());
 		return configurations;
 	}

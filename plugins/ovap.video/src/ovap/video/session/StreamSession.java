@@ -1,7 +1,7 @@
 /**
  * 
  */
-package ovap.video;
+package ovap.video.session;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -10,6 +10,14 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.debug.core.DebugException;
+
+import ovap.video.FrameData;
+import ovap.video.IFilterManager;
+import ovap.video.ISourceManager;
+import ovap.video.IStreamEndListener;
+import ovap.video.Parameter;
+import ovap.video.SessionState;
+import ovap.video.VideoManager;
 
 import utils.PDEUtils;
 

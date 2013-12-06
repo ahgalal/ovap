@@ -41,7 +41,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 
-import ovap.video.launch.LaunchConfigs;
+import ovap.video.Activator;
 import ovap.video.launch.ui.OVAPLaunchConfigurationTab;
 import ovap.video.source.CamSource;
 import ovap.video.source.SourceLaunchConfigs;
@@ -57,8 +57,7 @@ import utils.PDEUtils;
 /**
  * @author Creative
  */
-public class SourceLaunchConfigurationTab extends
-		OVAPLaunchConfigurationTab {
+public class SourceLaunchConfigurationTab extends OVAPLaunchConfigurationTab {
 	private Button								btnBrowseVideoFile;
 	private Combo								cmboCam;
 	private Combo								cmboFrameSize;
@@ -84,35 +83,6 @@ public class SourceLaunchConfigurationTab extends
 	private TableColumn							tblclmnType;
 
 	private Text								txtVideoFile;
-
-
-	
-	protected boolean validateData(){
-		VideoSource selectedSource = (VideoSource) ((IStructuredSelection)tableViewer.getSelection()).getFirstElement();
-		if(selectedSource==null){
-			errorMessage="Please select a video source";
-			return false;
-		}
-		
-		if(selectedSource instanceof CamSource){
-			if(cmboCam.getText().isEmpty()){
-				errorMessage="Please select a camera";
-				return false;
-			}
-			
-			if(cmboFrameSize.getText().isEmpty()){
-				errorMessage="Please select a valid frame size";
-				return false;
-			}
-		}else if(selectedSource instanceof VideoFileSource){
-			if(txtVideoFile.getText().isEmpty()){
-				errorMessage="Please select a video file";
-				return false;
-			}
-		}
-		errorMessage=null;
-		return true;
-	}
 
 	/*
 	 * (non-Javadoc)
@@ -203,11 +173,11 @@ public class SourceLaunchConfigurationTab extends
 												.isDisposed())
 											advancedOptionsGUI.getControl()
 													.setVisible(true);
-									
+
 									// load values to basic options group
 									initializeCamOptions(videoSource);
 									initializeVideoFileOptions(videoSource);
-									
+
 									updateLaunchConfigurationDialog();
 								}
 							}
@@ -243,7 +213,7 @@ public class SourceLaunchConfigurationTab extends
 						cmboCam.select(0);
 						cmboCam.addSelectionListener(new SelectionAdapter() {
 							@Override
-							public void widgetSelected(SelectionEvent e) {
+							public void widgetSelected(final SelectionEvent e) {
 								updateLaunchConfigurationDialog();
 							}
 						});
@@ -259,12 +229,14 @@ public class SourceLaunchConfigurationTab extends
 						cmboFrameSize.setLayoutData(new GridData(SWT.FILL,
 								SWT.CENTER, true, false, 1, 1));
 						cmboFrameSize.select(0);
-						cmboFrameSize.addSelectionListener(new SelectionAdapter() {
-							@Override
-							public void widgetSelected(SelectionEvent e) {
-								updateLaunchConfigurationDialog();
-							}
-						});
+						cmboFrameSize
+								.addSelectionListener(new SelectionAdapter() {
+									@Override
+									public void widgetSelected(
+											final SelectionEvent e) {
+										updateLaunchConfigurationDialog();
+									}
+								});
 					}
 				}
 				cmpstBasicOptions.addControlListener(new ControlListener() {
@@ -361,7 +333,7 @@ public class SourceLaunchConfigurationTab extends
 				final VideoSource videoSource = PDEUtils.instantiateExtension(
 						VideoSource.class, element);
 				if (!sourceNameToAdvancedOptionsGUIMap.containsKey(videoSource
-						.getName()) && advancedOptionsGUI!=null)
+						.getName()) && (advancedOptionsGUI != null))
 					sourceNameToAdvancedOptionsGUIMap.put(
 							videoSource.getName(), advancedOptionsGUI);
 				advancedOptionsGUI.createControls(grpAdvanced);
@@ -490,14 +462,15 @@ public class SourceLaunchConfigurationTab extends
 		initializeVideoFileOptions(savedSource);
 
 		initializeCamOptions(savedSource);
-		
+
 		try {
-			Map<?, ?> attributes = launchConfiguration.getAttributes();
-			HashMap<String, String> options=new HashMap<String, String>();
-			for(Object key:attributes.keySet())
-				options.put((String)key, (String) attributes.get(key));
-			sourceNameToAdvancedOptionsGUIMap.get(savedSource.getName()).loadOptions(options);
-		} catch (CoreException e) {
+			final Map<?, ?> attributes = launchConfiguration.getAttributes();
+			final HashMap<String, String> options = new HashMap<String, String>();
+			for (final Object key : attributes.keySet())
+				options.put((String) key, (String) attributes.get(key));
+			sourceNameToAdvancedOptionsGUIMap.get(savedSource.getName())
+					.loadOptions(options);
+		} catch (final CoreException e) {
 			e.printStackTrace();
 		}
 	}
@@ -518,7 +491,7 @@ public class SourceLaunchConfigurationTab extends
 				String projectName = "";
 				try {
 					projectName = launchConfiguration.getAttribute(
-							LaunchConfigs.PROJECT_NAME.toString(), "");
+							Activator.SETTING_PROJECT_NAME, "");
 				} catch (final CoreException e) {
 					e.printStackTrace();
 				}
@@ -567,12 +540,15 @@ public class SourceLaunchConfigurationTab extends
 		configuration.setAttribute(
 				SourceLaunchConfigs.CAM_FRAME_SIZE.toString(),
 				cmboFrameSize.getText());
-		
+
 		// copy updated options from advanced options GUI of the selected source
-		VideoSource selectedSource= (VideoSource) ((IStructuredSelection)tableViewer.getSelection()).getFirstElement();
-		AdvancedOptionsGUI advancedOptionsGUI = sourceNameToAdvancedOptionsGUIMap.get(selectedSource.getName());
-		HashMap<String, String> updatedOptions = advancedOptionsGUI.getUpdatedOptions();
-		for(String key:updatedOptions.keySet())
+		final VideoSource selectedSource = (VideoSource) ((IStructuredSelection) tableViewer
+				.getSelection()).getFirstElement();
+		final AdvancedOptionsGUI advancedOptionsGUI = sourceNameToAdvancedOptionsGUIMap
+				.get(selectedSource.getName());
+		final HashMap<String, String> updatedOptions = advancedOptionsGUI
+				.getUpdatedOptions();
+		for (final String key : updatedOptions.keySet())
 			configuration.setAttribute(key, updatedOptions.get(key));
 
 	}
@@ -591,5 +567,34 @@ public class SourceLaunchConfigurationTab extends
 	public void setDefaults(final ILaunchConfigurationWorkingCopy configuration) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	protected boolean validateData() {
+		final VideoSource selectedSource = (VideoSource) ((IStructuredSelection) tableViewer
+				.getSelection()).getFirstElement();
+		if (selectedSource == null) {
+			errorMessage = "Please select a video source";
+			return false;
+		}
+
+		if (selectedSource instanceof CamSource) {
+			if (cmboCam.getText().isEmpty()) {
+				errorMessage = "Please select a camera";
+				return false;
+			}
+
+			if (cmboFrameSize.getText().isEmpty()) {
+				errorMessage = "Please select a valid frame size";
+				return false;
+			}
+		} else if (selectedSource instanceof VideoFileSource) {
+			if (txtVideoFile.getText().isEmpty()) {
+				errorMessage = "Please select a video file";
+				return false;
+			}
+		}
+		errorMessage = null;
+		return true;
 	}
 }

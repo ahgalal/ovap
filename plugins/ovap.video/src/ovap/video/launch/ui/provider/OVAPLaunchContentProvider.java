@@ -9,7 +9,7 @@ import org.eclipse.debug.internal.ui.viewers.model.provisional.IPresentationCont
 import org.eclipse.debug.internal.ui.viewers.model.provisional.IViewerUpdate;
 import org.eclipse.debug.ui.IDebugUIConstants;
 
-import ovap.video.launch.OVAPLaunch;
+import ovap.video.launch.model.OVAPLaunch;
 
 /**
  * @author Creative

@@ -161,4 +161,15 @@ public class ModuleManager implements IModuleManager {
 		}
 		return outputParameters;
 	}
+
+	@Override
+	public Map<Parameter, String> getOutputParametersToModuleInstanceMap() {
+		Map<Parameter, String> outputParametersToModuleInstance =new HashMap<Parameter, String>();
+		for (final Module module : activeModules) {
+			ArrayList<Parameter> moduleOutParams = module.getOutputParameters();
+			for(Parameter parameter:moduleOutParams)
+				outputParametersToModuleInstance.put(parameter, module.getName());
+		}
+		return outputParametersToModuleInstance;
+	}
 }

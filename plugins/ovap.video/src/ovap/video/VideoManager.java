@@ -9,8 +9,11 @@ import org.eclipse.core.runtime.IExecutableExtensionFactory;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IDebugTarget;
 
-import ovap.video.launch.AnalysisTarget;
-import ovap.video.launch.StreamTarget;
+import ovap.video.launch.model.AnalysisTarget;
+import ovap.video.launch.model.StreamTarget;
+import ovap.video.session.AbstractSession;
+import ovap.video.session.AnalysisSession;
+import ovap.video.session.StreamSession;
 
 public class VideoManager implements IExecutableExtensionFactory {
 
@@ -209,7 +212,9 @@ public class VideoManager implements IExecutableExtensionFactory {
 		final ArrayList<AnalysisSession> associatedSessions = getAnalysisSessions(sessionId);
 		for (final AnalysisSession analysisSession : associatedSessions)
 			try {
-				analysisSession.getTarget().terminate();
+				IDebugTarget target = analysisSession.getTarget();
+				if(!target.isTerminated())
+					target.terminate();
 			} catch (final DebugException e) {
 				e.printStackTrace();
 			}

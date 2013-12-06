@@ -1,4 +1,4 @@
-package ovap.video.launch;
+package ovap.video.launch.model;
 
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.ILaunch;

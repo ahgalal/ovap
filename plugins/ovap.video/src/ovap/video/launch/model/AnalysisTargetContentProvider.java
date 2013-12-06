@@ -1,7 +1,7 @@
 /**
  * 
  */
-package ovap.video;
+package ovap.video.launch.model;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.internal.ui.model.elements.ElementContentProvider;
@@ -9,7 +9,6 @@ import org.eclipse.debug.internal.ui.viewers.model.provisional.IPresentationCont
 import org.eclipse.debug.internal.ui.viewers.model.provisional.IViewerUpdate;
 import org.eclipse.debug.ui.IDebugUIConstants;
 
-import ovap.video.launch.AnalysisTarget;
 
 /**
  * @author Creative
