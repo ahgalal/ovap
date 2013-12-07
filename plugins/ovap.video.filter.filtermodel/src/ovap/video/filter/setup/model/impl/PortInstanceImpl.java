@@ -21,7 +21,7 @@ import ovap.video.filter.setup.model.PortInstance;
  *
  * @generated
  */
-public abstract class PortInstanceImpl extends EObjectImpl implements PortInstance {
+public abstract class PortInstanceImpl extends IdentifiableImpl implements PortInstance {
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

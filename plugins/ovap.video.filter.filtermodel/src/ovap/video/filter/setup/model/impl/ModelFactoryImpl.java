@@ -14,6 +14,7 @@ import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.impl.EFactoryImpl;
 import org.eclipse.emf.ecore.plugin.EcorePlugin;
 
+import ovap.video.filter.setup.model.*;
 import ovap.video.filter.setup.model.Configuration;
 import ovap.video.filter.setup.model.FilterConnection;
 import ovap.video.filter.setup.model.FilterInstance;

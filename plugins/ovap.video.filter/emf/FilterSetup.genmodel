@@ -22,7 +22,7 @@
               <genFeatures createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference FilterSetup.ecore#//video/filter/setup/model/FilterInstance/type"/>
               <genFeatures property="None" children="true" createChild="false" ecoreFeature="ecore:EReference FilterSetup.ecore#//video/filter/setup/model/FilterInstance/portInInstance"/>
               <genFeatures property="None" children="true" createChild="false" ecoreFeature="ecore:EReference FilterSetup.ecore#//video/filter/setup/model/FilterInstance/portOutInstance"/>
-              <genFeatures property="None" children="true" createChild="false" ecoreFeature="ecore:EReference FilterSetup.ecore#//video/filter/setup/model/FilterInstance/configuration"/>
+              <genFeatures property="None" createChild="false" ecoreFeature="ecore:EReference FilterSetup.ecore#//video/filter/setup/model/FilterInstance/configuration"/>
             </genClasses>
             <genClasses ecoreClass="FilterSetup.ecore#//video/filter/setup/model/FilterType">
               <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference FilterSetup.ecore#//video/filter/setup/model/FilterType/portOut"/>

@@ -23,7 +23,7 @@ package ovap.video.filter.setup.model;
  * @model
  * @generated
  */
-public interface PortIn extends Port, Identifiable {
+public interface PortIn extends Port {
 	/**
 	 * Returns the value of the '<em><b>Filter Type</b></em>' container reference.
 	 * It is bidirectional and its opposite is '{@link ovap.video.filter.setup.model.FilterType#getPortIn <em>Port In</em>}'.

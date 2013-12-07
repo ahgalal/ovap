@@ -105,7 +105,10 @@ public class PortOutInstanceItemProvider
 	 */
 	@Override
 	public String getText(Object object) {
-		return getString("_UI_PortOutInstance_type");
+		String label = ((PortOutInstance)object).getName();
+		return label == null || label.length() == 0 ?
+			getString("_UI_PortOutInstance_type") :
+			getString("_UI_PortOutInstance_type") + " " + label;
 	}
 
 	/**

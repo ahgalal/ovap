@@ -429,13 +429,22 @@ public interface ModelPackage extends EPackage {
 	int PORT_INSTANCE = 7;
 
 	/**
+	 * The feature id for the '<em><b>Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PORT_INSTANCE__NAME = IDENTIFIABLE__NAME;
+
+	/**
 	 * The number of structural features of the '<em>Port Instance</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int PORT_INSTANCE_FEATURE_COUNT = 0;
+	int PORT_INSTANCE_FEATURE_COUNT = IDENTIFIABLE_FEATURE_COUNT + 0;
 
 	/**
 	 * The meta object id for the '{@link ovap.video.filter.setup.model.impl.PortInInstanceImpl <em>Port In Instance</em>}' class.
@@ -446,6 +455,15 @@ public interface ModelPackage extends EPackage {
 	 * @generated
 	 */
 	int PORT_IN_INSTANCE = 8;
+
+	/**
+	 * The feature id for the '<em><b>Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PORT_IN_INSTANCE__NAME = PORT_INSTANCE__NAME;
 
 	/**
 	 * The feature id for the '<em><b>Filter Instance</b></em>' container reference.
@@ -492,6 +510,15 @@ public interface ModelPackage extends EPackage {
 	 * @generated
 	 */
 	int PORT_OUT_INSTANCE = 9;
+
+	/**
+	 * The feature id for the '<em><b>Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PORT_OUT_INSTANCE__NAME = PORT_INSTANCE__NAME;
 
 	/**
 	 * The feature id for the '<em><b>Filter Instance</b></em>' container reference.

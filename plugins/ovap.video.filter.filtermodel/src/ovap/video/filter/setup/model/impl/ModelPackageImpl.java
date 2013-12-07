@@ -683,9 +683,9 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 		filtersSetupEClass.getESuperTypes().add(this.getIdentifiable());
 		filterConnectionEClass.getESuperTypes().add(this.getIdentifiable());
 		portInEClass.getESuperTypes().add(this.getPort());
-		portInEClass.getESuperTypes().add(this.getIdentifiable());
 		portOutEClass.getESuperTypes().add(this.getPort());
 		portEClass.getESuperTypes().add(this.getIdentifiable());
+		portInstanceEClass.getESuperTypes().add(this.getIdentifiable());
 		portInInstanceEClass.getESuperTypes().add(this.getPortInstance());
 		portOutInstanceEClass.getESuperTypes().add(this.getPortInstance());
 		filterModelEClass.getESuperTypes().add(this.getIdentifiable());

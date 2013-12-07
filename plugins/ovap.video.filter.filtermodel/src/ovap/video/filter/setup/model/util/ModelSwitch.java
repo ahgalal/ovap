@@ -156,6 +156,7 @@ public class ModelSwitch<T> {
 			case ModelPackage.PORT_INSTANCE: {
 				PortInstance portInstance = (PortInstance)theEObject;
 				T result = casePortInstance(portInstance);
+				if (result == null) result = caseIdentifiable(portInstance);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -163,6 +164,7 @@ public class ModelSwitch<T> {
 				PortInInstance portInInstance = (PortInInstance)theEObject;
 				T result = casePortInInstance(portInInstance);
 				if (result == null) result = casePortInstance(portInInstance);
+				if (result == null) result = caseIdentifiable(portInInstance);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -170,6 +172,7 @@ public class ModelSwitch<T> {
 				PortOutInstance portOutInstance = (PortOutInstance)theEObject;
 				T result = casePortOutInstance(portOutInstance);
 				if (result == null) result = casePortInstance(portOutInstance);
+				if (result == null) result = caseIdentifiable(portOutInstance);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}

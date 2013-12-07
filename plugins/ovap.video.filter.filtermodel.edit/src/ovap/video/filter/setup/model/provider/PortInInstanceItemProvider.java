@@ -105,7 +105,10 @@ public class PortInInstanceItemProvider
 	 */
 	@Override
 	public String getText(Object object) {
-		return getString("_UI_PortInInstance_type");
+		String label = ((PortInInstance)object).getName();
+		return label == null || label.length() == 0 ?
+			getString("_UI_PortInInstance_type") :
+			getString("_UI_PortInInstance_type") + " " + label;
 	}
 
 	/**

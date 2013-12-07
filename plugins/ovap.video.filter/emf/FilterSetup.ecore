@@ -50,7 +50,7 @@
             <eStructuralFeatures xsi:type="ecore:EReference" name="filtersSetup" eType="#//video/filter/setup/model/FiltersSetup"
                 eOpposite="#//video/filter/setup/model/FiltersSetup/connections"/>
           </eClassifiers>
-          <eClassifiers xsi:type="ecore:EClass" name="PortIn" eSuperTypes="#//video/filter/setup/model/Port #//video/filter/setup/model/Identifiable">
+          <eClassifiers xsi:type="ecore:EClass" name="PortIn" eSuperTypes="#//video/filter/setup/model/Port">
             <eStructuralFeatures xsi:type="ecore:EReference" name="filterType" eType="#//video/filter/setup/model/FilterType"
                 eOpposite="#//video/filter/setup/model/FilterType/portIn"/>
           </eClassifiers>
@@ -59,7 +59,8 @@
                 eOpposite="#//video/filter/setup/model/FilterType/portOut"/>
           </eClassifiers>
           <eClassifiers xsi:type="ecore:EClass" name="Port" abstract="true" eSuperTypes="#//video/filter/setup/model/Identifiable"/>
-          <eClassifiers xsi:type="ecore:EClass" name="PortInstance" abstract="true"/>
+          <eClassifiers xsi:type="ecore:EClass" name="PortInstance" abstract="true"
+              eSuperTypes="#//video/filter/setup/model/Identifiable"/>
           <eClassifiers xsi:type="ecore:EClass" name="PortInInstance" eSuperTypes="#//video/filter/setup/model/PortInstance">
             <eStructuralFeatures xsi:type="ecore:EReference" name="filterInstance"
                 lowerBound="1" eType="#//video/filter/setup/model/FilterInstance"

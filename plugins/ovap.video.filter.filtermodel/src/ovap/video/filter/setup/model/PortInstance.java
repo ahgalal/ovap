@@ -19,5 +19,5 @@ import org.eclipse.emf.ecore.EObject;
  * @model abstract="true"
  * @generated
  */
-public interface PortInstance extends EObject {
+public interface PortInstance extends Identifiable {
 } // PortInstance

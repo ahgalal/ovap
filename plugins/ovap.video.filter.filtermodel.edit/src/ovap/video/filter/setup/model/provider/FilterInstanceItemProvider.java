@@ -111,7 +111,6 @@ public class FilterInstanceItemProvider
 			super.getChildrenFeatures(object);
 			childrenFeatures.add(ModelPackage.Literals.FILTER_INSTANCE__PORT_IN_INSTANCE);
 			childrenFeatures.add(ModelPackage.Literals.FILTER_INSTANCE__PORT_OUT_INSTANCE);
-			childrenFeatures.add(ModelPackage.Literals.FILTER_INSTANCE__CONFIGURATION);
 		}
 		return childrenFeatures;
 	}
@@ -167,11 +166,11 @@ public class FilterInstanceItemProvider
 
 		switch (notification.getFeatureID(FilterInstance.class)) {
 			case ModelPackage.FILTER_INSTANCE__TYPE:
+			case ModelPackage.FILTER_INSTANCE__CONFIGURATION:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 				return;
 			case ModelPackage.FILTER_INSTANCE__PORT_IN_INSTANCE:
 			case ModelPackage.FILTER_INSTANCE__PORT_OUT_INSTANCE:
-			case ModelPackage.FILTER_INSTANCE__CONFIGURATION:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 				return;
 		}

@@ -35,7 +35,7 @@ import ovap.video.filter.setup.model.PortInstance;
  * @generated
  */
 public class PortInstanceItemProvider
-	extends ItemProviderAdapter
+	extends IdentifiableItemProvider
 	implements
 		IEditingDomainItemProvider,
 		IStructuredItemContentProvider,
@@ -75,7 +75,10 @@ public class PortInstanceItemProvider
 	 */
 	@Override
 	public String getText(Object object) {
-		return getString("_UI_PortInstance_type");
+		String label = ((PortInstance)object).getName();
+		return label == null || label.length() == 0 ?
+			getString("_UI_PortInstance_type") :
+			getString("_UI_PortInstance_type") + " " + label;
 	}
 
 	/**
@@ -101,17 +104,6 @@ public class PortInstanceItemProvider
 	@Override
 	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object) {
 		super.collectNewChildDescriptors(newChildDescriptors, object);
-	}
-
-	/**
-	 * Return the resource locator for this item provider's resources.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public ResourceLocator getResourceLocator() {
-		return FilterSetupEditPlugin.INSTANCE;
 	}
 
 }

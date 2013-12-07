@@ -8,8 +8,10 @@ Bundle-Activator: ovap.video.filter.setup.model.provider.FilterSetupEditPlugin$I
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Export-Package: ovap.video.filter.setup.model.provider
+Export-Package: ovap.video.filter.setup.model.listener,
+ ovap.video.filter.setup.model.provider
 Require-Bundle: org.eclipse.core.runtime,
  ovap.video.filter.filtermodel;visibility:=reexport,
- org.eclipse.emf.edit;visibility:=reexport
+ org.eclipse.emf.edit;visibility:=reexport,
+ org.eclipse.emf.transaction;bundle-version="1.4.0"
 Bundle-ActivationPolicy: lazy
