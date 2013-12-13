@@ -9,7 +9,36 @@
 -->
 
 <plugin>
-
+   <extension
+         point="org.eclipse.emf.validation.constraintProviders">
+      <category
+            id="ovap.video.filter.filtermodel.edit.constraint.filter"
+            name="Filter_Constraints">
+      </category>
+      <constraintProvider
+            cache="true"
+            mode="Batch">
+         <package
+               namespaceUri="http:///ovap/video/filter/emf/FilterSetup.ecore/1.0.0/">
+         </package>
+         <constraints
+               categories="ovap.video.filter.filtermodel.edit.constraint.filter">
+            <constraint
+                  class="ovap.video.filter.setup.model.validation.PortConnectionConstraint"
+                  id="ovap.video.filter.filtermodel.edit.constraint.filter.portconnection"
+                  isEnabledByDefault="true"
+                  lang="Java"
+                  mode="Batch"
+                  name="Port Connections"
+                  severity="ERROR"
+                  statusCode="1">
+               <message>
+                  Filter instance {0} has unconnected ports.
+               </message>
+            </constraint>
+         </constraints>
+      </constraintProvider>
+   </extension>
    <extension point="org.eclipse.emf.edit.itemProviderAdapterFactories">
       <factory
             uri="model"
@@ -21,5 +50,6 @@
                org.eclipse.emf.edit.provider.IItemLabelProvider
                org.eclipse.emf.edit.provider.IItemPropertySource"/>
    </extension>
+
 
 </plugin>
