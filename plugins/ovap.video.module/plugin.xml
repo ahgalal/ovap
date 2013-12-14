@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-   <extension-point id="ovap.video.module" name="ovap.video.module" schema="schema/ovap.video.module.exsd"/>
+   <extension-point id="ovap.video.module" name="Module" schema="schema/ovap.video.module.exsd"/>
    <extension
          point="ovap.video.module.manager">
       <module_manager
-            class="ovap.module.ModuleManager">
+            class="ovap.video.module.ModuleManager">
       </module_manager>
    </extension>
    <extension
          point="ovap.video.analysis.wizard.page">
       <wizardpage
-            class="ovap.module.analysis.wizard.page.ModuleSetupPage">
+            class="ovap.video.module.analysis.wizard.page.ModuleSetupPage">
       </wizardpage>
    </extension>
 

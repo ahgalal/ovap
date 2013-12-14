@@ -1,4 +1,4 @@
-package ovap.module;
+package ovap.video.module;
 
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;

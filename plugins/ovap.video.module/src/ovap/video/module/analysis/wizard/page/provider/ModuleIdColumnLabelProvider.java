@@ -1,8 +1,8 @@
-package ovap.module.analysis.wizard.page.provider;
+package ovap.video.module.analysis.wizard.page.provider;
 
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 
-import ovap.module.Module;
+import ovap.video.module.Module;
 
 public class ModuleIdColumnLabelProvider extends ColumnLabelProvider {
 	@Override

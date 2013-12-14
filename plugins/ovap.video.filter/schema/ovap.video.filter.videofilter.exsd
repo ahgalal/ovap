@@ -3,7 +3,7 @@
 <schema targetNamespace="ovap.filter" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appinfo>
-         <meta.schema plugin="ovap.filter" id="ovap.filter.videofilter" name="VideoFilter"/>
+         <meta.schema plugin="ovap.filter" id="ovap.video.filter.videofilter" name="VideoFilter"/>
       </appinfo>
       <documentation>
          [Enter description of this extension point.]

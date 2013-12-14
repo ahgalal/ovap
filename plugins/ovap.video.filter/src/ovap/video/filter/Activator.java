@@ -10,7 +10,7 @@ public class Activator extends AbstractUIPlugin {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "ovap.filter"; //$NON-NLS-1$
-	public static final String	OVAP_FILTER_VIDEOFILTER_EP	= "ovap.filter.videofilter";
+	public static final String	OVAP_FILTER_VIDEOFILTER_EP	= "ovap.video.filter.videofilter";
 	// The shared instance
 	private static Activator plugin;
 	

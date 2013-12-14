@@ -7,8 +7,8 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import ovap.module.Module;
 import ovap.video.Parameter;
+import ovap.video.module.Module;
 
 /**
  * @author Creative

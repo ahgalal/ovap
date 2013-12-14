@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="ovap.device" xmlns="http://www.w3.org/2001/XMLSchema">
+<schema targetNamespace="ovap.video.source" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appinfo>
-         <meta.schema plugin="ovap.device" id="ovap.device.input" name="ovap.device.input"/>
+         <meta.schema plugin="ovap.video.source" id="ovap.video.source" name="Source"/>
       </appinfo>
       <documentation>
          [Enter description of this extension point.]

@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: AGVideoFileSource
 Bundle-SymbolicName: ovap.video.source.videofile.agvid;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Bundle-Activator: ovap.device.videofile.Activator
+Bundle-Activator: ovap.video.source.videofile.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  ovap.video.source;bundle-version="1.0.0",

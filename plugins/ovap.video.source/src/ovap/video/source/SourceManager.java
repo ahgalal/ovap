@@ -18,7 +18,7 @@ import utils.PDEUtils;
  */
 public class SourceManager implements ISourceManager, IStreamEndListener {
 
-	public static final String	OVAP_DEVICE_INPUT_EP	= "ovap.device.input";
+	public static final String	OVAP_DEVICE_INPUT_EP	= "ovap.video.source";
 
 	public static ArrayList<VideoSource> getSources() {
 		final ArrayList<VideoSource> sources = new ArrayList<VideoSource>();

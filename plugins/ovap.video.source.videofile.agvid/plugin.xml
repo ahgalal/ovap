@@ -2,9 +2,9 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension
-         point="ovap.device.input">
+         point="ovap.video.source">
       <filereader
-            class="ovap.device.videofile.AGVideoFileSource">
+            class="ovap.video.source.videofile.AGVideoFileSource">
          <optionsgui
                class="ovap.video.source.videofile.agvid.AGVidAdvancedOptionsComposite">
          </optionsgui>

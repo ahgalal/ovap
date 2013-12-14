@@ -1,4 +1,4 @@
-package ovap.module.analysis.wizard.page.provider;
+package ovap.video.module.analysis.wizard.page.provider;
 
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 

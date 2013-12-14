@@ -1,4 +1,4 @@
-package ovap.module.analysis.wizard.page.provider;
+package ovap.video.module.analysis.wizard.page.provider;
 
 public class ModuleData {
 	public String	id;

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package ovap.module.analysis.wizard.page;
+package ovap.video.module.analysis.wizard.page;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,21 +36,21 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 
-import ovap.module.Activator;
-import ovap.module.Module;
-import ovap.module.ModuleConfigurationContributer;
-import ovap.module.ModuleManager;
-import ovap.module.analysis.wizard.page.provider.ModuleData;
-import ovap.module.analysis.wizard.page.provider.ModuleDataIdColumnLabelProvider;
-import ovap.module.analysis.wizard.page.provider.ModuleDataNameColumnLabelProvider;
-import ovap.module.analysis.wizard.page.provider.ModuleIdColumnLabelProvider;
-import ovap.module.analysis.wizard.page.provider.ParameterIdColumnLabelProvider;
-import ovap.module.analysis.wizard.page.provider.ParameterNameColumnLabelProvider;
 import ovap.video.ConfigurationChangeListener;
 import ovap.video.ConfigurationContributer;
 import ovap.video.Parameter;
 import ovap.video.launch.DialogSettings2;
 import ovap.video.launch.analysis.wizard.page.AnalysisWizardPage;
+import ovap.video.module.Activator;
+import ovap.video.module.Module;
+import ovap.video.module.ModuleConfigurationContributer;
+import ovap.video.module.ModuleManager;
+import ovap.video.module.analysis.wizard.page.provider.ModuleData;
+import ovap.video.module.analysis.wizard.page.provider.ModuleDataIdColumnLabelProvider;
+import ovap.video.module.analysis.wizard.page.provider.ModuleDataNameColumnLabelProvider;
+import ovap.video.module.analysis.wizard.page.provider.ModuleIdColumnLabelProvider;
+import ovap.video.module.analysis.wizard.page.provider.ParameterIdColumnLabelProvider;
+import ovap.video.module.analysis.wizard.page.provider.ParameterNameColumnLabelProvider;
 import utils.PDEUtils;
 import utils.StringUtils;
 

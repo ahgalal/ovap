@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-   <extension-point id="ovap.filter.videofilter" name="VideoFilter" schema="schema/ovap.filter.videofilter.exsd"/>
-   <extension-point id="ovap.filter.configuration" name="Filter Configuration" schema="schema/ovap.filter.configuration.exsd"/>
+   <extension-point id="ovap.video.filter.videofilter" name="VideoFilter" schema="schema/ovap.video.filter.videofilter.exsd"/>
    <extension
          point="ovap.video.filter.manager">
       <filter_manager

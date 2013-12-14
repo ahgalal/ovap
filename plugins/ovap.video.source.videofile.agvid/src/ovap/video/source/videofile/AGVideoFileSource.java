@@ -1,4 +1,4 @@
-package ovap.device.videofile;
+package ovap.video.source.videofile;
 
 import jagvidlib.JAGVidLib;
 import jagvidlib.JAGVidLib.StreamState;

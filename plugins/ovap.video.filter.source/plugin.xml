@@ -2,7 +2,7 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension
-         point="ovap.filter.videofilter">
+         point="ovap.video.filter.videofilter">
       <filter
             class="ovap.video.filter.source.SourceFilter"
             id="ovap.video.filter.source">

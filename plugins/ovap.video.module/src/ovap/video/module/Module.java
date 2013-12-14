@@ -1,4 +1,4 @@
-package ovap.module;
+package ovap.video.module;
 
 import java.util.ArrayList;
 import java.util.HashMap;
