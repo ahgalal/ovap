@@ -7,9 +7,9 @@ Bundle-ClassPath: .
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Export-Package: ovap.video.filter.setup.model,
- ovap.video.filter.setup.model.impl,
- ovap.video.filter.setup.model.util
+Export-Package: ovap.video.filter.filtersetup,
+ ovap.video.filter.filtersetup.impl,
+ ovap.video.filter.filtersetup.util
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.emf.ecore;visibility:=reexport,
  org.eclipse.emf.transaction;bundle-version="1.4.0"

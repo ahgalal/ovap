@@ -8,7 +8,7 @@ import java.util.Map;
 import org.eclipse.emf.common.command.AbstractCommand;
 
 import ovap.emf.utils.EMFUtils;
-import ovap.video.filter.setup.model.FilterInstance;
+import ovap.video.filter.filtersetup.FilterInstance;
 
 /**
  * @author Creative

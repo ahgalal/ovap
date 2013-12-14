@@ -9,6 +9,18 @@
 -->
 
 <plugin>
+
+   <extension point="org.eclipse.emf.edit.itemProviderAdapterFactories">
+      <factory
+            uri="http:///ovap.video.filter.filtersetup/1.0.0"
+            class="ovap.video.filter.filtersetup.provider.FiltersetupItemProviderAdapterFactory"
+            supportedTypes=
+              "org.eclipse.emf.edit.provider.IEditingDomainItemProvider
+               org.eclipse.emf.edit.provider.IStructuredItemContentProvider
+               org.eclipse.emf.edit.provider.ITreeItemContentProvider
+               org.eclipse.emf.edit.provider.IItemLabelProvider
+               org.eclipse.emf.edit.provider.IItemPropertySource"/>
+   </extension>
    <extension
          point="org.eclipse.emf.validation.constraintProviders">
       <category
@@ -19,13 +31,13 @@
             cache="true"
             mode="Batch">
          <package
-               namespaceUri="http:///ovap/video/filter/emf/FilterSetup.ecore/1.0.0/">
+               namespaceUri="http:///ovap.video.filter.filtersetup/1.0.0">
          </package>
          <constraints
                categories="ovap.video.filter.filtermodel.edit.constraint.filter">
             <constraint
-                  class="ovap.video.filter.setup.model.validation.PortConnectionConstraint"
-                  id="ovap.video.filter.filtermodel.edit.constraint.filter.portconnection"
+                  class="ovap.video.filter.filtersetup.validation.PortConnectionConstraint"
+                  id="ovap.video.filter.filtermodel.edit.constraint.portconnection"
                   isEnabledByDefault="true"
                   lang="Java"
                   mode="Batch"
@@ -35,21 +47,47 @@
                <message>
                   Filter instance {0} has unconnected ports.
                </message>
+               <target
+                     class="PortInInstance">
+               </target>
+            </constraint>
+            <constraint
+                  class="ovap.video.filter.filtersetup.validation.NamingConstraint"
+                  id="ovap.video.filter.filtermodel.edit.constraint.name"
+                  isEnabledByDefault="true"
+                  lang="Java"
+                  mode="Batch"
+                  name="Naming Constraint"
+                  severity="ERROR"
+                  statusCode="2">
+               <message>
+                  {0}
+               </message>
+               <target
+                     class="Identifiable">
+               </target>
             </constraint>
          </constraints>
       </constraintProvider>
    </extension>
-   <extension point="org.eclipse.emf.edit.itemProviderAdapterFactories">
-      <factory
-            uri="model"
-            class="ovap.video.filter.setup.model.provider.ModelItemProviderAdapterFactory"
-            supportedTypes=
-              "org.eclipse.emf.edit.provider.IEditingDomainItemProvider
-               org.eclipse.emf.edit.provider.IStructuredItemContentProvider
-               org.eclipse.emf.edit.provider.ITreeItemContentProvider
-               org.eclipse.emf.edit.provider.IItemLabelProvider
-               org.eclipse.emf.edit.provider.IItemPropertySource"/>
+   <extension
+         point="org.eclipse.ui.startup">
+      <startup
+            class="ovap.video.filter.filtersetup.validation.RegisterModelValidator">
+      </startup>
    </extension>
-
+   <extension
+         point="org.eclipse.emf.validation.constraintBindings">
+      <clientContext
+            id="ovap.video.filter.filtermodel.edit.clientContext.main">
+         <selector
+               class="ovap.video.filter.filtersetup.validation.ClientSelector">
+         </selector>
+      </clientContext>
+      <binding
+            category="ovap.video.filter.filtermodel.edit.constraint.filter"
+            context="ovap.video.filter.filtermodel.edit.clientContext.main">
+      </binding>
+   </extension>
 
 </plugin>

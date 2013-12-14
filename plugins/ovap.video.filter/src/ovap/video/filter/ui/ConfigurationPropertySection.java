@@ -31,8 +31,8 @@ import ovap.video.ConfigurationChangeListener;
 import ovap.video.ConfigurationContributer;
 import ovap.video.filter.FilterConfigurationContributer;
 import ovap.video.filter.FilterConfigurationManager;
-import ovap.video.filter.setup.model.Configuration;
-import ovap.video.filter.setup.model.FilterInstance;
+import ovap.video.filter.filtersetup.Configuration;
+import ovap.video.filter.filtersetup.FilterInstance;
 
 /**
  * @author Creative

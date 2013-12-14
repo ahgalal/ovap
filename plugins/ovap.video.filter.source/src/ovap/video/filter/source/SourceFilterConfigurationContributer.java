@@ -15,7 +15,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.wb.swt.SWTResourceManager;
 
 import ovap.video.filter.FilterConfigurationContributer;
-import ovap.video.filter.setup.model.FilterInstance;
+import ovap.video.filter.filtersetup.FilterInstance;
 
 /**
  * @author Creative

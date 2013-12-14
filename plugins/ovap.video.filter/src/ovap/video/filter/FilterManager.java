@@ -36,15 +36,15 @@ import ovap.emf.utils.EMFUtils;
 import ovap.video.FrameData;
 import ovap.video.IFilterManager;
 import ovap.video.Parameter;
-import ovap.video.filter.setup.model.Configuration;
-import ovap.video.filter.setup.model.FilterConnection;
-import ovap.video.filter.setup.model.FilterInstance;
-import ovap.video.filter.setup.model.FilterModel;
-import ovap.video.filter.setup.model.FilterType;
-import ovap.video.filter.setup.model.FiltersSetup;
-import ovap.video.filter.setup.model.ModelFactory;
-import ovap.video.filter.setup.model.PortIn;
-import ovap.video.filter.setup.model.PortOut;
+import ovap.video.filter.filtersetup.Configuration;
+import ovap.video.filter.filtersetup.FilterConnection;
+import ovap.video.filter.filtersetup.FilterInstance;
+import ovap.video.filter.filtersetup.FilterModel;
+import ovap.video.filter.filtersetup.FilterType;
+import ovap.video.filter.filtersetup.FiltersSetup;
+import ovap.video.filter.filtersetup.FiltersetupFactory;
+import ovap.video.filter.filtersetup.PortIn;
+import ovap.video.filter.filtersetup.PortOut;
 import sys.utils.Utils;
 import utils.PDEUtils;
 
@@ -110,25 +110,25 @@ public class FilterManager implements IFilterManager, IStartup,
 	private static ArrayList<VideoFilter>	installedFilters;
 
 	private static void createInstalledFiltersEMFModel() {
-		final FilterModel filterModel = ModelFactory.eINSTANCE
+		final FilterModel filterModel = FiltersetupFactory.eINSTANCE
 				.createFilterModel();
 		final ArrayList<FilterType> filterTypes = new ArrayList<FilterType>();
 		for (final VideoFilter filter : installedFilters) {
-			final FilterType filterType = ModelFactory.eINSTANCE
+			final FilterType filterType = FiltersetupFactory.eINSTANCE
 					.createFilterType();
 			filterType.setModel(filterModel);
 			filterType.setName(filter.getID());
 
 			final String[] inPortIDs = filter.getInPortIDs();
 			for (final String inPortID : inPortIDs) {
-				final PortIn portIn = ModelFactory.eINSTANCE.createPortIn();
+				final PortIn portIn = FiltersetupFactory.eINSTANCE.createPortIn();
 				portIn.setName(inPortID);
 				filterType.getPortIn().add(portIn);
 			}
 
 			final String[] outPortIDs = filter.getOutPortIDs();
 			for (final String outPortID : outPortIDs) {
-				final PortOut portOut = ModelFactory.eINSTANCE.createPortOut();
+				final PortOut portOut = FiltersetupFactory.eINSTANCE.createPortOut();
 				portOut.setName(outPortID);
 				filterType.getPortOut().add(portOut);
 			}

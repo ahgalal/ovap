@@ -5,7 +5,7 @@ package ovap.video.filter;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 
-import ovap.video.filter.setup.model.FilterInstance;
+import ovap.video.filter.filtersetup.FilterInstance;
 import utils.PDEUtils;
 
 /**

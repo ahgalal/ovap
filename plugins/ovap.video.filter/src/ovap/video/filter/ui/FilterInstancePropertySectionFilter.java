@@ -9,7 +9,7 @@ import org.eclipse.gmf.runtime.notation.Shape;
 import org.eclipse.jface.viewers.IFilter;
 
 import ovap.video.filter.FilterConfigurationManager;
-import ovap.video.filter.setup.model.FilterInstance;
+import ovap.video.filter.filtersetup.FilterInstance;
 
 /**
  * @author Creative
