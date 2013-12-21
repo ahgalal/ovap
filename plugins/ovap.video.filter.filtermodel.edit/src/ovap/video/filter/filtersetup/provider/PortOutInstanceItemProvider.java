@@ -60,7 +60,6 @@ public class PortOutInstanceItemProvider
 			super.getPropertyDescriptors(object);
 
 			addFilterConnectionPropertyDescriptor(object);
-			addTypePropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
@@ -79,28 +78,6 @@ public class PortOutInstanceItemProvider
 				 getString("_UI_PortOutInstance_filterConnection_feature"),
 				 getString("_UI_PropertyDescriptor_description", "_UI_PortOutInstance_filterConnection_feature", "_UI_PortOutInstance_type"),
 				 FiltersetupPackage.Literals.PORT_OUT_INSTANCE__FILTER_CONNECTION,
-				 true,
-				 false,
-				 true,
-				 null,
-				 null,
-				 null));
-	}
-
-	/**
-	 * This adds a property descriptor for the Type feature.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addTypePropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_PortOutInstance_type_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_PortOutInstance_type_feature", "_UI_PortOutInstance_type"),
-				 FiltersetupPackage.Literals.PORT_OUT_INSTANCE__TYPE,
 				 true,
 				 false,
 				 true,

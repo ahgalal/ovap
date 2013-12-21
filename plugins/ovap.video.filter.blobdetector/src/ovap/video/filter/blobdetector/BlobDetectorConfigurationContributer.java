@@ -35,11 +35,13 @@ import ovap.video.utils.ImageManipulator;
  */
 public class BlobDetectorConfigurationContributer extends
 		FilterConfigurationContributer {
-	private Button	btnPickBackgroundColor;
-	private Canvas	canvas;
-	private GC		gc;
-	private Composite cmpstColorContainer;
-	private Composite cmpstColor;
+	private Button			btnPickBackgroundColor;
+	private BufferedImage	bufferedImage;
+	private Canvas			canvas;
+	private Composite		cmpstColor;
+	private Composite		cmpstColorContainer;
+
+	private GC				gc;
 
 	/**
 	 * 
@@ -81,20 +83,25 @@ public class BlobDetectorConfigurationContributer extends
 				public void widgetSelected(final SelectionEvent e) {
 					canvas.addMouseListener(new MouseAdapter() {
 						@Override
-						public void mouseDown(MouseEvent e) {
-							Image image = new Image(e.display,e.x, e.y);
+						public void mouseDown(final MouseEvent e) {
+							final Image image = new Image(e.display, e.x, e.y);
 							gc.copyArea(image, 0, 0);
-							int intPixel = image.getImageData().getPixel(e.x-1, e.y-1);
-							RGB pixel = image.getImageData().palette.getRGB(intPixel);
-							int blue = pixel.blue;
-							int green = pixel.green; 
-							int red = pixel.red; 
-							Color color = new Color(Display.getDefault(), red, green, blue);
+							final int intPixel = image.getImageData().getPixel(
+									e.x - 1, e.y - 1);
+							final RGB pixel = image.getImageData().palette
+									.getRGB(intPixel);
+							final int blue = pixel.blue;
+							final int green = pixel.green;
+							final int red = pixel.red;
+							final Color color = new Color(Display.getDefault(),
+									red, green, blue);
 							cmpstColor.setBackground(color);
 							canvas.removeMouseListener(this);
 							image.dispose();
-							
-							getConfigurations().put(BlobDetector.BG_COLOR_CONFIG, red+","+green+","+blue);
+
+							getConfigurations().put(
+									BlobDetector.BG_COLOR_CONFIG,
+									red + "," + green + "," + blue);
 							signalConfigurationChange();
 						}
 					});
@@ -104,7 +111,8 @@ public class BlobDetectorConfigurationContributer extends
 		}
 		{
 			cmpstColorContainer = new Composite(composite, SWT.NONE);
-			cmpstColorContainer.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
+			cmpstColorContainer.setLayoutData(new GridData(SWT.FILL, SWT.FILL,
+					false, false, 1, 1));
 			{
 				cmpstColor = new Composite(cmpstColorContainer, SWT.NONE);
 				cmpstColor.setBounds(23, 10, 64, 32);
@@ -120,31 +128,34 @@ public class BlobDetectorConfigurationContributer extends
 	@Override
 	protected void initializeGUI() {
 		gc = new GC(canvas);
-		String bgColorStr = getConfigurations().get(BlobDetector.BG_COLOR_CONFIG);
-		if(bgColorStr!=null){
-			String[] bgColorStrArray = bgColorStr.split(",");
-			int red = Integer.parseInt(bgColorStrArray[0]);
-			int green = Integer.parseInt(bgColorStrArray[1]);
-			int blue = Integer.parseInt(bgColorStrArray[2]);
-			cmpstColor.setBackground(new Color(Display.getDefault(), red, green, blue));
+		final String bgColorStr = getConfigurations().get(
+				BlobDetector.BG_COLOR_CONFIG);
+		if (bgColorStr != null) {
+			final String[] bgColorStrArray = bgColorStr.split(",");
+			final int red = Integer.parseInt(bgColorStrArray[0]);
+			final int green = Integer.parseInt(bgColorStrArray[1]);
+			final int blue = Integer.parseInt(bgColorStrArray[2]);
+			cmpstColor.setBackground(new Color(Display.getDefault(), red,
+					green, blue));
 		}
 	}
 
 	private void refreshCanvas() {
 		final Point canvasSize = canvas.getSize();
 		if (getFilterManager() == null) { // session is not started
-			String msg = "Stream is not started.";
-			gc.drawText(msg, (canvasSize.x / 2) - gc.textExtent(msg).x/2,
+			final String msg = "Stream is not started.";
+			gc.drawText(msg, (canvasSize.x / 2) - (gc.textExtent(msg).x / 2),
 					canvasSize.y / 2);
 		} else { // session is started
 			final ArrayList<BufferedImage> filterInputImages = getFilterManager()
 					.getFilterInputs(getConfigurableName());
-			BufferedImage bufferedImage = filterInputImages.get(0);
+			bufferedImage = filterInputImages.get(0);
 			final ImageData imageData = ImageManipulator
 					.bufferedImageToImageData(bufferedImage);
 			final Image image = new Image(Display.getDefault(), imageData);
-			gc.drawImage(image, 0, 0, bufferedImage.getWidth(), bufferedImage.getHeight(), 0, 0,
-					canvasSize.x, canvasSize.y);
+
+			gc.drawImage(image, 0, 0, bufferedImage.getWidth(),
+					bufferedImage.getHeight(), 0, 0, canvasSize.x, canvasSize.y);
 		}
 	}
 

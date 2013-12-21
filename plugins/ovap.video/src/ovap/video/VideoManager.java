@@ -46,7 +46,8 @@ public class VideoManager implements IExecutableExtensionFactory {
 	}
 
 	private AnalysisSession getAnalysisSession(final String analysisSessionId) {
-		for (final AnalysisSession session : analysisSessionsToStreamSessionId.keySet())
+		for (final AnalysisSession session : analysisSessionsToStreamSessionId
+				.keySet())
 			if (session.getId().equals(analysisSessionId))
 				return session;
 		return null;
@@ -55,8 +56,10 @@ public class VideoManager implements IExecutableExtensionFactory {
 	private ArrayList<AnalysisSession> getAnalysisSessions(
 			final String streamSessionId) {
 		final ArrayList<AnalysisSession> ret = new ArrayList<AnalysisSession>();
-		for (final AnalysisSession analysisSession : analysisSessionsToStreamSessionId.keySet()) {
-			if (analysisSessionsToStreamSessionId.get(analysisSession).equals(streamSessionId))
+		for (final AnalysisSession analysisSession : analysisSessionsToStreamSessionId
+				.keySet()) {
+			if (analysisSessionsToStreamSessionId.get(analysisSession).equals(
+					streamSessionId))
 				ret.add(analysisSession);
 		}
 		return ret;
@@ -73,6 +76,11 @@ public class VideoManager implements IExecutableExtensionFactory {
 	public IFilterManager getFilterManager(final String sessionId) {
 		final StreamSession session = getStreamSession(sessionId);
 		return session.getFilterManager();
+	}
+
+	public ArrayList<Parameter> getParameters(final String sessionId) {
+		final AnalysisSession session = getAnalysisSession(sessionId);
+		return session.getParameters();
 	}
 
 	private StreamSession getStreamSession(final String sessionId) {
@@ -93,8 +101,9 @@ public class VideoManager implements IExecutableExtensionFactory {
 	public boolean initializeAnalysisSession(
 			final AnalysisTarget analysisTarget,
 			final Map<String, String> analysisSettings) {
-		String analysisSessionId = analysisTarget.getSessionId();
-		String streamSessionId = analysisTarget.getLaunch().getLaunchConfiguration().getName();
+		final String analysisSessionId = analysisTarget.getSessionId();
+		final String streamSessionId = analysisTarget.getLaunch()
+				.getLaunchConfiguration().getName();
 		AnalysisSession session = getAnalysisSession(analysisSessionId);
 		if (session != null) {
 			session.deInitialize();
@@ -104,7 +113,7 @@ public class VideoManager implements IExecutableExtensionFactory {
 		session.setTarget(analysisTarget);
 
 		session.initialize(analysisSettings);
-		
+
 		final StreamSession streamSession = getStreamSession(streamSessionId);
 		final ArrayList<Parameter> filtersParameters = streamSession
 				.getParameters();
@@ -125,19 +134,21 @@ public class VideoManager implements IExecutableExtensionFactory {
 		streamSessions.add(session);
 		session.setTarget(streamTarget);
 
-		HashMap<String, String> settings = new HashMap<String, String>();
-		for(String key: configurations.keySet())
-		settings.put(key,configurations.get(key).toString());
+		final HashMap<String, String> settings = new HashMap<String, String>();
+		for (final String key : configurations.keySet())
+			settings.put(key, configurations.get(key).toString());
 		session.initialize(settings);
-		
-/*		ArrayList<AnalysisSession> analysisSessionsToRemove = new ArrayList<AnalysisSession>();
-		// remove old analysis sessions associated with this stream session
-		for(AnalysisSession analysisSession:analysisSessions.keySet()){
-			if(analysisSessions.get(analysisSession).equals(session.getId()))
-				analysisSessionsToRemove.add(analysisSession);
-		}
-		for(AnalysisSession analysisSession:analysisSessionsToRemove)
-			analysisSessions.remove(analysisSession);*/
+
+		/*
+		 * ArrayList<AnalysisSession> analysisSessionsToRemove = new
+		 * ArrayList<AnalysisSession>(); // remove old analysis sessions
+		 * associated with this stream session for(AnalysisSession
+		 * analysisSession:analysisSessions.keySet()){
+		 * if(analysisSessions.get(analysisSession).equals(session.getId()))
+		 * analysisSessionsToRemove.add(analysisSession); } for(AnalysisSession
+		 * analysisSession:analysisSessionsToRemove)
+		 * analysisSessions.remove(analysisSession);
+		 */
 
 		return true;
 	}
@@ -156,14 +167,15 @@ public class VideoManager implements IExecutableExtensionFactory {
 		return true;
 	}
 
-	private void suspendAssociatedAnalysisSessions(final String sessionId) {
-		final ArrayList<AnalysisSession> associatedAnalysisSessions = getAnalysisSessions(sessionId);
-		for (final AnalysisSession analysisSession : associatedAnalysisSessions)
-			try {
-				analysisSession.getTarget().suspend();
-			} catch (final DebugException e) {
-				e.printStackTrace();
+	public void removeAnalysisSession(final IDebugTarget target) {
+		AnalysisSession analysisSession = null;
+		for (final AnalysisSession tmpAnalysisSession : analysisSessionsToStreamSessionId
+				.keySet())
+			if (tmpAnalysisSession.getTarget().equals(target)) {
+				analysisSession = tmpAnalysisSession;
+				break;
 			}
+		analysisSessionsToStreamSessionId.remove(analysisSession);
 	}
 
 	public boolean resumeAnalysis(final String sessionId) {
@@ -180,18 +192,26 @@ public class VideoManager implements IExecutableExtensionFactory {
 
 	public boolean startAnalysis(final String sessionId) {
 		final AbstractSession session = getAnalysisSession(sessionId);
-		session.start();
-		
-		// handle the case when analysis is started while streaming is paused
-		String streamSessionId = analysisSessionsToStreamSessionId.get(session);
-		if(getStreamState(streamSessionId)==SessionState.PAUSED)
-			try {
-				session.getTarget().suspend();
-			} catch (DebugException e) {
-				e.printStackTrace();
-			}
-		
-		return true;
+		final String streamSessionId = analysisSessionsToStreamSessionId
+				.get(session);
+		final StreamSession streamSession = getStreamSession(streamSessionId);
+		final boolean streamReadyForAnalysis = streamSession
+				.isStreamReadyForAnalysis();
+		if (streamReadyForAnalysis) {
+
+			session.start();
+			// handle the case when analysis is started while streaming is
+			// paused
+			if (getStreamState(streamSessionId) == SessionState.PAUSED)
+				try {
+					session.getTarget().suspend();
+				} catch (final DebugException e) {
+					e.printStackTrace();
+				}
+
+			return true;
+		} else
+			return false;
 	}
 
 	public boolean startStream(final String sessionId) {
@@ -212,26 +232,21 @@ public class VideoManager implements IExecutableExtensionFactory {
 		final ArrayList<AnalysisSession> associatedSessions = getAnalysisSessions(sessionId);
 		for (final AnalysisSession analysisSession : associatedSessions)
 			try {
-				IDebugTarget target = analysisSession.getTarget();
-				if(!target.isTerminated())
+				final IDebugTarget target = analysisSession.getTarget();
+				if (!target.isTerminated())
 					target.terminate();
 			} catch (final DebugException e) {
 				e.printStackTrace();
 			}
 	}
 
-	public void removeAnalysisSession(IDebugTarget target) {
-		AnalysisSession analysisSession=null;
-		for(AnalysisSession tmpAnalysisSession: analysisSessionsToStreamSessionId.keySet())
-			if(tmpAnalysisSession.getTarget().equals(target)){
-				analysisSession = tmpAnalysisSession;
-				break;
+	private void suspendAssociatedAnalysisSessions(final String sessionId) {
+		final ArrayList<AnalysisSession> associatedAnalysisSessions = getAnalysisSessions(sessionId);
+		for (final AnalysisSession analysisSession : associatedAnalysisSessions)
+			try {
+				analysisSession.getTarget().suspend();
+			} catch (final DebugException e) {
+				e.printStackTrace();
 			}
-		analysisSessionsToStreamSessionId.remove(analysisSession);
-	}
-
-	public ArrayList<Parameter> getParameters(String sessionId) {
-		AnalysisSession session = getAnalysisSession(sessionId);
-		return session.getParameters();
 	}
 }

@@ -12,14 +12,6 @@ import ovap.video.filter.VideoFilter;
  */
 public class SourceFilter extends VideoFilter {
 
-	public SourceFilter() {
-		super("", "");
-	}
-
-	public SourceFilter(final String name, final String contextId) {
-		super(name, contextId);
-	}
-
 	@Override
 	protected void handleConfigurationUpdates(
 			final HashMap<String, Object> updatedConfigurations) {
@@ -30,5 +22,10 @@ public class SourceFilter extends VideoFilter {
 	@Override
 	public void process() {
 		linkOut.setData(linkIn.getData());
+	}
+
+	@Override
+	public boolean isReadyForAnalysis() {
+		return true; // we are always ready
 	}
 }

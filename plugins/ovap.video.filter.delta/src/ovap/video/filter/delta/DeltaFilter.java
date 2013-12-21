@@ -19,14 +19,6 @@ public class DeltaFilter extends VideoFilter {
 	private int		summation;
 	private int		x1, x2, y1, y2;
 
-	public DeltaFilter() {
-		super("", "");
-	}
-
-	public DeltaFilter(final String name, final String contextId) {
-		super(name, contextId);
-	}
-
 	private int addAllPixelsValues(final int[] arr) {
 		int sum = 0;
 		final int width = 640;
@@ -74,6 +66,11 @@ public class DeltaFilter extends VideoFilter {
 		y1 = 0;
 		x2 = 0;
 		y2 = 480;
+	}
+	
+	@Override
+	public boolean isReadyForAnalysis() {
+		return true; // FIXME: implement
 	}
 
 //	@Override

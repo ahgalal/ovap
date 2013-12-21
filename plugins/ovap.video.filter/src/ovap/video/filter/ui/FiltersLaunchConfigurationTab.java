@@ -65,7 +65,7 @@ public class FiltersLaunchConfigurationTab extends OVAPLaunchConfigurationTab im
 	private Label lblSs;
 	private Composite cmpstConfiguration;
 	private Composite cmpstDummy;
-	private HashMap<FilterInstance,FilterConfigurationContributer> filterInstanceToConfigContributer = new HashMap<FilterInstance, FilterConfigurationContributer>();
+	private HashMap<String,FilterConfigurationContributer> filterInstanceToConfigContributer = new HashMap<String, FilterConfigurationContributer>();
 	private ILaunchConfiguration	launchConfiguration;
 	private Button btnSaveFilters;
 
@@ -148,7 +148,8 @@ public class FiltersLaunchConfigurationTab extends OVAPLaunchConfigurationTab im
 							String[] selection = listActivetFilters.getSelection();
 							if(selection!=null && selection.length>0){
 								// get FilterInstance for the selected filter instance
-								for(FilterInstance filterInstance:filterInstanceToConfigContributer.keySet()){
+								for(String filterInstanceName:filterInstanceToConfigContributer.keySet()){
+									FilterInstance filterInstance = getFilterInstance(filterInstanceName);
 									if(filterInstance.getName().equals(selection[0])){
 										FilterConfigurationContributer configContributer = getFilterConfigurationGUI(filterInstance);
 										for(Control child:cmpstConfiguration.getChildren()){
@@ -206,7 +207,7 @@ public class FiltersLaunchConfigurationTab extends OVAPLaunchConfigurationTab im
 
 	@SuppressWarnings("unchecked")
 	private void loadFilterInstances(IFile file,ILaunchConfiguration launchConfiguration){
-		filterInstanceToConfigContributer=new HashMap<FilterInstance, FilterConfigurationContributer>();
+		filterInstanceToConfigContributer=new HashMap<String, FilterConfigurationContributer>();
 		listActivetFilters.removeAll();
 		if(file.exists()){
 			Resource emfResource = EMFUtils.getEMFResource(file);
@@ -223,7 +224,7 @@ public class FiltersLaunchConfigurationTab extends OVAPLaunchConfigurationTab im
 				if(object instanceof FilterInstance){
 					FilterInstance filterInstance = (FilterInstance) object;
 					FilterConfigurationContributer filterConfigContributer = getFilterConfigurationGUI(filterInstance);
-					filterInstanceToConfigContributer.put(filterInstance, filterConfigContributer);
+					filterInstanceToConfigContributer.put(filterInstance.getName(), filterConfigContributer);
 					if(filterConfigContributer!=null){
 						try {
 							Map<String, String> filterConfigMap = StringUtils.convertToInstanceConfigMap(filterInstance.getName(), launchConfiguration.getAttributes());
@@ -238,8 +239,22 @@ public class FiltersLaunchConfigurationTab extends OVAPLaunchConfigurationTab im
 		}
 	}
 	
+	private FilterInstance getFilterInstance(String filterInstanceName){
+		Resource emfResource = EMFUtils.getEMFResource(getActiveGraphFile());
+		TreeIterator<EObject> itAllContents = emfResource.getAllContents();
+		for(;itAllContents.hasNext();){
+			EObject object = itAllContents.next();
+			if(object instanceof FilterInstance){
+				FilterInstance filterInstance = (FilterInstance) object;
+				if(filterInstance.getName().equals(filterInstanceName))
+					return filterInstance;
+			}
+		}
+		return null;
+	}
+	
 	private FilterConfigurationContributer getFilterConfigurationGUI(FilterInstance filterInstance){
-		FilterConfigurationContributer configContributer  = filterInstanceToConfigContributer.get(filterInstance);
+		FilterConfigurationContributer configContributer  = filterInstanceToConfigContributer.get(filterInstance.getName());
 		if(configContributer==null)
 			configContributer = loadFilterConfigurationGUI(filterInstance);
 		return configContributer;
@@ -315,33 +330,50 @@ public class FiltersLaunchConfigurationTab extends OVAPLaunchConfigurationTab im
 	@Override
 	public void initializeFrom(final ILaunchConfiguration configuration) {
 		this.launchConfiguration=configuration;
+		String detectedFilterGraph="";
+		IProject selectedProject = getProject();
+		if(selectedProject!=null && selectedProject.exists()){
+			ArrayList<IFile> files = FileUtils.getFiles(selectedProject, "fg"); // FIXME
+			if(files.size()>0)
+				detectedFilterGraph=files.get(0).getProjectRelativePath().toString();
+		
+		txtActiveGraph.setText(getActiveGraphFile().getProjectRelativePath().toString());
+		
+		EMFUtils.loadAllResourcesInProjectToEditingDomain(selectedProject,"model");
+		
+		loadFilterInstances(getActiveGraphFile(),configuration);
+		
+		updateLaunchConfiguration(filterInstanceToConfigContributer.keySet(), configuration);
+		btnSaveFilters.setEnabled(false);
+		}
+	}
+	
+	private IProject getProject(){
+		IProject selectedProject=null;
+		String projectName = null;
 		try {
-			String detectedFilterGraph="";
-			String projectName = configuration.getAttribute(Activator.SETTING_PROJECT_NAME, "");
-			IProject selectedProject=null;
-			if(!projectName.equals(""))
-				selectedProject = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
-			if(selectedProject!=null && selectedProject.exists()){
-				ArrayList<IFile> files = FileUtils.getFiles(selectedProject, "fg");
-				if(files.size()>0)
-					detectedFilterGraph=files.get(0).getProjectRelativePath().toString();
-			
-			String filterGraph = configuration.getAttribute(
-					FilterLaunchConfigs.FILTER_GRAPH.toString(), detectedFilterGraph);
-			if(filterGraph.equals(""))
-				filterGraph=detectedFilterGraph;
-			txtActiveGraph.setText(filterGraph);
-			
-			EMFUtils.loadAllResourcesInProjectToEditingDomain(selectedProject,"model");
-			
-			loadFilterInstances(selectedProject.getFile(filterGraph),configuration);
-			
-			updateLaunchConfiguration(filterInstanceToConfigContributer.keySet(), configuration);
-			btnSaveFilters.setEnabled(false);
-			}
-		} catch (final CoreException e) {
+			projectName = launchConfiguration.getAttribute(Activator.SETTING_PROJECT_NAME, "");
+		} catch (CoreException e) {
 			e.printStackTrace();
 		}
+		if(!projectName.equals(""))
+			selectedProject = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
+		return selectedProject;
+	}
+	
+	private IFile getActiveGraphFile(){
+		IFile filterGraphFile=null;
+		String filterGraph=null;
+		try {
+			filterGraph = launchConfiguration.getAttribute(
+					FilterLaunchConfigs.FILTER_GRAPH.toString(), "");
+		} catch (CoreException e) {
+			e.printStackTrace();
+		}
+		if(filterGraph!=null && !filterGraph.isEmpty()){
+			filterGraphFile=getProject().getFile(filterGraph);
+		}
+		return filterGraphFile;
 	}
 
 	
@@ -404,11 +436,12 @@ public class FiltersLaunchConfigurationTab extends OVAPLaunchConfigurationTab im
 	
 	private FilterInstance getFilterInstanceForConfigContrinuter(FilterConfigurationContributer contributer){
 		FilterInstance filterInstance = null;
-		for(FilterInstance tmpFilterInstance:filterInstanceToConfigContributer.keySet())
-			if(filterInstanceToConfigContributer.get(tmpFilterInstance)==contributer){
-				filterInstance = tmpFilterInstance;
+		for(String filterInstanceName:filterInstanceToConfigContributer.keySet()){
+			if(filterInstanceToConfigContributer.get(filterInstanceName)==contributer){
+				filterInstance = getFilterInstance(filterInstanceName);
 				break;
 			}
+		}
 		return filterInstance;
 	}
 
@@ -418,7 +451,7 @@ public class FiltersLaunchConfigurationTab extends OVAPLaunchConfigurationTab im
 		updateLaunchConfigurationDialog();
 	}
 	
-	public static void updateLaunchConfiguration(Collection<FilterInstance> filterInstances,ILaunchConfiguration launchConfiguration){
+	public void updateLaunchConfiguration(Collection<String> filterInstanceNames,ILaunchConfiguration launchConfiguration){
 		ILaunchConfigurationWorkingCopy workingCopy = null;
 		if(launchConfiguration.isWorkingCopy())
 			workingCopy = (ILaunchConfigurationWorkingCopy) launchConfiguration;
@@ -429,7 +462,8 @@ public class FiltersLaunchConfigurationTab extends OVAPLaunchConfigurationTab im
 				e.printStackTrace();
 			}
 		
-		for(FilterInstance filterInstance:filterInstances){
+		for(String filterInstanceName:filterInstanceNames){
+			FilterInstance filterInstance = getFilterInstance(filterInstanceName);
 			Configuration configuration = filterInstance.getConfiguration();
 			Map<String, String> filterConfigMap = EMFUtils.getHashMap(configuration.getEntries());
 			Map<String, String> launchConfigMap = StringUtils.convertToFlatConfigMap(filterInstance.getName(), filterConfigMap);
@@ -446,24 +480,30 @@ public class FiltersLaunchConfigurationTab extends OVAPLaunchConfigurationTab im
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static void updateFilterConfigurations(Collection<FilterInstance> filterInstances,ILaunchConfiguration launchConfiguration){
+	public void updateFilterConfigurations(Collection<String> filterInstances,ILaunchConfiguration launchConfiguration){
 		try {
+			ArrayList<Resource> resourcesToSave = new ArrayList<Resource>();
 			HashMap<FilterInstance,Map<String, String>> filterInstanceToConfig = new HashMap<FilterInstance, Map<String,String>>();
 			// fill map of each filter instance with configs read from the launch configs 
 			Map<String, String> attributes = launchConfiguration.getAttributes();
-			for(FilterInstance filterInstance:filterInstances){
+			for(String filterInstanceName:filterInstances){
+				FilterInstance filterInstance = getFilterInstance(filterInstanceName);
 				Map<String, String> filterConfigMap = StringUtils.convertToInstanceConfigMap(filterInstance.getName(), attributes);
 				filterInstanceToConfig.put(filterInstance, filterConfigMap);
+				if(!resourcesToSave.contains(filterInstance.eResource()))
+					resourcesToSave.add(filterInstance.eResource());
 			}
 			
 			// apply update to filter configs
-			for(FilterInstance filterInstance:filterInstances){
+			for(String filterInstanceName:filterInstances){
+				FilterInstance filterInstance = getFilterInstance(filterInstanceName);
 				ApplyFilterConfigurationCommand command = new ApplyFilterConfigurationCommand(filterInstanceToConfig.get(filterInstance), filterInstance);
 				TransactionalEditingDomain editingDomain = TransactionUtil.getEditingDomain(filterInstance);
 				editingDomain.getCommandStack().execute(command);
 			}
 			
-			filterInstances.iterator().next().eResource().save(null);
+			for(Resource resource:resourcesToSave)
+				resource.save(null);
 		} catch (CoreException e) {
 			e.printStackTrace();
 		} catch (IOException e) {

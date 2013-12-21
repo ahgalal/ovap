@@ -19,4 +19,5 @@ public interface IFilterManager {
 	boolean resumeStream();
 	ArrayList<BufferedImage> getFilterInputs(String filterName);
 	ArrayList<Parameter> getParameters();
+	public abstract boolean areFiltersReady();
 }

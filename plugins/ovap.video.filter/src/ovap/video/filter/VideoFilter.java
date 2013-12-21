@@ -29,11 +29,19 @@ public abstract class VideoFilter {
 	protected String						name;
 	private ParametersContainer				paramsContainer;
 
-	public VideoFilter(final String name, final String contextId) {
-		setName(name);
-		setContextId(contextId);
+	public VideoFilter() {
 		frameSize = new Point();
 	}
+	
+	private int[] bypassData;
+	
+	protected void bypass(){
+		int[] data = getLinkIn().getData();
+		System.arraycopy(data, 0, bypassData, 0, data.length);
+		getLinkOut().setData(bypassData);
+	}
+	
+	public abstract boolean isReadyForAnalysis();
 
 	public void configure(final HashMap<String, Object> configurations,
 			final Map<String, Object> dynamicConfigurations) {
@@ -48,13 +56,14 @@ public abstract class VideoFilter {
 			if ((oldValue == null) || !oldValue.equals(newValue))
 				updatedConfigurations.put(key, newValue);
 		}
-
+		
 		// update frame size
 		if (dynamicConfigurations != null) {
 			final Point frameSizeConfig = (Point) dynamicConfigurations
 					.get(VideoFilter.FRAME_SIZE);
 			frameSize.x = frameSizeConfig.x;
 			frameSize.y = frameSizeConfig.y;
+			bypassData = new int[frameSize.x*frameSize.y];
 		}
 		// notify class extenders about the config changes
 		handleConfigurationUpdates(updatedConfigurations);

@@ -113,8 +113,7 @@ public class AnalysisWizard extends Wizard {
 			saveSettings(file);
 		}
 
-		launch.startAnalysisTarget(dialogSettings.getAttributes());
-		return true;
+		return launch.startAnalysisTarget(dialogSettings.getAttributes());
 	}
 
 	public void saveSettings(final File file) {

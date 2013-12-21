@@ -28,11 +28,13 @@ public class BlobDetector extends VideoFilter {
 	public static final String BG_COLOR_CONFIG="background_color";
 
 	public BlobDetector() {
-		super("", "");
 		blobFinder = new BlobFinder();
 		blobsLocations = new ArrayList<Point>();
 	}
-
+	@Override
+	public boolean isReadyForAnalysis() {
+		return true; // FIXME: implement
+	}
 	@Override
 	protected void handleConfigurationUpdates(
 			final HashMap<String, Object> updatedConfigurations) {

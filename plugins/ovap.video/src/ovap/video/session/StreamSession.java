@@ -122,6 +122,10 @@ public class StreamSession extends AbstractSession implements
 		setState(SessionState.RUNNING);
 		return true;
 	}
+	
+	public boolean isStreamReadyForAnalysis(){
+		return filterManager.areFiltersReady();
+	}
 
 	/*
 	 * (non-Javadoc)

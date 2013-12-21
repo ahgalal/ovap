@@ -26,20 +26,15 @@ public class FrameDisplayFilter extends VideoFilter {
 	private int[]				imgData;
 	private FrameViewerEditor viewer;
 
-	public FrameDisplayFilter() {
-		super("", "");
-	}
-
-	public FrameDisplayFilter(final String name, final String contextId) {
-		super(name, contextId);
-	}
-
 	@Override
 	public void enable(final boolean enable) {
 		// TODO Auto-generated method stub
 
 	}
-
+	@Override
+	public boolean isReadyForAnalysis() {
+		return true; // we are always ready
+	}
 	@Override
 	protected void handleConfigurationUpdates(
 			final HashMap<String, Object> updatedConfigurations) {
@@ -84,9 +79,7 @@ public class FrameDisplayFilter extends VideoFilter {
 			}
 		});
 
-		final FrameDisplayFilter frameDisplayFilter = new FrameDisplayFilter(
-				name, contextId);
-		frameDisplayFilter.setViewer(viewer);
+		setViewer(viewer);
 	}
 
 	@Override

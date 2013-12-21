@@ -52,7 +52,7 @@ public class OVAPLaunch extends Launch {
 	
 	private int analysisSessionCount=0;
 
-	public void startAnalysisTarget(final Map<String, String> analysisSettings) {
+	public boolean startAnalysisTarget(final Map<String, String> analysisSettings) {
 		final AnalysisTarget target = new AnalysisTarget(this, "Analysis"+analysisSessionCount++);
 		addDebugTarget(target);
 
@@ -62,7 +62,13 @@ public class OVAPLaunch extends Launch {
 		}
 		VideoManager.getDefault().initializeAnalysisSession(target,
 				analysisSettings);
-		VideoManager.getDefault().startAnalysis(target.getSessionId());
+		if(!VideoManager.getDefault().startAnalysis(target.getSessionId())){
+			// roll back the initialization, as there is an error
+			VideoManager.getDefault().removeAnalysisSession(target);
+			return false;
+		}
+		
+		return true;
 	}
 	
 	@Override

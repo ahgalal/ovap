@@ -71,8 +71,9 @@ public class FilterManager implements IFilterManager, IStartup,
 					}
 				}
 				sourceLink.setData(frameData.getFrameData());
-				for (final VideoFilter filter : activeFilters)
-					filter.process();
+				if(frameData.getFrameData()!=null) // we only process valid data
+					for (final VideoFilter filter : activeFilters)
+						filter.process();
 			}
 		}
 	}
@@ -380,6 +381,18 @@ public class FilterManager implements IFilterManager, IStartup,
 			if (filtersThread != null)
 				filtersThread.interrupt();
 		}
+		return true;
+	}
+	
+	@Override
+	public boolean areFiltersReady(){
+		ArrayList<VideoFilter> nonReadyFilters = new ArrayList<VideoFilter>();
+		for(VideoFilter filter:activeFilters)
+			if(!filter.isReadyForAnalysis())
+				nonReadyFilters.add(filter);
+		
+		if(nonReadyFilters.size()>0)
+			return false;
 		return true;
 	}
 
