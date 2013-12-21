@@ -40,11 +40,6 @@ public class DeltaFilter extends VideoFilter {
 		return sum;
 	}
 
-	@Override
-	public String[] getInPortIDs() {
-		return new String[] { "in" };
-	}
-
 	private void getInterestingAreaBounds(final int[] arr, final int threshold) {
 		initializeSearchBounds();
 		final int height = 480;
@@ -61,11 +56,6 @@ public class DeltaFilter extends VideoFilter {
 					break;
 				}
 		}
-	}
-
-	@Override
-	public String[] getOutPortIDs() {
-		return new String[] { "out" };
 	}
 
 	@Override
@@ -86,11 +76,11 @@ public class DeltaFilter extends VideoFilter {
 		y2 = 480;
 	}
 
-	@Override
-	public VideoFilter newInstance(final String name, final String contextId) {
-		final DeltaFilter deltaFilter = new DeltaFilter(name, contextId);
-		return deltaFilter;
-	}
+//	@Override
+//	public VideoFilter newInstance(final String name, final String contextId) {
+//		final DeltaFilter deltaFilter = new DeltaFilter(name, contextId);
+//		return deltaFilter;
+//	}
 
 	@Override
 	public void process() {

@@ -41,24 +41,14 @@ public class FrameDisplayFilter extends VideoFilter {
 	}
 
 	@Override
-	public String[] getInPortIDs() {
-		return new String[] { "in" };
-	}
-
-	@Override
-	public String[] getOutPortIDs() {
-		return new String[0];
-	}
-
-	@Override
 	protected void handleConfigurationUpdates(
 			final HashMap<String, Object> updatedConfigurations) {
 		// TODO Auto-generated method stub
 
 	}
-
 	@Override
-	public VideoFilter newInstance(final String name, final String contextId) {
+	public void initialize(final String name, final String contextId) {
+		super.initialize(name, contextId);
 		Display.getDefault().syncExec(new Runnable() {
 
 			@Override
@@ -97,7 +87,6 @@ public class FrameDisplayFilter extends VideoFilter {
 		final FrameDisplayFilter frameDisplayFilter = new FrameDisplayFilter(
 				name, contextId);
 		frameDisplayFilter.setViewer(viewer);
-		return frameDisplayFilter;
 	}
 
 	@Override

@@ -14,6 +14,11 @@ import utils.PDEUtils;
 public abstract class VideoFilter {
 	public static final String				FRAME_SIZE				= "ovap.video.filter.dynamic_configs.framesize";
 	private static final String				OUTPUT_PARAM_ELEMENT	= "out_parameter";
+	private static final String				PORT_ELEMENT	= "port";
+	private static final String				PORT_NAME_ATTRIBUTE	= "name";
+	private static final String				PORT_DIRECTION_ATTRIBUTE	= "direction";
+	private static final String				PORT_DIRECTION_IN_ATTRIBUTE	= "In";
+	private static final String				PORT_DIRECTION_OUT_ATTRIBUTE	= "Out";
 	private static final String				PARAM_ID				= "id";
 	private static final String				PARAM_NAME				= "name";
 	private final HashMap<String, Object>	configurations			= new HashMap<String, Object>();
@@ -70,20 +75,51 @@ public abstract class VideoFilter {
 		return frameSize;
 	}
 
+	public static String getID(IConfigurationElement element) {
+		return element.getAttribute("id");
+	}
+	
 	public String getID() {
+		IConfigurationElement element = getFilterExtension();
+		return getID(element);
+	}
+	
+	private IConfigurationElement getFilterExtension(){
 		final IConfigurationElement[] extensions = PDEUtils
 				.getExtensions(Activator.OVAP_FILTER_VIDEOFILTER_EP);
 
 		for (final IConfigurationElement element : extensions) {
 			if (element.getAttribute("class").equals(
 					getClass().getCanonicalName())) {
-				return element.getAttribute("id");
+				return element;
 			}
 		}
 		return null;
 	}
 
-	public abstract String[] getInPortIDs();
+	public String[] getInPortIDs(){
+		return getInPortIDs(getFilterExtension());
+	}
+	
+	public static String[] getInPortIDs(IConfigurationElement element){
+		return getPortIDs(PORT_DIRECTION_IN_ATTRIBUTE,element);
+	}
+	
+	public static String[] getOutPortIDs(IConfigurationElement element){
+		return getPortIDs(PORT_DIRECTION_OUT_ATTRIBUTE,element);
+	}
+	
+	public static String[] getPortIDs(String direction,IConfigurationElement element ){
+		ArrayList<String> portNames = new ArrayList<String>();
+
+		IConfigurationElement[] portElements = element.getChildren(PORT_ELEMENT);
+		for(IConfigurationElement portElement:portElements){
+			if(portElement.getAttribute(PORT_DIRECTION_ATTRIBUTE).equals(direction))
+				portNames.add(portElement.getAttribute(PORT_NAME_ATTRIBUTE));
+		}
+
+		return portNames.toArray(new String[0]);
+	}
 
 	public Link getLinkIn() {
 		return linkIn;
@@ -97,7 +133,9 @@ public abstract class VideoFilter {
 		return name;
 	}
 
-	public abstract String[] getOutPortIDs();
+	public String[] getOutPortIDs(){
+		return getOutPortIDs(getFilterExtension());
+	}
 
 	protected Parameter getParameter(final String name) {
 		return getParametersContainer().getOutputParameter(name);
@@ -125,7 +163,10 @@ public abstract class VideoFilter {
 	protected abstract void handleConfigurationUpdates(
 			final HashMap<String, Object> updatedConfigurations);
 
-	public abstract VideoFilter newInstance(String name, String sessionName);
+	public void initialize(String name, String sessionName){
+		setName(name);
+		setContextId(sessionName);
+	}
 
 	public abstract void process();
 

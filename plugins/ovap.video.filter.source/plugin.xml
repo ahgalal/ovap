@@ -9,6 +9,10 @@
          <configuration_gui
                class="ovap.video.filter.source.SourceFilterConfigurationContributer">
          </configuration_gui>
+         <port
+               direction="Out"
+               name="out">
+         </port>
       </filter>
    </extension>
 </plugin>

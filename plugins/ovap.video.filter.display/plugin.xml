@@ -6,6 +6,10 @@
       <filter
             class="ovap.video.filter.display.FrameDisplayFilter"
             id="ovap.video.filter.display">
+         <port
+               direction="In"
+               name="in">
+         </port>
       </filter>
    </extension>
    <extension

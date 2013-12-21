@@ -29,22 +29,8 @@ public class BlobDetector extends VideoFilter {
 
 	public BlobDetector() {
 		super("", "");
-	}
-
-	public BlobDetector(final String name, final String contextId) {
-		super(name, contextId);
 		blobFinder = new BlobFinder();
 		blobsLocations = new ArrayList<Point>();
-	}
-
-	@Override
-	public String[] getInPortIDs() {
-		return new String[] { "in" };
-	}
-
-	@Override
-	public String[] getOutPortIDs() {
-		return new String[] { "out" };
 	}
 
 	@Override
@@ -57,10 +43,6 @@ public class BlobDetector extends VideoFilter {
 				getFrameSize().x);
 	}
 
-	@Override
-	public VideoFilter newInstance(final String name, final String contextId) {
-		return new BlobDetector(name, contextId);
-	}
 	private ArrayList<Point> blobsLocations; 
 	@Override
 	public void process() {

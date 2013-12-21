@@ -54,6 +54,7 @@
             <choice>
                <element ref="configuration_gui" minOccurs="0" maxOccurs="1"/>
             </choice>
+            <element ref="port" minOccurs="1" maxOccurs="unbounded"/>
          </choice>
          <attribute name="class" type="string" use="required">
             <annotation>
@@ -105,6 +106,33 @@
                   <meta.attribute kind="java" basedOn="ovap.video.filter.FilterConfigurationContributer:"/>
                </appinfo>
             </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="port">
+      <complexType>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="direction" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+            <simpleType>
+               <restriction base="string">
+                  <enumeration value="In">
+                  </enumeration>
+                  <enumeration value="Out">
+                  </enumeration>
+               </restriction>
+            </simpleType>
          </attribute>
       </complexType>
    </element>

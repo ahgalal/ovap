@@ -13,6 +13,14 @@
          <configuration_gui
                class="ovap.video.filter.delta.DeltaFilterConfigurationContributer">
          </configuration_gui>
+         <port
+               direction="In"
+               name="in">
+         </port>
+         <port
+               direction="Out"
+               name="out">
+         </port>
       </filter>
    </extension>
 

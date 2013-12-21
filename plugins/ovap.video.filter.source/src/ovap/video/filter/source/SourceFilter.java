@@ -21,28 +21,10 @@ public class SourceFilter extends VideoFilter {
 	}
 
 	@Override
-	public String[] getInPortIDs() {
-		return new String[0];
-	}
-
-	@Override
-	public String[] getOutPortIDs() {
-		return new String[] { "out" };
-
-	}
-
-	@Override
 	protected void handleConfigurationUpdates(
 			final HashMap<String, Object> updatedConfigurations) {
 		// TODO Auto-generated method stub
 
-	}
-
-	@Override
-	public VideoFilter newInstance(final String name, final String contextId) {
-		final SourceFilter sourceFilter = new SourceFilter(name, contextId);
-		sourceFilter.setName(name);
-		return sourceFilter;
 	}
 
 	@Override

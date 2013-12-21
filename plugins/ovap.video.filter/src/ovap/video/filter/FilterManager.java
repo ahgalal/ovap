@@ -107,28 +107,31 @@ public class FilterManager implements IFilterManager, IStartup,
 
 	}
 
-	private static ArrayList<VideoFilter>	installedFilters;
+	private static ArrayList<IConfigurationElement>	installedFilterExtensions;
 
 	private static void createInstalledFiltersEMFModel() {
 		final FilterModel filterModel = FiltersetupFactory.eINSTANCE
 				.createFilterModel();
 		final ArrayList<FilterType> filterTypes = new ArrayList<FilterType>();
-		for (final VideoFilter filter : installedFilters) {
+		for (final IConfigurationElement filterElement : installedFilterExtensions) {
 			final FilterType filterType = FiltersetupFactory.eINSTANCE
 					.createFilterType();
 			filterType.setModel(filterModel);
-			filterType.setName(filter.getID());
+			filterType.setName(VideoFilter.getID(filterElement));
 
-			final String[] inPortIDs = filter.getInPortIDs();
+			final String[] inPortIDs = VideoFilter.getInPortIDs(filterElement);
 			for (final String inPortID : inPortIDs) {
-				final PortIn portIn = FiltersetupFactory.eINSTANCE.createPortIn();
+				final PortIn portIn = FiltersetupFactory.eINSTANCE
+						.createPortIn();
 				portIn.setName(inPortID);
 				filterType.getPortIn().add(portIn);
 			}
 
-			final String[] outPortIDs = filter.getOutPortIDs();
+			final String[] outPortIDs = VideoFilter
+					.getOutPortIDs(filterElement);
 			for (final String outPortID : outPortIDs) {
-				final PortOut portOut = FiltersetupFactory.eINSTANCE.createPortOut();
+				final PortOut portOut = FiltersetupFactory.eINSTANCE
+						.createPortOut();
 				portOut.setName(outPortID);
 				filterType.getPortOut().add(portOut);
 			}
@@ -169,12 +172,12 @@ public class FilterManager implements IFilterManager, IStartup,
 	private final ArrayList<VideoFilter>	activeFilters;
 	private FiltersLaunchConfigurations		configuration;
 	private final Map<String, Object>		dynamicConfigurations;
-	private boolean							started	= false;
 	private Thread							filtersThread;
 	private FrameData						frameData;
 	private boolean							paused	= false;
-
 	private Link							sourceLink;
+
+	private boolean							started	= false;
 
 	public FilterManager() {
 		activeFilters = new ArrayList<VideoFilter>();
@@ -211,13 +214,13 @@ public class FilterManager implements IFilterManager, IStartup,
 
 	@Override
 	public void earlyStartup() {
-		installedFilters = new ArrayList<VideoFilter>();
+		installedFilterExtensions = new ArrayList<IConfigurationElement>();
 		final IConfigurationElement[] config = PDEUtils
 				.getExtensions(Activator.OVAP_FILTER_VIDEOFILTER_EP);
 		for (final IConfigurationElement e : config) {
-			final VideoFilter videoFilter = PDEUtils.instantiateExtension(
-					VideoFilter.class, e);
-			installedFilters.add(videoFilter);
+			// final VideoFilter videoFilter = PDEUtils.instantiateExtension(
+			// VideoFilter.class, e);
+			installedFilterExtensions.add(e);
 		}
 
 		createInstalledFiltersEMFModel();
@@ -308,17 +311,18 @@ public class FilterManager implements IFilterManager, IStartup,
 			// get filter type
 			final String filterTypeID = filterInstance.getType().getName();
 			VideoFilter filter = null;
-			for (final VideoFilter videoFilter : installedFilters) {
-				if (videoFilter.getID().equals(filterTypeID)) {
-					filter = videoFilter;
+			for (final IConfigurationElement element : installedFilterExtensions) {
+				if (VideoFilter.getID(element).equals(filterTypeID)) {
+					filter = PDEUtils.instantiateExtension(VideoFilter.class,
+							element);
 					break;
 				}
 			}
 
-			// instantiate filter, add it to active filters
-			final VideoFilter instance = filter.newInstance(
-					filterInstance.getName(), configuration.getConfigName());
-			activeFilters.add(instance);
+			// initialize filter, add it to active filters
+			filter.initialize(filterInstance.getName(),
+					configuration.getConfigName());
+			activeFilters.add(filter);
 
 			// configure filter according to EMF saved configuration
 			final Configuration filterConfigs = filterInstance
@@ -327,9 +331,9 @@ public class FilterManager implements IFilterManager, IStartup,
 			configureFilter(filterInstance.getName(), filterConfigs,
 					dynamicConfigurations);
 
-			if (instance.getName().equals("source")) // FIXME: remove hardcoded
-														// source filter name
-				instance.setLinkIn(sourceLink);
+			if (filter.getName().equals("source")) // FIXME: remove hardcoded
+													// source filter name
+				filter.setLinkIn(sourceLink);
 		}
 
 		for (final FilterConnection connection : filtersSetup.getConnections()) {
