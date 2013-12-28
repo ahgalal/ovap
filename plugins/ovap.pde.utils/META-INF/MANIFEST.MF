@@ -1,13 +1,14 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OVAP PDE Utils
-Bundle-SymbolicName: ovap.pde.utils
+Bundle-SymbolicName: ovap.pde.utils;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: ovap.pde.utils.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.core.resources;bundle-version="3.6.1",
- org.eclipse.debug.ui;bundle-version="3.7.102"
+ org.eclipse.debug.ui;bundle-version="3.7.102",
+ org.eclipse.ui.console
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: sys.utils,
