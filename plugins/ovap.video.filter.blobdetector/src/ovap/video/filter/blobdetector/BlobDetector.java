@@ -10,10 +10,10 @@ import java.util.Collection;
 import java.util.HashMap;
 
 import ovap.video.filter.VideoFilter;
+import ovap.video.utils.Blob;
+import ovap.video.utils.BlobFinder;
 import ovap.video.utils.ImageManipulator;
-import ovap.video.utils.ImageManipulator.Blob;
-import ovap.video.utils.ImageManipulator.BlobFinder;
-import ovap.video.utils.ImageManipulator.RGB;
+import ovap.video.utils.RGB;
 import ovap.video.utils.marker.CrossMarker;
 
 /**

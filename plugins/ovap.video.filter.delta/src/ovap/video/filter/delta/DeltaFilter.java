@@ -53,9 +53,10 @@ public class DeltaFilter extends VideoFilter {
 	@Override
 	protected void handleConfigurationUpdates(
 			final HashMap<String, String> updatedConfigurations) {
-		prevGreyData = new int[640// FIXME
-		* 480];
-		prevOutputData = new int[640 * 480];
+		int width = getFrameSize().x;
+		int height = getFrameSize().y;
+		prevGreyData = new int[width*height];
+		prevOutputData = new int[width*height];
 		greyData = new int[prevGreyData.length];
 		// final boolean ret = super.configure(configs);
 		initializeSearchBounds();

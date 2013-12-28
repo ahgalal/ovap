@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="ovap.video.filter.videofilter">
+      <filter
+            class="ovap.video.filter.basicobjectdetector.BasicObjectDetectorFilter"
+            id="ovap.video.filter.basicobjectdetector">
+         <out_parameter
+               id="ovap.video.filter.basicobjectdetector.objectcenter"
+               name="objectCenter">
+         </out_parameter>
+         <port
+               direction="In"
+               name="in">
+         </port>
+         <port
+               direction="Out"
+               name="out">
+         </port>
+         <configuration_gui
+               class="ovap.video.filter.basicobjectdetector.ui.BasicODetectorConfigurationContributer">
+         </configuration_gui>
+      </filter>
+   </extension>
+
+</plugin>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="ovap.video.filter.videofilter">
+      <filter
+            class="ovap.video.filter.average.core.AverageFilter"
+            id="ovap.video.filter.average">
+         <port
+               direction="In"
+               name="in">
+         </port>
+         <port
+               direction="Out"
+               name="out">
+         </port>
+         <configuration_gui
+               class="ovap.video.filter.average.ui.AverageFilterConfigurationContributer">
+         </configuration_gui>
+      </filter>
+   </extension>
+
+</plugin>
