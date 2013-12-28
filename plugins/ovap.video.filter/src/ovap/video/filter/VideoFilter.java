@@ -21,7 +21,7 @@ public abstract class VideoFilter {
 	private static final String				PORT_DIRECTION_OUT_ATTRIBUTE	= "Out";
 	private static final String				PARAM_ID				= "id";
 	private static final String				PARAM_NAME				= "name";
-	private final HashMap<String, Object>	configurations			= new HashMap<String, Object>();
+	private final HashMap<String, String>	configurations			= new HashMap<String, String>();
 	protected String						contextId;
 	protected boolean						enabled;
 	private final Point						frameSize;
@@ -43,12 +43,12 @@ public abstract class VideoFilter {
 	
 	public abstract boolean isReadyForAnalysis();
 
-	public void configure(final HashMap<String, Object> configurations,
+	public void configure(final HashMap<String, String> configurations,
 			final Map<String, Object> dynamicConfigurations) {
-		final HashMap<String, Object> updatedConfigurations = new HashMap<String, Object>();
+		final HashMap<String, String> updatedConfigurations = new HashMap<String, String>();
 		for (final String key : configurations.keySet()) {
-			final Object oldValue = this.configurations.get(key);
-			final Object newValue = configurations.get(key);
+			final String oldValue = this.configurations.get(key);
+			final String newValue = configurations.get(key);
 			/*
 			 * it is not expected to have configs deleted/added, they are just
 			 * modified
@@ -76,7 +76,7 @@ public abstract class VideoFilter {
 		enabled = enable;
 	}
 
-	public HashMap<String, Object> getConfiguration() {
+	public HashMap<String, String> getConfiguration() {
 		return configurations;
 	}
 
@@ -170,7 +170,7 @@ public abstract class VideoFilter {
 	 *            Updated filter configurations
 	 */
 	protected abstract void handleConfigurationUpdates(
-			final HashMap<String, Object> updatedConfigurations);
+			final HashMap<String, String> updatedConfigurations);
 
 	public void initialize(String name, String sessionName){
 		setName(name);

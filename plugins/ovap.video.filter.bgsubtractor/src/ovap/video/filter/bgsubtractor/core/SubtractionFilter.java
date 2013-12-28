@@ -31,9 +31,8 @@ public class SubtractionFilter extends VideoFilter {
 
 	@Override
 	protected void handleConfigurationUpdates(
-			final HashMap<String, Object> updatedConfigurations) {
+			final HashMap<String, String> updatedConfigurations) {
 		localData = new int[getFrameSize().x * getFrameSize().y];
-		bgImageGray = new FrameData(getFrameSize().x, getFrameSize().y);
 		
 		String bgFilePath = (String) updatedConfigurations.get(BG_FILE_PATH);
 		if(bgFilePath!=null && !bgFilePath.isEmpty()){
@@ -42,6 +41,7 @@ public class SubtractionFilter extends VideoFilter {
 				int[] data  = new int[getFrameSize().x*getFrameSize().y];
 				image.getRGB(0, 0, getFrameSize().x, getFrameSize().y, data, 0, getFrameSize().x);
 				//int[] data = ((DataBufferInt)(image.getRaster().getDataBuffer())).getData();
+				bgImageGray = new FrameData(getFrameSize().x, getFrameSize().y);
 				setBG(data);
 			} catch (IOException e) {
 				e.printStackTrace();

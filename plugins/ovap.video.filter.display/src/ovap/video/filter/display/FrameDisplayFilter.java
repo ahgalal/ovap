@@ -37,7 +37,7 @@ public class FrameDisplayFilter extends VideoFilter {
 	}
 	@Override
 	protected void handleConfigurationUpdates(
-			final HashMap<String, Object> updatedConfigurations) {
+			final HashMap<String, String> updatedConfigurations) {
 		// TODO Auto-generated method stub
 
 	}

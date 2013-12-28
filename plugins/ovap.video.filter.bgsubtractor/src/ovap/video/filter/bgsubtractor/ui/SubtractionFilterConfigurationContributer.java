@@ -3,42 +3,30 @@
  */
 package ovap.video.filter.bgsubtractor.ui;
 
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.PaintEvent;
-import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.GC;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.ImageData;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 
 import ovap.video.filter.FilterConfigurationContributer;
 import ovap.video.filter.bgsubtractor.core.SubtractionFilter;
-import ovap.video.utils.ImageManipulator;
+import ovap.video.filter.ui.FilterInputCanvas;
 
 /**
  * @author Creative
  */
 public class SubtractionFilterConfigurationContributer extends
 		FilterConfigurationContributer {
-	private Button			btnCaptureBackground;
-	private BufferedImage	bufferedImage;
-	private Canvas			canvas;
-	private GC				gc;
+	private Button				btnCaptureBackground;
+	private FilterInputCanvas	canvas;
 
 	/**
 	 * 
@@ -56,16 +44,10 @@ public class SubtractionFilterConfigurationContributer extends
 		setContainer(composite);
 		composite.setLayout(new GridLayout(3, false));
 		{
-			canvas = new Canvas(composite, SWT.BORDER);
+			// FIXME: hardcoded name
+			canvas = new FilterInputCanvas(composite, SWT.BORDER, "source");
 			canvas.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true,
 					2, 3));
-			canvas.addPaintListener(new PaintListener() {
-
-				@Override
-				public void paintControl(final PaintEvent e) {
-					refreshCanvas();
-				}
-			});
 		}
 		{
 			btnCaptureBackground = new Button(composite, SWT.NONE);
@@ -75,7 +57,8 @@ public class SubtractionFilterConfigurationContributer extends
 					try {
 						final String filePath = "C:\\bg"
 								+ System.currentTimeMillis() + ".bmp";
-						ImageIO.write(bufferedImage, "BMP", new File(filePath));
+						ImageIO.write(canvas.getBufferedImage(), "BMP",
+								new File(filePath));
 						getConfigurations().put(SubtractionFilter.BG_FILE_PATH,
 								filePath);
 						signalConfigurationChange();
@@ -94,25 +77,6 @@ public class SubtractionFilterConfigurationContributer extends
 	 */
 	@Override
 	protected void initializeGUI() {
-		gc = new GC(canvas);
-	}
-
-	private void refreshCanvas() {
-		final Point canvasSize = canvas.getSize();
-		if (getFilterManager() == null) { // session is not started
-			final String msg = "Stream is not started.";
-			gc.drawText(msg, (canvasSize.x / 2) - (gc.textExtent(msg).x / 2),
-					canvasSize.y / 2);
-		} else { // session is started
-			final ArrayList<BufferedImage> filterInputImages = getFilterManager()
-					.getFilterInputs("source"); // FIXME: hardcoded source filter name
-			bufferedImage = filterInputImages.get(0);
-			final ImageData imageData = ImageManipulator
-					.bufferedImageToImageData(bufferedImage);
-			final Image image = new Image(Display.getDefault(), imageData);
-
-			gc.drawImage(image, 0, 0, bufferedImage.getWidth(),
-					bufferedImage.getHeight(), 0, 0, canvasSize.x, canvasSize.y);
-		}
+		canvas.setFilterManager(getFilterManager());
 	}
 }

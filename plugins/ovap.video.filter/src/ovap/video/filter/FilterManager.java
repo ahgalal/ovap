@@ -73,11 +73,14 @@ public class FilterManager implements IFilterManager, IStartup,
 				sourceLink.setData(frameData.getFrameData());
 				if(frameData.getFrameData()!=null) // we only process valid data
 					for (final VideoFilter filter : activeFilters)
-						filter.process();
+						if(isFilterEnabled(filter))
+							filter.process();
 			}
 		}
 	}
-
+	private boolean isFilterEnabled(VideoFilter filter) {
+		return FilterConfigurationUtils.getConfigurationValue(filter.getConfiguration(), Activator.CONFIG_ENABLED, Activator.CONFIG_ENABLED_DEFAULT);
+	}
 	private class ResourceDeltaVisitor implements IResourceDeltaVisitor {
 
 		@Override
@@ -227,9 +230,9 @@ public class FilterManager implements IFilterManager, IStartup,
 		createInstalledFiltersEMFModel();
 	}
 
-	private HashMap<String, Object> EMapToHashMap(
+	private HashMap<String, String> EMapToHashMap(
 			final EMap<String, String> configuration) {
-		final HashMap<String, Object> configs = new HashMap<String, Object>();
+		final HashMap<String, String> configs = new HashMap<String, String>();
 		for (final Entry<String, String> entry : configuration) {
 			configs.put(entry.getKey(), entry.getValue());
 		}

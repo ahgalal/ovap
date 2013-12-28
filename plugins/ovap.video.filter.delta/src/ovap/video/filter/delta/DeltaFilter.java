@@ -52,7 +52,7 @@ public class DeltaFilter extends VideoFilter {
 
 	@Override
 	protected void handleConfigurationUpdates(
-			final HashMap<String, Object> updatedConfigurations) {
+			final HashMap<String, String> updatedConfigurations) {
 		prevGreyData = new int[640// FIXME
 		* 480];
 		prevOutputData = new int[640 * 480];

@@ -37,7 +37,7 @@ public class BlobDetector extends VideoFilter {
 	}
 	@Override
 	protected void handleConfigurationUpdates(
-			final HashMap<String, Object> updatedConfigurations) {
+			final HashMap<String, String> updatedConfigurations) {
 		final Point size = getFrameSize();
 		blobFinder.initialize(size.x, size.y);
 		outData = new int[size.x * size.y];
