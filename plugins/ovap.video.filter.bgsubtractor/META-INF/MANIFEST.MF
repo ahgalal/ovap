@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Subtraction
+Bundle-SymbolicName: ovap.video.filter.bgsubtractor;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: ovap.video.filter.bgsubtractor.Activator
+Require-Bundle: org.eclipse.core.runtime,
+ ovap.video.filter,
+ ovap.video;bundle-version="1.0.0",
+ ovap.video.utils;bundle-version="1.0.0",
+ org.eclipse.ui;bundle-version="3.7.0"
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

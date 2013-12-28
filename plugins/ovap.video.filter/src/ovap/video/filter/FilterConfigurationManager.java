@@ -48,6 +48,10 @@ public class FilterConfigurationManager {
 	public FilterConfigurationContributer getContributerForFilter(
 			final FilterInstance filterInstance) {
 		IConfigurationElement videoFilterExtension = getVideoFilterExtension(filterInstance.getType().getName());
+		if(videoFilterExtension==null){
+			System.err.println("Couldn't find filter of type: " + filterInstance.getType().getName());
+			return null;
+		}
 		for(IConfigurationElement child:videoFilterExtension.getChildren()){
 			// look for Configuration contributer
 			if(child.getName().equals("configuration_gui"))
