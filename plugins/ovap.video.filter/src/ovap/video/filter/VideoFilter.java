@@ -40,6 +40,9 @@ public abstract class VideoFilter {
 		System.arraycopy(data, 0, bypassData, 0, data.length);
 		getLinkOut().setData(bypassData);
 	}
+	public void registerInputParameter(final Parameter parameter) {
+		getParametersContainer().registerInputParameter(parameter);
+	}
 	
 	public abstract boolean isReadyForAnalysis();
 
@@ -146,12 +149,21 @@ public abstract class VideoFilter {
 		return getOutPortIDs(getFilterExtension());
 	}
 
-	protected Parameter getParameter(final String name) {
+	protected Parameter getOutputParameter(final String name) {
 		return getParametersContainer().getOutputParameter(name);
 	}
 
-	protected ArrayList<Parameter> getParameters() {
+	public ArrayList<Parameter> getOutputParameters() {
 		return getParametersContainer().getOutputParameters();
+	}
+	
+	protected Parameter getInputParameter(final String name) {
+		return getParametersContainer().getInputParameter(name);
+	}
+
+	public ArrayList<Parameter> getInputParameters() {
+		return (ArrayList<Parameter>) getParametersContainer()
+				.getDefinedInputParameters();
 	}
 
 	private ParametersContainer getParametersContainer() {

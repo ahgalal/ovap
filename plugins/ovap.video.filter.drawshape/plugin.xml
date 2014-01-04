@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="ovap.video.filter.videofilter">
+      <filter
+            class="ovap.video.filter.drawshape.DrawShapeFilter"
+            id="ovap.video.filter.drawshape">
+         <port
+               direction="In"
+               name="in">
+         </port>
+         <port
+               direction="Out"
+               name="out">
+         </port>
+         <in_parameter
+               id="ovap.video.filter.drawshape.shapes"
+               name="shapes">
+         </in_parameter>
+      </filter>
+   </extension>
+
+</plugin>

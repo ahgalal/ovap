@@ -146,4 +146,8 @@ public class StreamSession extends AbstractSession implements
 			e.printStackTrace();
 		}
 	}
+
+	public void registerParameters(ArrayList<Parameter> params) {
+		filterManager.registerParameters(params);
+	}
 }

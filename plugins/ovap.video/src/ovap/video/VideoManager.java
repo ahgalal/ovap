@@ -115,9 +115,15 @@ public class VideoManager implements IExecutableExtensionFactory {
 		session.initialize(analysisSettings);
 
 		final StreamSession streamSession = getStreamSession(streamSessionId);
+		
+		// register filter output params with modules
 		final ArrayList<Parameter> filtersParameters = streamSession
 				.getParameters();
 		session.registerParameters(filtersParameters);
+		
+		// regiter module output params with filters
+		ArrayList<Parameter> modulesOutputParams = session.getParameters();
+		streamSession.registerParameters(modulesOutputParams);
 		return true;
 	}
 

@@ -20,4 +20,5 @@ public interface IFilterManager {
 	ArrayList<BufferedImage> getFilterInputs(String filterName);
 	ArrayList<Parameter> getParameters();
 	public abstract boolean areFiltersReady();
+	public void registerParameters(ArrayList<Parameter> params);
 }

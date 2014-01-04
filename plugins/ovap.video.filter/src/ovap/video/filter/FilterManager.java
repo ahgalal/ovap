@@ -270,7 +270,7 @@ public class FilterManager implements IFilterManager, IStartup,
 	public ArrayList<Parameter> getParameters() {
 		final ArrayList<Parameter> activeParameters = new ArrayList<Parameter>();
 		for (final VideoFilter filter : activeFilters) {
-			activeParameters.addAll(filter.getParameters());
+			activeParameters.addAll(filter.getOutputParameters());
 		}
 		return activeParameters;
 	}
@@ -421,5 +421,17 @@ public class FilterManager implements IFilterManager, IStartup,
 		}
 		// System.out.println("FilterManager.stopStream()2" + this);
 		return false;
+	}
+
+	@Override
+	public void registerParameters(final ArrayList<Parameter> parameters) {
+		for (final Parameter parameter : parameters) {
+			System.out.println("Param: " + parameter.getId()
+					+ " is registered in Filter Manager");
+
+			for (final VideoFilter filter : activeFilters) {
+				filter.registerInputParameter(parameter);
+			}
+		}
 	}
 }

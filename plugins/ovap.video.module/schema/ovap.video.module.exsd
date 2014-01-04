@@ -111,6 +111,13 @@
                </documentation>
             </annotation>
          </attribute>
+         <attribute name="external" type="boolean">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
       </complexType>
    </element>
 

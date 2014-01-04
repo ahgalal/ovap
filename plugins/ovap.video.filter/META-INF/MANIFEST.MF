@@ -19,4 +19,5 @@ Require-Bundle: ovap.video;bundle-version="1.0.0",
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: ovap.video.filter,
- ovap.video.filter.ui
+ ovap.video.filter.ui,
+ ovap.video.filter.ui.shape

@@ -155,7 +155,10 @@ public class AnalysisTarget extends OVAPTarget {
 
 			final IVariable variable = getVariable(name);
 			try {
-				variable.setValue(value);
+				if(parameter.isExternal())
+					variable.setValue(value);
+				else
+					variable.setValue("[internal]");
 
 				/*
 				 * final DebugEvent debugEvent = new DebugEvent(variable,

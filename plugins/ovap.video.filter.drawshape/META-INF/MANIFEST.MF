@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Draw Shape
+Bundle-SymbolicName: ovap.video.filter.drawshape;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: ovap.video.filter.drawshape.Activator
+Require-Bundle: org.eclipse.core.runtime,
+ ovap.video.filter,
+ ovap.video;bundle-version="1.0.0"
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

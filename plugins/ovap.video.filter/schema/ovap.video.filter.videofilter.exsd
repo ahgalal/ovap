@@ -51,10 +51,11 @@
       <complexType>
          <choice>
             <element ref="out_parameter" minOccurs="0" maxOccurs="unbounded"/>
+            <element ref="in_parameter" minOccurs="0" maxOccurs="unbounded"/>
+            <element ref="port" minOccurs="1" maxOccurs="unbounded"/>
             <choice>
                <element ref="configuration_gui" minOccurs="0" maxOccurs="1"/>
             </choice>
-            <element ref="port" minOccurs="1" maxOccurs="unbounded"/>
          </choice>
          <attribute name="class" type="string" use="required">
             <annotation>
@@ -62,7 +63,7 @@
                   
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn="VideoFilter:"/>
+                  <meta.attribute kind="java" basedOn="ovap.video.filter.VideoFilter:"/>
                </appinfo>
             </annotation>
          </attribute>
@@ -77,6 +78,25 @@
    </element>
 
    <element name="out_parameter">
+      <complexType>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="in_parameter">
       <complexType>
          <attribute name="id" type="string" use="required">
             <annotation>

@@ -39,7 +39,7 @@ public class BasicObjectDetectorFilter extends VideoFilter {
 	public BasicObjectDetectorFilter() {
 		centroidFinder = new CentroidFinder();
 		centerPoint = new Point();
-		getParameter(PARAM_OBJECT_CENTER).setValue(centerPoint);
+		getOutputParameter(PARAM_OBJECT_CENTER).setValue(centerPoint);
 	}
 
 	/**
