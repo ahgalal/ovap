@@ -14,10 +14,6 @@ import ovap.video.module.Module;
  * @author Creative
  */
 public class TestModule extends Module {
-	@Override
-	public String getID() {
-		return Activator.PLUGIN_ID;
-	}
 
 	@Override
 	public void process() {
@@ -30,7 +26,7 @@ public class TestModule extends Module {
 
 	@SuppressWarnings("unchecked")
 	private ArrayList<Point> getBlobsLocations() {
-		Parameter blobsLocationsParam = getInputParameter("blobs");
+		Parameter blobsLocationsParam = getInputParameter("blobsLocations");
 		ArrayList<Point> blobsLocations = (ArrayList<Point>)blobsLocationsParam.getValue();
 		return blobsLocations;
 	}
@@ -38,5 +34,15 @@ public class TestModule extends Module {
 	@Override
 	protected void handleConfigurationUpdates(
 			HashMap<String, Object> updatedConfigurations) {
+	}
+
+	@Override
+	protected String[] defineInParameters() {
+		return new String[]{"blobsLocations","in_parameter2"};
+	}
+
+	@Override
+	protected String[] defineOutParameters() {
+		return new String[]{"out_parameter1","out_parameter2"};
 	}
 }

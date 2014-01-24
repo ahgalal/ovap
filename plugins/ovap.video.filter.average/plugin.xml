@@ -6,14 +6,6 @@
       <filter
             class="ovap.video.filter.average.core.AverageFilter"
             id="ovap.video.filter.average">
-         <port
-               direction="In"
-               name="in">
-         </port>
-         <port
-               direction="Out"
-               name="out">
-         </port>
          <configuration_gui
                class="ovap.video.filter.average.ui.AverageFilterConfigurationContributer">
          </configuration_gui>

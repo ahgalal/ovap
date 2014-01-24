@@ -6,21 +6,9 @@
       <filter
             class="ovap.video.filter.delta.DeltaFilter"
             id="ovap.video.filter.delta">
-         <output_param
-               id="ovap.video.filter.delta.pixeldelta"
-               name="pixeldelta">
-         </output_param>
          <configuration_gui
                class="ovap.video.filter.delta.DeltaFilterConfigurationContributer">
          </configuration_gui>
-         <port
-               direction="In"
-               name="in">
-         </port>
-         <port
-               direction="Out"
-               name="out">
-         </port>
       </filter>
    </extension>
 

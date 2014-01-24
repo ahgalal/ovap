@@ -62,7 +62,7 @@
                   
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn="ovap.module.Module:"/>
+                  <meta.attribute kind="java" basedOn="ovap.video.module.Module:"/>
                </appinfo>
             </annotation>
          </attribute>

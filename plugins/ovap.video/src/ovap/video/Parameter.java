@@ -8,13 +8,13 @@ package ovap.video;
  */
 public class Parameter {
 	private boolean			external	= true;
-	private final String	id;
+	private final String	providerId;
 	private final String	name;
 	private Object			value;
 
-	public Parameter(final String id, final String name, final boolean external) {
+	public Parameter(final String providerId, final String name, final boolean external) {
 		super();
-		this.id = id;
+		this.providerId = providerId;
 		this.name = name;
 		this.external = external;
 	}
@@ -22,7 +22,7 @@ public class Parameter {
 	@Override
 	public boolean equals(final Object param) {
 		if (param instanceof Parameter) {
-			if (id.equals(((Parameter) param).getId())
+			if (providerId.equals(((Parameter) param).getId())
 					&& name.equals(((Parameter) param).getName()))
 				return true;
 		}
@@ -30,7 +30,7 @@ public class Parameter {
 	}
 
 	public String getId() {
-		return id;
+		return providerId;
 	}
 
 	public String getName() {
@@ -51,6 +51,6 @@ public class Parameter {
 
 	@Override
 	public String toString() {
-		return id + ": " + name + ", " + value;
+		return providerId + ": " + name + ", " + value;
 	}
 }

@@ -3,14 +3,44 @@ package ovap.video.module;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.eclipse.core.runtime.IConfigurationElement;
+
 import ovap.video.Parameter;
 import ovap.video.ParametersContainer;
+import ovap.video.StreamInfo;
+import utils.PDEUtils;
 
 public abstract class Module {
 	private final HashMap<String, Object>	configurations	= new HashMap<String, Object>();
 	private String							name;
 	private ParametersContainer				parametersContainer;
+	//private StreamInfo streamInfo;
 
+//	protected StreamInfo getStreamInfo() {
+//		return streamInfo;
+//	}
+	public static String getID(IConfigurationElement element) {
+		return element.getAttribute("id");
+	}
+	
+	public String getID() {
+		IConfigurationElement element = getFilterExtension();
+		return getID(element);
+	}
+	
+	private IConfigurationElement getFilterExtension(){
+		final IConfigurationElement[] extensions = PDEUtils
+				.getExtensions(Activator.OVAP_VIDEO_MODULE_EP);
+
+		for (final IConfigurationElement element : extensions) {
+			if (element.getAttribute("class").equals(
+					getClass().getCanonicalName())) {
+				return element;
+			}
+		}
+		return null;
+	}
+	
 	public void configure(final HashMap<String, Object> configurations) {
 		final HashMap<String, Object> updatedConfigurations = new HashMap<String, Object>();
 		for (final String key : configurations.keySet()) {
@@ -35,8 +65,6 @@ public abstract class Module {
 		return configurations;
 	}
 
-	public abstract String getID();
-
 	protected Parameter getInputParameter(final String name) {
 		return getParametersContainer().getInputParameter(name);
 	}
@@ -59,15 +87,19 @@ public abstract class Module {
 	}
 
 	protected ParametersContainer getParametersContainer() {
-		if (parametersContainer == null)
-			parametersContainer = new ParametersContainer(getID(),
-					Activator.OVAP_VIDEO_MODULE_EP,
-					Activator.INPUT_PARAM_ELEMENT,
-					Activator.OUTPUT_PARAM_ELEMENT, Activator.PARAM_ID,
-					Activator.PARAM_NAME);
+		if (parametersContainer == null){
+				parametersContainer = new ParametersContainer(getID(), defineInParameters(), defineOutParameters());
+//			parametersContainer = new ParametersContainer(getID(),
+//					Activator.OVAP_VIDEO_MODULE_EP,
+//					Activator.INPUT_PARAM_ELEMENT,
+//					Activator.OUTPUT_PARAM_ELEMENT, Activator.PARAM_ID,
+//					Activator.PARAM_NAME);
+		}
 		return parametersContainer;
 	}
 
+	protected abstract String[] defineInParameters();
+	protected abstract String[] defineOutParameters();
 	protected abstract void handleConfigurationUpdates(
 			HashMap<String, Object> updatedConfigurations);
 
@@ -80,4 +112,8 @@ public abstract class Module {
 	public void setName(final String name) {
 		this.name = name;
 	}
+
+//	public void setStreamInfo(StreamInfo streamInfo) {
+//		this.streamInfo = streamInfo;
+//	}
 }

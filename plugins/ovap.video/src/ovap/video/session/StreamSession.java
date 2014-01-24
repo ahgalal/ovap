@@ -3,6 +3,7 @@
  */
 package ovap.video.session;
 
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,6 +18,7 @@ import ovap.video.ISourceManager;
 import ovap.video.IStreamEndListener;
 import ovap.video.Parameter;
 import ovap.video.SessionState;
+import ovap.video.StreamInfo;
 import ovap.video.VideoManager;
 
 import utils.PDEUtils;
@@ -70,11 +72,6 @@ public class StreamSession extends AbstractSession implements
 		return filterManager.getParameters();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see ovap.video.ISession#initialize(java.util.Map)
-	 */
-	@Override
 	public void initialize(final Map<String, String> configurations) {
 		HashMap<String, Object> settings = new HashMap<String, Object>();
 		settings.putAll(configurations);
@@ -149,5 +146,11 @@ public class StreamSession extends AbstractSession implements
 
 	public void registerParameters(ArrayList<Parameter> params) {
 		filterManager.registerParameters(params);
+	}
+
+	public StreamInfo getStreamInfo() {
+		FrameData frameData = sourceManager.getFrameData();
+		Point frameSize = new Point(frameData.getWidth(), frameData.getHeight());
+		return new StreamInfo(sourceManager.getStreamLength(), frameSize);
 	}
 }

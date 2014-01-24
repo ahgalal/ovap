@@ -104,6 +104,8 @@ public class VideoManager implements IExecutableExtensionFactory {
 		final String analysisSessionId = analysisTarget.getSessionId();
 		final String streamSessionId = analysisTarget.getLaunch()
 				.getLaunchConfiguration().getName();
+		final StreamSession streamSession = getStreamSession(streamSessionId);
+		
 		AnalysisSession session = getAnalysisSession(analysisSessionId);
 		if (session != null) {
 			session.deInitialize();
@@ -111,10 +113,10 @@ public class VideoManager implements IExecutableExtensionFactory {
 		session = new AnalysisSession(analysisSessionId);
 		analysisSessionsToStreamSessionId.put(session, streamSessionId);
 		session.setTarget(analysisTarget);
-
-		session.initialize(analysisSettings);
-
-		final StreamSession streamSession = getStreamSession(streamSessionId);
+		
+		//StreamInfo streamInfo = streamSession.getStreamInfo();
+		
+		session.initialize(analysisSettings/*,streamInfo*/);
 		
 		// register filter output params with modules
 		final ArrayList<Parameter> filtersParameters = streamSession

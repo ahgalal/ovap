@@ -16,6 +16,8 @@ public interface ISourceManager {
 	boolean stopStream();
 	boolean pauseStream();
 	boolean resumeStream();
+	long getStreamLength();
+	long getStreamPosition();
 	void addStreamEndListener(IStreamEndListener streamEndListener);
 	void removeStreamEndListener(IStreamEndListener streamEndListener);
 }

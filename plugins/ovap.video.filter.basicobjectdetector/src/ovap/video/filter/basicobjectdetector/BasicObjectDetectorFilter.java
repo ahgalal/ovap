@@ -13,7 +13,9 @@ import java.util.Iterator;
 import java.util.concurrent.ArrayBlockingQueue;
 
 import ovap.video.filter.FilterConfigurationUtils;
+import ovap.video.filter.FilterPort;
 import ovap.video.filter.VideoFilter;
+import ovap.video.filter.FilterPort.PortDirection;
 import ovap.video.utils.CentroidFinder;
 import ovap.video.utils.marker.CrossMarker;
 import ovap.video.utils.marker.Marker;
@@ -143,5 +145,21 @@ public class BasicObjectDetectorFilter extends VideoFilter {
 		// final long t2 = System.currentTimeMillis();
 		drawPathOnImg();
 		// System.out.println(t2-t1);
+	}
+
+	@Override
+	protected void definePorts() {
+		inPorts = new FilterPort[]{new FilterPort("in", PortDirection.IN)};
+		outPorts = new FilterPort[]{new FilterPort("out", PortDirection.OUT)};		
+	}
+
+	@Override
+	protected String[] defineInParameters() {
+		return new String[0];
+	}
+
+	@Override
+	protected String[] defineOutParameters() {
+		return new String[]{"objectCenter"};
 	}
 }

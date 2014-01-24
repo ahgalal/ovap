@@ -113,4 +113,14 @@ public class SourceManager implements ISourceManager, IStreamEndListener {
 			streamEndListener.streamEnded();
 		//System.out.println("SourceManager.streamEnded()2" + this);
 	}
+
+	@Override
+	public long getStreamLength() {
+		return activeSource.getStreamLength();
+	}
+
+	@Override
+	public long getStreamPosition() {
+		return activeSource.getStreamPosition();
+	}
 }

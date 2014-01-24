@@ -5,7 +5,9 @@ package ovap.video.filter.delta;
 
 import java.util.HashMap;
 
+import ovap.video.filter.FilterPort;
 import ovap.video.filter.VideoFilter;
+import ovap.video.filter.FilterPort.PortDirection;
 import ovap.video.utils.ImageManipulator;
 
 /**
@@ -31,7 +33,11 @@ public class DeltaFilter extends VideoFilter {
 			}
 		return sum;
 	}
-
+	@Override
+	protected void definePorts() {
+		inPorts = new FilterPort[]{new FilterPort("in", PortDirection.IN)};
+		outPorts = new FilterPort[]{new FilterPort("out", PortDirection.OUT)};		
+	}
 	private void getInterestingAreaBounds(final int[] arr, final int threshold) {
 		initializeSearchBounds();
 		final int height = 480;
@@ -141,5 +147,13 @@ public class DeltaFilter extends VideoFilter {
 				} else
 					outputData2[i] = 0;
 			}
+	}
+	@Override
+	protected String[] defineInParameters() {
+		return new String[0];
+	}
+	@Override
+	protected String[] defineOutParameters() {
+		return new String[]{"pixeldelta"};
 	}
 }

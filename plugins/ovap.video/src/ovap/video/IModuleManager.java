@@ -20,7 +20,7 @@ public interface IModuleManager {
 
 	void registerParameters(ArrayList<Parameter> parameters);
 
-	void initialize(HashMap<String, Object> settings);
+	void initialize(HashMap<String, Object> settings/*, StreamInfo streamInfo*/);
 
 	ArrayList<Parameter> getOutputParameters();
 	Map<Parameter,String> getOutputParametersToModuleInstanceMap();

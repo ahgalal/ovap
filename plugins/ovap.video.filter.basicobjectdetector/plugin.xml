@@ -6,18 +6,6 @@
       <filter
             class="ovap.video.filter.basicobjectdetector.BasicObjectDetectorFilter"
             id="ovap.video.filter.basicobjectdetector">
-         <out_parameter
-               id="ovap.video.filter.basicobjectdetector.objectcenter"
-               name="objectCenter">
-         </out_parameter>
-         <port
-               direction="In"
-               name="in">
-         </port>
-         <port
-               direction="Out"
-               name="out">
-         </port>
          <configuration_gui
                class="ovap.video.filter.basicobjectdetector.ui.BasicODetectorConfigurationContributer">
          </configuration_gui>

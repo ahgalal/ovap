@@ -9,7 +9,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import ovap.video.Parameter;
+import ovap.video.filter.FilterPort;
 import ovap.video.filter.VideoFilter;
+import ovap.video.filter.FilterPort.PortDirection;
 import ovap.video.filter.ui.shape.Shape;
 
 /**
@@ -37,7 +39,11 @@ public class DrawShapeFilter extends VideoFilter {
 		// TODO Auto-generated method stub
 		return true;
 	}
-
+	@Override
+	protected void definePorts() {
+		inPorts = new FilterPort[]{new FilterPort("in", PortDirection.IN)};
+		outPorts = new FilterPort[]{new FilterPort("out", PortDirection.OUT)};		
+	}
 	/*
 	 * (non-Javadoc)
 	 * @see
@@ -76,5 +82,15 @@ public class DrawShapeFilter extends VideoFilter {
 		}
 		
 		getLinkOut().setData(imageData);
+	}
+
+	@Override
+	protected String[] defineInParameters() {
+		return new String[]{"shapes"};
+	}
+
+	@Override
+	protected String[] defineOutParameters() {
+		return new String[0];
 	}
 }

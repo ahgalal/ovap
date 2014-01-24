@@ -11,6 +11,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 
 import ovap.video.IModuleManager;
 import ovap.video.Parameter;
+import ovap.video.StreamInfo;
 import sys.utils.Utils;
 import utils.PDEUtils;
 import utils.StringUtils;
@@ -71,7 +72,7 @@ public class ModuleManager implements IModuleManager {
 	}
 
 	@Override
-	public void initialize(HashMap<String, Object> settings) {
+	public void initialize(HashMap<String, Object> settings/*, StreamInfo streamInfo*/) {
 		activeModules = new ArrayList<Module>();
 		final String moduleNamesStr = (String) settings
 				.get(Activator.SETTINGS_SELECTED_MODULES_NAMES);
@@ -87,6 +88,7 @@ public class ModuleManager implements IModuleManager {
 		for(Module module:activeModules){
 			Map encodedConfigsMap = StringUtils.convertToInstanceConfigMap(module.getName(), settings,true);
 			module.configure((HashMap<String, Object>) encodedConfigsMap);
+			//module.setStreamInfo(streamInfo);
 		}
 	}
 

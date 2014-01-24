@@ -11,7 +11,9 @@ import java.util.HashMap;
 import javax.imageio.ImageIO;
 
 import ovap.video.FrameData;
+import ovap.video.filter.FilterPort;
 import ovap.video.filter.VideoFilter;
+import ovap.video.filter.FilterPort.PortDirection;
 import ovap.video.utils.ImageManipulator;
 
 /**
@@ -28,7 +30,11 @@ public class SubtractionFilter extends VideoFilter {
 	private int[]		localData;
 
 	private boolean	bgSet=false;
-
+	@Override
+	protected void definePorts() {
+		inPorts = new FilterPort[]{new FilterPort("in", PortDirection.IN)};
+		outPorts = new FilterPort[]{new FilterPort("out", PortDirection.OUT)};		
+	}
 	@Override
 	protected void handleConfigurationUpdates(
 			final HashMap<String, String> updatedConfigurations) {
@@ -90,6 +96,14 @@ public class SubtractionFilter extends VideoFilter {
 	@Override
 	public boolean isReadyForAnalysis() {
 		return bgSet;
+	}
+	@Override
+	protected String[] defineInParameters() {
+		return new String[0];
+	}
+	@Override
+	protected String[] defineOutParameters() {
+		return new String[0];
 	}
 
 }

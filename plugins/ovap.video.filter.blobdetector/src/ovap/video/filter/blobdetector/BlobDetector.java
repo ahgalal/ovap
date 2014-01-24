@@ -9,7 +9,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
+import ovap.video.filter.FilterPort;
 import ovap.video.filter.VideoFilter;
+import ovap.video.filter.FilterPort.PortDirection;
 import ovap.video.utils.Blob;
 import ovap.video.utils.BlobFinder;
 import ovap.video.utils.ImageManipulator;
@@ -83,5 +85,19 @@ public class BlobDetector extends VideoFilter {
 			//System.out.println("blobs:" + blobs.size());
 		}
 		getLinkOut().setData(outData);
+	}
+	
+	@Override
+	protected void definePorts() {
+		inPorts = new FilterPort[]{new FilterPort("in", PortDirection.IN)};
+		outPorts = new FilterPort[]{new FilterPort("out", PortDirection.OUT)};		
+	}
+	@Override
+	protected String[] defineInParameters() {
+		return new String[0];
+	}
+	@Override
+	protected String[] defineOutParameters() {
+		return new String[]{"blobsLocations"};
 	}
 }

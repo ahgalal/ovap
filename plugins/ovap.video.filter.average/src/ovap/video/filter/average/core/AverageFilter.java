@@ -7,7 +7,9 @@ import java.awt.Point;
 import java.util.HashMap;
 
 import ovap.video.filter.FilterConfigurationUtils;
+import ovap.video.filter.FilterPort;
 import ovap.video.filter.VideoFilter;
+import ovap.video.filter.FilterPort.PortDirection;
 import ovap.video.utils.ImageManipulator;
 
 /**
@@ -101,5 +103,22 @@ public class AverageFilter extends VideoFilter {
 		// final long t2 = System.currentTimeMillis();
 		// System.out.println(t2 - t1);
 	}
+
+	@Override
+	protected void definePorts() {
+		inPorts = new FilterPort[]{new FilterPort("in", PortDirection.IN)};
+		outPorts = new FilterPort[]{new FilterPort("out", PortDirection.OUT)};
+	}
+
+	@Override
+	protected String[] defineInParameters() {
+		return new String[0];
+	}
+
+	@Override
+	protected String[] defineOutParameters() {
+		return new String[0];
+	}
+	
 
 }

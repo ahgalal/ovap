@@ -13,7 +13,9 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
+import ovap.video.filter.FilterPort;
 import ovap.video.filter.VideoFilter;
+import ovap.video.filter.FilterPort.PortDirection;
 import ovap.video.filter.display.editor.FrameViewerEditor;
 import ovap.video.filter.display.editor.LaunchEditorInput;
 
@@ -40,6 +42,11 @@ public class FrameDisplayFilter extends VideoFilter {
 			final HashMap<String, String> updatedConfigurations) {
 		// TODO Auto-generated method stub
 
+	}
+	@Override
+	protected void definePorts() {
+		inPorts = new FilterPort[]{new FilterPort("in", PortDirection.IN)};
+		outPorts = new FilterPort[0];		
 	}
 	@Override
 	public void initialize(final String name, final String contextId) {
@@ -103,6 +110,14 @@ public class FrameDisplayFilter extends VideoFilter {
 
 	public void setViewer(final FrameViewerEditor viewer) {
 		this.viewer = viewer;
+	}
+	@Override
+	protected String[] defineInParameters() {
+		return new String[0];
+	}
+	@Override
+	protected String[] defineOutParameters() {
+		return new String[0];
 	}
 
 }

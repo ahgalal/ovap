@@ -17,6 +17,7 @@ import ovap.video.Activator;
 import ovap.video.IModuleManager;
 import ovap.video.Parameter;
 import ovap.video.SessionState;
+import ovap.video.StreamInfo;
 import ovap.video.VideoManager;
 import ovap.video.launch.analysis.persist.AnalysisSessionResult;
 import utils.FileUtils;
@@ -51,12 +52,11 @@ public class AnalysisSession extends AbstractSession {
 		return moduleManager.getOutputParameters();
 	}
 
-	@Override
-	public void initialize(final Map<String, String> analysisSettings) {
+	public void initialize(final Map<String, String> analysisSettings/*, StreamInfo streamInfo*/) {
 		final HashMap<String, Object> settings = new HashMap<String, Object>();
 		settings.putAll(analysisSettings);
 		this.settings = settings;
-		moduleManager.initialize(settings);
+		moduleManager.initialize(settings/*,streamInfo*/);
 	}
 
 	@Override

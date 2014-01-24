@@ -7,6 +7,7 @@ import org.eclipse.debug.core.model.IDebugTarget;
 
 import ovap.video.Parameter;
 import ovap.video.SessionState;
+import ovap.video.StreamInfo;
 
 public abstract class AbstractSession {
 	private SessionState	streamState	= SessionState.STOPPED;
@@ -33,7 +34,7 @@ public abstract class AbstractSession {
 	
 	public abstract ArrayList<Parameter> getParameters();
 
-	public abstract void initialize(final Map<String, String> attributes);
+	//public abstract void initialize(final Map<String, String> attributes, StreamInfo streamInfo);
 
 	public abstract boolean pause();
 

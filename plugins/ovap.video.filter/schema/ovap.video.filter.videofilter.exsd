@@ -50,9 +50,6 @@
    <element name="filter">
       <complexType>
          <choice>
-            <element ref="out_parameter" minOccurs="0" maxOccurs="unbounded"/>
-            <element ref="in_parameter" minOccurs="0" maxOccurs="unbounded"/>
-            <element ref="port" minOccurs="1" maxOccurs="unbounded"/>
             <choice>
                <element ref="configuration_gui" minOccurs="0" maxOccurs="1"/>
             </choice>
@@ -77,44 +74,6 @@
       </complexType>
    </element>
 
-   <element name="out_parameter">
-      <complexType>
-         <attribute name="id" type="string" use="required">
-            <annotation>
-               <documentation>
-                  
-               </documentation>
-            </annotation>
-         </attribute>
-         <attribute name="name" type="string" use="required">
-            <annotation>
-               <documentation>
-                  
-               </documentation>
-            </annotation>
-         </attribute>
-      </complexType>
-   </element>
-
-   <element name="in_parameter">
-      <complexType>
-         <attribute name="id" type="string" use="required">
-            <annotation>
-               <documentation>
-                  
-               </documentation>
-            </annotation>
-         </attribute>
-         <attribute name="name" type="string" use="required">
-            <annotation>
-               <documentation>
-                  
-               </documentation>
-            </annotation>
-         </attribute>
-      </complexType>
-   </element>
-
    <element name="configuration_gui">
       <complexType>
          <attribute name="class" type="string" use="required">
@@ -126,33 +85,6 @@
                   <meta.attribute kind="java" basedOn="ovap.video.filter.FilterConfigurationContributer:"/>
                </appinfo>
             </annotation>
-         </attribute>
-      </complexType>
-   </element>
-
-   <element name="port">
-      <complexType>
-         <attribute name="name" type="string" use="required">
-            <annotation>
-               <documentation>
-                  
-               </documentation>
-            </annotation>
-         </attribute>
-         <attribute name="direction" use="required">
-            <annotation>
-               <documentation>
-                  
-               </documentation>
-            </annotation>
-            <simpleType>
-               <restriction base="string">
-                  <enumeration value="In">
-                  </enumeration>
-                  <enumeration value="Out">
-                  </enumeration>
-               </restriction>
-            </simpleType>
          </attribute>
       </complexType>
    </element>

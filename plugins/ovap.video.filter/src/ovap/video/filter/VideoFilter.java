@@ -9,18 +9,19 @@ import org.eclipse.core.runtime.IConfigurationElement;
 
 import ovap.video.Parameter;
 import ovap.video.ParametersContainer;
+import ovap.video.filter.FilterPort.PortDirection;
 import utils.PDEUtils;
 
 public abstract class VideoFilter {
 	public static final String				FRAME_SIZE				= "ovap.video.filter.dynamic_configs.framesize";
-	private static final String				OUTPUT_PARAM_ELEMENT	= "out_parameter";
-	private static final String				PORT_ELEMENT	= "port";
-	private static final String				PORT_NAME_ATTRIBUTE	= "name";
-	private static final String				PORT_DIRECTION_ATTRIBUTE	= "direction";
-	private static final String				PORT_DIRECTION_IN_ATTRIBUTE	= "In";
-	private static final String				PORT_DIRECTION_OUT_ATTRIBUTE	= "Out";
-	private static final String				PARAM_ID				= "id";
-	private static final String				PARAM_NAME				= "name";
+//	private static final String				OUTPUT_PARAM_ELEMENT	= "out_parameter";
+//	private static final String				PORT_ELEMENT	= "port";
+//	private static final String				PORT_NAME_ATTRIBUTE	= "name";
+//	private static final String				PORT_DIRECTION_ATTRIBUTE	= "direction";
+//	private static final String				PORT_DIRECTION_IN_ATTRIBUTE	= "In";
+//	private static final String				PORT_DIRECTION_OUT_ATTRIBUTE	= "Out";
+//	private static final String				PARAM_ID				= "id";
+//	private static final String				PARAM_NAME				= "name";
 	private final HashMap<String, String>	configurations			= new HashMap<String, String>();
 	protected String						contextId;
 	protected boolean						enabled;
@@ -28,11 +29,18 @@ public abstract class VideoFilter {
 	protected Link							linkIn, linkOut;
 	protected String						name;
 	private ParametersContainer				paramsContainer;
+	
+	
+	protected FilterPort[] inPorts;
+	protected FilterPort[] outPorts;
 
 	public VideoFilter() {
 		frameSize = new Point();
+		definePorts();
 	}
 	
+	protected abstract void definePorts();
+
 	private int[] bypassData;
 	
 	protected void bypass(){
@@ -109,26 +117,34 @@ public abstract class VideoFilter {
 		return null;
 	}
 
-	public String[] getInPortIDs(){
-		return getInPortIDs(getFilterExtension());
-	}
 	
 	public static String[] getInPortIDs(IConfigurationElement element){
-		return getPortIDs(PORT_DIRECTION_IN_ATTRIBUTE,element);
+		return getPortIDs(PortDirection.IN,element);
 	}
 	
 	public static String[] getOutPortIDs(IConfigurationElement element){
-		return getPortIDs(PORT_DIRECTION_OUT_ATTRIBUTE,element);
+		return getPortIDs(PortDirection.OUT,element);
 	}
 	
-	public static String[] getPortIDs(String direction,IConfigurationElement element ){
+	public static String[] getPortIDs(PortDirection direction,IConfigurationElement element ){
 		ArrayList<String> portNames = new ArrayList<String>();
-
-		IConfigurationElement[] portElements = element.getChildren(PORT_ELEMENT);
-		for(IConfigurationElement portElement:portElements){
-			if(portElement.getAttribute(PORT_DIRECTION_ATTRIBUTE).equals(direction))
-				portNames.add(portElement.getAttribute(PORT_NAME_ATTRIBUTE));
+		
+		VideoFilter videoFilter = PDEUtils.instantiateExtension(VideoFilter.class, element);
+		FilterPort[] ports =null;
+		if(direction==PortDirection.IN){
+			ports = videoFilter.getInPorts();
+		}else{
+			ports = videoFilter.getOutPorts();
 		}
+		for(FilterPort port:ports){
+			portNames.add(port.getName());
+		}
+
+//		IConfigurationElement[] portElements = element.getChildren(PORT_ELEMENT);
+//		for(IConfigurationElement portElement:portElements){
+//			if(portElement.getAttribute(PORT_DIRECTION_ATTRIBUTE).equals(in))
+//				portNames.add(portElement.getAttribute(PORT_NAME_ATTRIBUTE));
+//		}
 
 		return portNames.toArray(new String[0]);
 	}
@@ -143,10 +159,6 @@ public abstract class VideoFilter {
 
 	public String getName() {
 		return name;
-	}
-
-	public String[] getOutPortIDs(){
-		return getOutPortIDs(getFilterExtension());
 	}
 
 	protected Parameter getOutputParameter(final String name) {
@@ -167,12 +179,17 @@ public abstract class VideoFilter {
 	}
 
 	private ParametersContainer getParametersContainer() {
-		if (paramsContainer == null)
-			paramsContainer = new ParametersContainer(getID(),
-					Activator.OVAP_FILTER_VIDEOFILTER_EP,null, OUTPUT_PARAM_ELEMENT,
-					PARAM_ID, PARAM_NAME);
+		if (paramsContainer == null){
+			paramsContainer = new ParametersContainer(getID(), defineInParameters(), defineOutParameters());
+//			paramsContainer = new ParametersContainer(getID(),
+//					Activator.OVAP_FILTER_VIDEOFILTER_EP,null, OUTPUT_PARAM_ELEMENT,
+//					PARAM_ID, PARAM_NAME);
+		}
 		return paramsContainer;
 	}
+	
+	protected abstract String[] defineInParameters();
+	protected abstract String[] defineOutParameters();
 
 	/**
 	 * Handles configurations change, it is called before applying the new
@@ -187,6 +204,14 @@ public abstract class VideoFilter {
 	public void initialize(String name, String sessionName){
 		setName(name);
 		setContextId(sessionName);
+	}
+	
+	public FilterPort[] getOutPorts() {
+		return outPorts;
+	}
+	
+	public FilterPort[] getInPorts() {
+		return inPorts;
 	}
 
 	public abstract void process();
